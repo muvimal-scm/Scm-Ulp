@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M2 Sales / CRM â€” application layer (ICrmService + DTOs).</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.Sales.Domain\Ulp.Sales.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>

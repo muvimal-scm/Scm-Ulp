@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M3 Vendor Management â€” application layer (IVendorService + DTOs).</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.VendorManagement.Domain\Ulp.VendorManagement.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>

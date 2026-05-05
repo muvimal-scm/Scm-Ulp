@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M7 Procurement â€” application layer (IProcurementService + DTOs).</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.Procurement.Domain\Ulp.Procurement.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>

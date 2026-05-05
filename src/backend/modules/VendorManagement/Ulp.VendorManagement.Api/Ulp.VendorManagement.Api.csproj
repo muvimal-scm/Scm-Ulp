@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M3 Vendor Management â€” HTTP API endpoint groups under /api/v1/vendor-management/*.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\Ulp.VendorManagement.Domain\Ulp.VendorManagement.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.VendorManagement.Application\Ulp.VendorManagement.Application.csproj" />
+    <ProjectReference Include="..\Ulp.VendorManagement.Infrastructure\Ulp.VendorManagement.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>
