@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>ULP cross-cutting domain primitives: Money, TenantId, CountryCode, IClock seam, base entity, audit, soft-delete.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+    <PackageReference Include="Ulid" />
+  </ItemGroup>
+
+</Project>

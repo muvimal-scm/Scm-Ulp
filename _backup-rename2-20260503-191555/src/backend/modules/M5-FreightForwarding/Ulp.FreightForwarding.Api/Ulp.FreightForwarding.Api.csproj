@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M5 Freight Forwarding â€” HTTP API endpoint groups under /api/v1/freight-forwarding/*.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\Ulp.FreightForwarding.Domain\Ulp.FreightForwarding.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.FreightForwarding.Application\Ulp.FreightForwarding.Application.csproj" />
+    <ProjectReference Include="..\Ulp.FreightForwarding.Infrastructure\Ulp.FreightForwarding.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>

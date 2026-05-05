@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M2 Sales / CRM â€” EF Core persistence + ICrmService impl.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\Ulp.Sales.Domain\Ulp.Sales.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.Sales.Application\Ulp.Sales.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>

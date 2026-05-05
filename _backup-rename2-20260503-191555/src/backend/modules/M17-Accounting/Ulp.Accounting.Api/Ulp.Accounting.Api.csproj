@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M17 Accounts â€” HTTP API endpoint groups under /api/v1/accounting/*.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\Ulp.Accounting.Domain\Ulp.Accounting.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.Accounting.Application\Ulp.Accounting.Application.csproj" />
+    <ProjectReference Include="..\Ulp.Accounting.Infrastructure\Ulp.Accounting.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>

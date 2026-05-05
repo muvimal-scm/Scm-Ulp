@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <Description>ULP background worker — Hangfire jobs + MassTransit consumers.</Description>
+    <UserSecretsId>ulp-worker-dev-2026</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\core\Ulp.Core.Abstractions\Ulp.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\..\core\Ulp.Core.Infrastructure\Ulp.Core.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\core\Ulp.Core.PluginHost\Ulp.Core.PluginHost.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+  </ItemGroup>
+
+</Project>

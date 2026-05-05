@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M14 Pricing â€” HTTP API endpoint groups under /api/v1/pricing-quotation/*.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\Ulp.PricingQuotation.Domain\Ulp.PricingQuotation.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.PricingQuotation.Application\Ulp.PricingQuotation.Application.csproj" />
+    <ProjectReference Include="..\Ulp.PricingQuotation.Infrastructure\Ulp.PricingQuotation.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>
