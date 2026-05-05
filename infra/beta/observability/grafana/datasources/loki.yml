@@ -1,0 +1,14 @@
+apiVersion: 1
+# Auto-provisioned Loki datasource for the beta Grafana.
+# Grafana picks this file up at /etc/grafana/provisioning/datasources on boot.
+
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    uid: loki-beta
+    url: http://loki:3100
+    jsonData:
+      maxLines: 5000
+    isDefault: true
+    editable: false

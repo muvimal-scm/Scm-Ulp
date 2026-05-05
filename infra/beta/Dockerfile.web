@@ -1,0 +1,58 @@
+# =============================================================================
+# Multi-stage build for the ULP Angular SPA (beta).
+#
+# Stage 1: build dist with the production target. The beta API origin is
+#          injected at build time via build args. We write a small shell
+#          fragment that overwrites environment.prod.ts before `ng build`.
+# Stage 2: nginx:alpine serves the static bundle. nginx config is COPYed
+#          from infra/beta/nginx/default.conf — easier to read than a
+#          Dockerfile heredoc and works without BuildKit.
+# =============================================================================
+ARG NODE_VERSION=20-alpine
+
+# ---- build stage -----------------------------------------------------------
+FROM node:${NODE_VERSION} AS build
+WORKDIR /app
+
+ARG ULP_API_BASE=https://api.ulp-beta.example.com
+ARG ULP_AUTH_AUTHORITY=https://kc.ulp-beta.example.com/realms/ulp
+
+COPY src/frontend/ulp-web/package*.json ./
+RUN npm ci --no-audit --no-fund
+
+COPY src/frontend/ulp-web/ ./
+
+# Rewrite environment.prod.ts so the production bundle calls the beta API
+# origin instead of the dev defaults. We strip "/realms/<x>" off the auth
+# URL because Angular's keycloak config wants the bare base. The single-
+# quoted shell uses POSIX features only (no heredoc, no BuildKit needed).
+RUN KC_BASE=$(echo "$ULP_AUTH_AUTHORITY" | sed 's#/realms/.*##') \
+ && printf 'export const environment = {\n\
+  production: true,\n\
+  apiBaseUrl: %s,\n\
+  keycloak: {\n\
+    url: %s,\n\
+    realm: %s,\n\
+    clientId: %s,\n\
+  },\n\
+};\n' \
+        "'$ULP_API_BASE'" \
+        "'$KC_BASE'" \
+        "'ulp'" \
+        "'ulp-web'" \
+    > src/environments/environment.prod.ts \
+ && cat src/environments/environment.prod.ts
+
+RUN npm run build -- --configuration production
+
+# ---- runtime stage ---------------------------------------------------------
+FROM nginx:1.27-alpine AS runtime
+
+COPY infra/beta/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist/ulp-web/browser /usr/share/nginx/html
+
+EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD wget -q --spider http://localhost:80 || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]

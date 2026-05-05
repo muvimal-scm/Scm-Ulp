@@ -1,0 +1,86 @@
+# Promtail — scrape /var/lib/docker/containers/*/*-json.log and ship to Loki.
+#
+# Why container-log-files instead of the Docker socket: avoids needing
+# /var/run/docker.sock mounted (a pretty wide privilege grant). The host
+# bind-mount of /var/lib/docker/containers:ro is read-only and gives us the
+# same info.
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+  log_level: info
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+    backoff_config:
+      min_period: 500ms
+      max_period: 5m
+      max_retries: 10
+
+scrape_configs:
+  # ----------------------------------------------------------------------
+  # Docker containers — discovered via the json log file pattern. We add
+  # labels for the compose project + service so Grafana queries are clean.
+  # ----------------------------------------------------------------------
+  - job_name: docker
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: docker
+          __path__: /var/lib/docker/containers/*/*-json.log
+
+    pipeline_stages:
+      # 1. The raw docker JSON log line: {"log":"...","stream":"stdout","time":"..."}
+      - json:
+          expressions:
+            output: log
+            stream: stream
+            timestamp: time
+
+      # 2. Re-emit the log line as the message, drop the wrapper.
+      - output:
+          source: output
+
+      # 3. Promote the docker timestamp.
+      - timestamp:
+          source: timestamp
+          format: RFC3339Nano
+
+      # 4. Pull container labels from the docker daemon's containerdata
+      #    so we get com.docker.compose.{project,service} as Loki labels.
+      - docker: {}
+
+    relabel_configs:
+      # The container ID is part of the path; promote it.
+      - source_labels: ["__path__"]
+        regex:        '/var/lib/docker/containers/([^/]+)/.*-json\.log'
+        target_label: container_id
+
+  # ----------------------------------------------------------------------
+  # Caddy access logs — JSON formatted, separate file per vhost (mounted
+  # into the caddy container at /data/caddy/logs). Read those directly.
+  # ----------------------------------------------------------------------
+  - job_name: caddy_access
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: caddy_access
+          __path__: /var/lib/docker/volumes/ulp-beta_caddy_data/_data/caddy/logs/*.access.log
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            ts:    ts
+            request_uri: 'request.uri'
+            status:      status
+            duration:    duration
+      - timestamp:
+          source: ts
+          format: Unix
+      - labels:
+          status:

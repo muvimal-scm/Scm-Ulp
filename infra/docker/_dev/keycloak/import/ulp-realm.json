@@ -1,0 +1,248 @@
+{
+  "realm": "ulp",
+  "displayName": "Unified Logistics Platform (Dev)",
+  "enabled": true,
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "rememberMe": true,
+  "bruteForceProtected": true,
+  "failureFactor": 5,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "accessTokenLifespan": 900,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "passwordPolicy": "length(12) and upperCase(1) and digits(1) and specialChars(1) and notUsername",
+  "attributes": {
+    "frontendUrl": "http://localhost:8080"
+  },
+  "roles": {
+    "realm": [
+      { "name": "ulp-admin",   "description": "Tenant administrator" },
+      { "name": "ulp-user",    "description": "Standard tenant user" },
+      { "name": "ulp-viewer",  "description": "Read-only access" },
+      { "name": "platform-admin", "description": "Cross-tenant platform staff" }
+    ]
+  },
+  "clientScopes": [
+    {
+      "name": "ulp-claims",
+      "protocol": "openid-connect",
+      "attributes": { "include.in.token.scope": "true" },
+      "protocolMappers": [
+        {
+          "name": "tenant_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "tenant_id",
+            "claim.name": "tenant_id",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "country_code",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "country_code",
+            "claim.name": "country_code",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "region",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "region",
+            "claim.name": "region",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "permissions",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "permissions",
+            "claim.name": "permissions",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "defaultDefaultClientScopes": [
+    "role_list", "profile", "email", "web-origins", "ulp-claims"
+  ],
+  "clients": [
+    {
+      "clientId": "ulp-web",
+      "name": "ULP Web (Angular SPA)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:4200/*",
+        "http://localhost:4200/assets/silent-check-sso.html"
+      ],
+      "webOrigins": ["http://localhost:4200", "+"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:4200/*"
+      },
+      "defaultClientScopes": [
+        "web-origins", "profile", "email", "ulp-claims"
+      ]
+    },
+    {
+      "clientId": "ulp-api",
+      "name": "ULP API (.NET resource server)",
+      "enabled": true,
+      "bearerOnly": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "ulp-worker",
+      "name": "ULP Worker (service account)",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "dev-worker-secret-change-me",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "defaultClientScopes": [
+        "web-origins", "profile", "email", "ulp-claims"
+      ]
+    },
+    {
+      "clientId": "ulp-mobile",
+      "name": "ULP Mobile (KMP apps)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["ulp://callback"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "defaultClientScopes": [
+        "web-origins", "profile", "email", "ulp-claims"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "in-admin@ulp.local",
+      "email": "in-admin@ulp.local",
+      "firstName": "India",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "DevPass!2345", "temporary": false }
+      ],
+      "attributes": {
+        "tenant_id": ["1001"],
+        "country_code": ["IN"],
+        "region": ["in-central"],
+        "permissions": ["invoice.write", "invoice.read", "shipment.write", "shipment.read", "tenant.admin"]
+      },
+      "realmRoles": ["ulp-admin", "ulp-user"]
+    },
+    {
+      "username": "in-user@ulp.local",
+      "email": "in-user@ulp.local",
+      "firstName": "India",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "DevPass!2345", "temporary": false }
+      ],
+      "attributes": {
+        "tenant_id": ["1001"],
+        "country_code": ["IN"],
+        "region": ["in-central"],
+        "permissions": ["invoice.read", "shipment.read"]
+      },
+      "realmRoles": ["ulp-user"]
+    },
+    {
+      "username": "us-admin@ulp.local",
+      "email": "us-admin@ulp.local",
+      "firstName": "US",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "DevPass!2345", "temporary": false }
+      ],
+      "attributes": {
+        "tenant_id": ["2001"],
+        "country_code": ["US"],
+        "region": ["us-east"],
+        "permissions": ["invoice.write", "invoice.read", "shipment.write", "shipment.read", "tenant.admin"]
+      },
+      "realmRoles": ["ulp-admin", "ulp-user"]
+    },
+    {
+      "username": "us-user@ulp.local",
+      "email": "us-user@ulp.local",
+      "firstName": "US",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "DevPass!2345", "temporary": false }
+      ],
+      "attributes": {
+        "tenant_id": ["2001"],
+        "country_code": ["US"],
+        "region": ["us-east"],
+        "permissions": ["invoice.read", "shipment.read"]
+      },
+      "realmRoles": ["ulp-user"]
+    },
+    {
+      "username": "platform-admin@ulp.local",
+      "email": "platform-admin@ulp.local",
+      "firstName": "Platform",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "DevPass!2345", "temporary": false }
+      ],
+      "attributes": {
+        "tenant_id": ["0"],
+        "country_code": ["IN"],
+        "region": ["in-central"],
+        "permissions": ["platform.admin"]
+      },
+      "realmRoles": ["platform-admin"]
+    }
+  ]
+}

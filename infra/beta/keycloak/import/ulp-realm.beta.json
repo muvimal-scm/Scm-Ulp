@@ -1,0 +1,251 @@
+{
+  "_comment": "CP20 — beta realm. Differences from dev realm: SMTP, MFA enforced, no seeded passwords, real domain redirect URIs, FRONTEND_URL via env, ${PLACEHOLDERS} resolved by Keycloak from env vars at import time.",
+  "realm": "ulp",
+  "displayName": "Unified Logistics Platform (Beta)",
+  "displayNameHtml": "<strong>SCMCube</strong> — NextGen Solutions",
+  "enabled": true,
+
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "verifyEmail": true,
+  "rememberMe": true,
+  "editUsernameAllowed": false,
+
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "failureFactor": 5,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "maxDeltaTimeSeconds": 43200,
+  "quickLoginCheckMilliSeconds": 1000,
+
+  "accessTokenLifespan": 900,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "offlineSessionIdleTimeout": 2592000,
+
+  "passwordPolicy": "length(12) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1) and notUsername and passwordHistory(5) and forceExpiredPasswordChange(180)",
+
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyLookAheadWindow": 1,
+  "otpPolicyPeriod": 30,
+  "otpSupportedApplications": ["FreeOTP", "Google Authenticator"],
+
+  "smtpServer": {
+    "host":             "${env.SMTP_HOST}",
+    "port":             "${env.SMTP_PORT}",
+    "from":             "${env.SMTP_FROM}",
+    "fromDisplayName":  "ULP Beta",
+    "replyTo":          "${env.SMTP_FROM}",
+    "auth":             "true",
+    "starttls":         "true",
+    "ssl":              "false",
+    "user":             "${env.SMTP_USER}",
+    "password":         "${env.SMTP_PASSWORD}"
+  },
+
+  "attributes": {
+    "frontendUrl": "https://kc.${env.ULP_DOMAIN}"
+  },
+
+  "browserFlow": "browser",
+  "directGrantFlow": "direct grant",
+  "registrationFlow": "registration",
+  "resetCredentialsFlow": "reset credentials",
+  "clientAuthenticationFlow": "clients",
+  "dockerAuthenticationFlow": "docker auth",
+
+  "requiredActions": [
+    {
+      "alias": "CONFIGURE_TOTP",
+      "name": "Configure OTP",
+      "providerId": "CONFIGURE_TOTP",
+      "enabled": true,
+      "defaultAction": true,
+      "priority": 10
+    },
+    {
+      "alias": "VERIFY_EMAIL",
+      "name": "Verify Email",
+      "providerId": "VERIFY_EMAIL",
+      "enabled": true,
+      "defaultAction": true,
+      "priority": 20
+    },
+    {
+      "alias": "UPDATE_PASSWORD",
+      "name": "Update Password",
+      "providerId": "UPDATE_PASSWORD",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 30
+    }
+  ],
+
+  "roles": {
+    "realm": [
+      { "name": "ulp-admin",      "description": "Tenant administrator" },
+      { "name": "ulp-user",       "description": "Standard tenant user" },
+      { "name": "ulp-viewer",     "description": "Read-only access" },
+      { "name": "platform-admin", "description": "Cross-tenant platform staff" }
+    ]
+  },
+
+  "clientScopes": [
+    {
+      "name": "ulp-claims",
+      "protocol": "openid-connect",
+      "attributes": { "include.in.token.scope": "true" },
+      "protocolMappers": [
+        {
+          "name": "tenant_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "tenant_id",
+            "claim.name": "tenant_id",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "country_code",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "country_code",
+            "claim.name": "country_code",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "region",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "region",
+            "claim.name": "region",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "permissions",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "permissions",
+            "claim.name": "permissions",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "defaultDefaultClientScopes": [
+    "role_list", "profile", "email", "web-origins", "ulp-claims"
+  ],
+
+  "clients": [
+    {
+      "clientId": "ulp-web",
+      "name": "ULP Web (Angular SPA)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "https://app.${env.ULP_DOMAIN}/*",
+        "https://app.${env.ULP_DOMAIN}/assets/silent-check-sso.html"
+      ],
+      "webOrigins": ["https://app.${env.ULP_DOMAIN}"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://app.${env.ULP_DOMAIN}/*",
+        "backchannel.logout.session.required": "true",
+        "use.refresh.tokens": "true"
+      },
+      "defaultClientScopes": [
+        "web-origins", "profile", "email", "ulp-claims"
+      ]
+    },
+    {
+      "clientId": "ulp-api",
+      "name": "ULP API (.NET resource server)",
+      "enabled": true,
+      "bearerOnly": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "ulp-worker",
+      "name": "ULP Worker (service account)",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "${env.WORKER_CLIENT_SECRET}",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "defaultClientScopes": [
+        "web-origins", "profile", "email", "ulp-claims"
+      ]
+    },
+    {
+      "clientId": "ulp-mobile",
+      "name": "ULP Mobile (KMP apps)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["ulp://callback"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "defaultClientScopes": [
+        "web-origins", "profile", "email", "ulp-claims"
+      ]
+    }
+  ],
+
+  "users": [
+    {
+      "_comment": "Beta admin bootstrap user. Password is intentionally TEMPORARY — Keycloak forces a reset on first login. Email is set from env so the password-reset email actually goes to a mailbox you control.",
+      "username": "${env.BETA_ADMIN_EMAIL}",
+      "email":    "${env.BETA_ADMIN_EMAIL}",
+      "firstName": "Beta",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": false,
+      "requiredActions": ["UPDATE_PASSWORD", "CONFIGURE_TOTP", "VERIFY_EMAIL"],
+      "credentials": [
+        { "type": "password", "value": "${env.BETA_ADMIN_TEMP_PASSWORD}", "temporary": true }
+      ],
+      "attributes": {
+        "tenant_id":    ["1001"],
+        "country_code": ["IN"],
+        "region":       ["in-central"],
+        "permissions":  ["platform.admin", "tenant.admin"]
+      },
+      "realmRoles": ["platform-admin", "ulp-admin"]
+    }
+  ]
+}

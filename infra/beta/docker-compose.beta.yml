@@ -1,0 +1,334 @@
+name: ulp-beta
+
+# =============================================================================
+# Beta UAT compose — production-like single-host deployment.
+#
+# Differences from infra/docker/docker-compose.yml (local dev):
+#  - Caddy reverse proxy fronts ALL HTTP traffic on 80/443 with auto-HTTPS
+#  - Internal services (mysql/redis/rabbit/minio/keycloak-db/qdrant) NEVER
+#    bind to host ports — only Caddy is exposed to the public internet
+#  - Mailhog removed; production wires SMTP into the API via env (CP20)
+#  - All passwords MUST come from .env.beta — no hardcoded defaults
+#  - mysql-backup sidecar runs nightly mysqldump → ./backups/<UTC date>.sql.gz
+#  - Healthcheck-gated startup with restart=always + tighter resource limits
+#
+# Required files (created by CP18 alongside this compose):
+#   ./.env.beta                 — secrets + tenant domain
+#   ./caddy/Caddyfile           — vhosts: app.<domain>, kc.<domain>, api.<domain>, minio.<domain>
+#   ./backups/                  — mysql backup target (chmod 700, host-mounted)
+#
+# Usage:
+#   cd infra/beta
+#   cp .env.beta.example .env.beta && edit .env.beta
+#   docker compose -f docker-compose.beta.yml --env-file .env.beta up -d
+# =============================================================================
+
+x-common-restart: &common-restart
+  restart: always
+
+services:
+  # ---------------------------------------------------------------------------
+  # Caddy — reverse proxy + auto-HTTPS via Let's Encrypt (CP19 sets up DNS)
+  # ---------------------------------------------------------------------------
+  caddy:
+    image: caddy:2.8-alpine
+    container_name: ulp-beta-caddy
+    <<: *common-restart
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data           # cert storage — DO NOT lose this volume
+      - caddy_config:/config
+    environment:
+      ULP_DOMAIN: ${ULP_DOMAIN}    # e.g. ulp-beta.example.com
+      ACME_EMAIL: ${ACME_EMAIL}    # used by Let's Encrypt
+    # Caddy depends on the upstreams existing, NOT being healthy: the API's
+    # health check needs Keycloak's OIDC metadata at startup, which it fetches
+    # via Caddy at https://kc.<ULP_DOMAIN>. If Caddy waits for API to be
+    # healthy, that's a circular dependency — Caddy never starts → KC isn't
+    # reachable → API never goes healthy. With service_started Caddy starts
+    # immediately, returns 502 on the API vhost for ~60s, then everything
+    # converges. (Keycloak doesn't have this problem; KC has no upstream calls
+    # at boot.)
+    depends_on:
+      api:
+        condition: service_started
+      web:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # ULP API (.NET 8) — built from src/backend/host/Ulp.Api
+  # ---------------------------------------------------------------------------
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/beta/Dockerfile.api
+    container_name: ulp-beta-api
+    <<: *common-restart
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Staging
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__primary-in-central: "Server=mysql;Port=3306;Database=${MYSQL_DATABASE};Uid=root;Pwd=${MYSQL_ROOT_PASSWORD};AllowUserVariables=true;"
+      Auth__Authority: "https://kc.${ULP_DOMAIN}/realms/ulp"
+      Auth__Audience: "ulp-api"
+      Storage__MinIO__Endpoint: "http://minio:9000"
+      Storage__MinIO__AccessKey: ${MINIO_ROOT_USER}
+      Storage__MinIO__SecretKey: ${MINIO_ROOT_PASSWORD}
+      Storage__MinIO__Bucket: ulp-docs
+      Notifications__Email__Provider: smtp
+      Notifications__Email__SmtpHost: ${SMTP_HOST}
+      Notifications__Email__SmtpPort: ${SMTP_PORT}
+      Notifications__Email__SmtpUser: ${SMTP_USER}
+      Notifications__Email__SmtpPassword: ${SMTP_PASSWORD}
+      Notifications__Email__FromAddress: ${SMTP_FROM}
+      # Sentry (CP21) — only ships errors when DSN is set; empty in dev.
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      Sentry__Dsn: ${SENTRY_DSN:-}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  # ---------------------------------------------------------------------------
+  # ULP web (Angular 17 SPA) — static build served by nginx
+  # ---------------------------------------------------------------------------
+  web:
+    build:
+      context: ../..
+      dockerfile: infra/beta/Dockerfile.web
+      args:
+        # Frontend bakes the API origin into the bundle at build time
+        ULP_API_BASE: https://api.${ULP_DOMAIN}
+        ULP_AUTH_AUTHORITY: https://kc.${ULP_DOMAIN}/realms/ulp
+    container_name: ulp-beta-web
+    <<: *common-restart
+    expose:
+      - "80"
+
+  # ---------------------------------------------------------------------------
+  # MySQL 8 — primary tenant DB (NO host port; only API + backup talk to it)
+  # ---------------------------------------------------------------------------
+  mysql:
+    image: mysql:8.0
+    container_name: ulp-beta-mysql
+    <<: *common-restart
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      TZ: UTC
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --sql-mode=STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO
+      - --default-time-zone=+00:00
+      - --max-connections=200
+      - --innodb-buffer-pool-size=1G       # beta box has more RAM than dev
+      - --slow-query-log=ON
+      - --slow-query-log-file=/var/log/mysql/slow.log
+      - --long-query-time=1.0
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ---------------------------------------------------------------------------
+  # mysql-backup — nightly mysqldump → ./backups/ulp_dev-YYYYMMDDTHHMMZ.sql.gz
+  # Keeps last 14 dumps (rolling). Restore: gunzip < dump.sql.gz | mysql ...
+  # ---------------------------------------------------------------------------
+  mysql-backup:
+    image: mysql:8.0
+    container_name: ulp-beta-mysql-backup
+    <<: *common-restart
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      BACKUP_RETENTION_DAYS: "14"
+    volumes:
+      - ./backups:/backups
+      - ./scripts/mysql-backup.sh:/usr/local/bin/mysql-backup.sh:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        while true; do
+          /usr/local/bin/mysql-backup.sh;
+          sleep 86400;
+        done
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------------------
+  # Redis (cache + Hangfire). Persistence on (AOF) for beta.
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: ulp-beta-redis
+    <<: *common-restart
+    command:
+      - redis-server
+      - --maxmemory
+      - 1gb
+      - --maxmemory-policy
+      - allkeys-lru
+      - --appendonly
+      - "yes"
+      - --requirepass
+      - ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # RabbitMQ — message broker (M27 notifications, MassTransit consumers)
+  # ---------------------------------------------------------------------------
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: ulp-beta-rabbitmq
+    <<: *common-restart
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: ulp
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ---------------------------------------------------------------------------
+  # MinIO — S3-compatible object store. Caddy fronts /minio/console only.
+  # ---------------------------------------------------------------------------
+  minio:
+    image: minio/minio:latest
+    container_name: ulp-beta-minio
+    <<: *common-restart
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BROWSER_REDIRECT_URL: https://minio.${ULP_DOMAIN}
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ---------------------------------------------------------------------------
+  # Keycloak — identity provider, fronted at kc.<domain>. CP20 wires SMTP+MFA.
+  # ---------------------------------------------------------------------------
+  keycloak-db:
+    image: postgres:16-alpine
+    container_name: ulp-beta-keycloak-db
+    <<: *common-restart
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    volumes:
+      - keycloak_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: ulp-beta-keycloak
+    <<: *common-restart
+    # `start --import-realm` is idempotent: it imports realm JSON only on the
+    # first boot when the realm doesn't yet exist in keycloak-db. On every
+    # subsequent boot it skips the import. Realm-level config (SMTP, MFA, etc.)
+    # is therefore mutable from the admin console after CP20.
+    command:
+      - start
+      - --import-realm
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_HOSTNAME: kc.${ULP_DOMAIN}
+      KC_HOSTNAME_STRICT: "true"
+      KC_HOSTNAME_STRICT_HTTPS: "true"
+      KC_PROXY: edge                  # Caddy terminates TLS
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      # Env vars surfaced to the realm JSON via `${env.NAME}` placeholders.
+      # Any var referenced in keycloak/import/*.json must be listed here.
+      ULP_DOMAIN: ${ULP_DOMAIN}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM: ${SMTP_FROM}
+      BETA_ADMIN_EMAIL: ${BETA_ADMIN_EMAIL}
+      BETA_ADMIN_TEMP_PASSWORD: ${BETA_ADMIN_TEMP_PASSWORD}
+      WORKER_CLIENT_SECRET: ${WORKER_CLIENT_SECRET}
+    expose:
+      - "8080"
+    volumes:
+      - ./keycloak/import:/opt/keycloak/data/import:ro
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /health/ready HTTP/1.1\\nHost: localhost\\n\\n' >&3 && cat <&3 | grep -q '200 OK'"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+
+volumes:
+  caddy_data:        # Let's Encrypt certs — back up regularly
+  caddy_config:
+  mysql_data:
+  redis_data:
+  rabbitmq_data:
+  minio_data:
+  keycloak_db_data:
+
+networks:
+  default:
+    name: ulp-beta-network

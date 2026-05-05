@@ -1,0 +1,56 @@
+# =============================================================================
+# Multi-stage build for the ULP .NET 8 API (beta).
+#
+# Build context is the repo root (..\.. from this folder) so we can copy the
+# solution + Directory.Packages.props + every src/backend/ project.
+# =============================================================================
+ARG DOTNET_VERSION=8.0
+
+# ---- restore + build stage -------------------------------------------------
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
+WORKDIR /src
+
+# Copy the whole backend tree in one shot. We previously layered
+# csproj-only-then-source for restore caching, but that path used
+# `COPY --parents` which is BuildKit-only (Docker 24+ with BUILDKIT=1) and
+# hard to debug when it silently misbehaves. For beta — where image rebuilds
+# happen ≤ once a day — the simpler single-COPY is more reliable. Restore
+# will re-download from NuGet on every build; that's a 1–2 minute cost we
+# accept in exchange for a Dockerfile that works on every Docker version.
+COPY src/backend ./src/backend
+
+WORKDIR /src/src/backend
+RUN dotnet restore Ulp.sln \
+    && dotnet publish host/Ulp.Api/Ulp.Api.csproj \
+        -c Release \
+        -o /app/publish \
+        --no-restore \
+        /p:UseAppHost=false
+
+# ---- runtime stage ---------------------------------------------------------
+FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} AS runtime
+WORKDIR /app
+
+# Non-root user for the API process. dotnet/aspnet base provides `app` (UID 1654)
+# in 8.x; we explicitly set it for clarity.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends wget ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /app/publish .
+
+# Bring the SQL migration files into the image so the factory-reset endpoint
+# (CP17) can locate db/dev-fixtures/02-import-flow-demo.sql at runtime.
+COPY db /app/db
+
+ENV ASPNETCORE_URLS=http://+:8080
+ENV DOTNET_RUNNING_IN_CONTAINER=true
+ENV DOTNET_USE_POLLING_FILE_WATCHER=false
+
+EXPOSE 8080
+USER app
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
+  CMD wget -q --spider http://localhost:8080/health || exit 1
+
+ENTRYPOINT ["dotnet", "Ulp.Api.dll"]

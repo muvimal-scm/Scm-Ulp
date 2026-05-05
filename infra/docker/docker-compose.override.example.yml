@@ -1,0 +1,21 @@
+# Per-developer overrides. Copy to docker-compose.override.yml (gitignored)
+# only if you have port conflicts or want different sizing.
+#
+# Compose merges this on top of docker-compose.yml automatically.
+
+services:
+  # Example: MySQL 3306 already in use on host
+  # mysql:
+  #   ports:
+  #     - "3307:3306"
+
+  # Example: smaller buffer pool on a constrained dev machine
+  # mysql:
+  #   command:
+  #     - --innodb-buffer-pool-size=128M
+  #     - --max-connections=50
+
+  # Example: pin Keycloak to a different port
+  # keycloak:
+  #   ports:
+  #     - "18080:8080"

@@ -1,0 +1,4 @@
+.env.beta
+backups/
+caddy/logs/
+keycloak/import-real/

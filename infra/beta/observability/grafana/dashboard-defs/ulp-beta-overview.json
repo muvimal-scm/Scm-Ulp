@@ -1,0 +1,118 @@
+{
+  "_comment": "ULP Beta UAT overview — API errors, slow queries, KC login failures, Caddy 4xx/5xx. Built against Loki labels emitted by promtail-config.yml.",
+  "uid": "ulp-beta-overview",
+  "title": "ULP Beta — Overview",
+  "tags": ["ulp", "beta"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "API request rate (req/min)",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "datasource": { "type": "loki", "uid": "loki-beta" },
+      "targets": [{
+        "expr": "sum(count_over_time({compose_service=\"api\"} |= \"HTTP\" [1m]))",
+        "refId": "A"
+      }]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "API 5xx in last 15m",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "datasource": { "type": "loki", "uid": "loki-beta" },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 10 }
+            ]
+          }
+        }
+      },
+      "targets": [{
+        "expr": "sum(count_over_time({compose_service=\"api\"} |~ \" 5[0-9]{2} \" [15m]))",
+        "refId": "A"
+      }]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Failed logins (KC) in 1h",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+      "datasource": { "type": "loki", "uid": "loki-beta" },
+      "targets": [{
+        "expr": "sum(count_over_time({compose_service=\"keycloak\"} |~ \"LOGIN_ERROR\" [1h]))",
+        "refId": "A"
+      }]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Brute-force locks in 1h",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "datasource": { "type": "loki", "uid": "loki-beta" },
+      "targets": [{
+        "expr": "sum(count_over_time({compose_service=\"keycloak\"} |~ \"USER_TEMPORARILY_LOCKED\" [1h]))",
+        "refId": "A"
+      }]
+    },
+    {
+      "id": 5,
+      "type": "logs",
+      "title": "API errors (last 1h)",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 9 },
+      "datasource": { "type": "loki", "uid": "loki-beta" },
+      "options": { "showLabels": false, "showTime": true, "wrapLogMessage": true, "sortOrder": "Descending" },
+      "targets": [{
+        "expr": "{compose_service=\"api\"} |~ \"(?i)(error|fail|exception)\" != \"warn\"",
+        "refId": "A"
+      }]
+    },
+    {
+      "id": 6,
+      "type": "logs",
+      "title": "MySQL slow queries (>1s)",
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 9 },
+      "datasource": { "type": "loki", "uid": "loki-beta" },
+      "options": { "showLabels": false, "showTime": true, "wrapLogMessage": true, "sortOrder": "Descending" },
+      "targets": [{
+        "expr": "{compose_service=\"mysql\"} |~ \"Query_time:\"",
+        "refId": "A"
+      }]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Caddy responses by status class",
+      "gridPos": { "x": 0, "y": 13, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "loki-beta" },
+      "targets": [
+        { "expr": "sum by (status) (count_over_time({job=\"caddy_access\"} | json | status =~ \"2..\" [1m]))", "legendFormat": "2xx", "refId": "A" },
+        { "expr": "sum by (status) (count_over_time({job=\"caddy_access\"} | json | status =~ \"3..\" [1m]))", "legendFormat": "3xx", "refId": "B" },
+        { "expr": "sum by (status) (count_over_time({job=\"caddy_access\"} | json | status =~ \"4..\" [1m]))", "legendFormat": "4xx", "refId": "C" },
+        { "expr": "sum by (status) (count_over_time({job=\"caddy_access\"} | json | status =~ \"5..\" [1m]))", "legendFormat": "5xx", "refId": "D" }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "logs",
+      "title": "Caddy 4xx + 5xx",
+      "gridPos": { "x": 12, "y": 13, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "loki-beta" },
+      "options": { "showLabels": false, "showTime": true, "wrapLogMessage": true, "sortOrder": "Descending" },
+      "targets": [{
+        "expr": "{job=\"caddy_access\"} | json | status =~ \"[45]..\"",
+        "refId": "A"
+      }]
+    }
+  ]
+}

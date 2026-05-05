@@ -1,0 +1,138 @@
+# ============================================================================
+# Caddy 2 reverse proxy — ULP beta UAT.
+#
+# Hostnames (CP19 sets these in DNS, all CNAME → beta server's public IP):
+#   app.{$ULP_DOMAIN}     SPA (Angular)
+#   api.{$ULP_DOMAIN}     .NET API
+#   kc.{$ULP_DOMAIN}      Keycloak admin + auth
+#   minio.{$ULP_DOMAIN}   MinIO console (locked to admin email via Keycloak)
+#
+# All TLS via Let's Encrypt with HTTP-01 challenge. Caddy auto-renews.
+# ACME email comes from $ACME_EMAIL (set in .env.beta).
+# ============================================================================
+{
+	email {$ACME_EMAIL}
+	# No explicit acme_ca — Caddy's default tries Let's Encrypt then falls
+	# back to ZeroSSL automatically if LE rate-limits. Pinning to one CA
+	# would lose that fallback.
+
+	# Modern TLS only; HTTP/3 enabled.
+	servers {
+		protocols h1 h2 h3
+	}
+}
+
+# ----------------------------------------------------------------------------
+# Apex → redirect to app.<domain> (avoids "white screen on root")
+# ----------------------------------------------------------------------------
+{$ULP_DOMAIN} {
+	redir https://app.{$ULP_DOMAIN}{uri} permanent
+	encode gzip zstd
+}
+
+# ----------------------------------------------------------------------------
+# SPA — Angular static bundle served by nginx in the `web` container
+# ----------------------------------------------------------------------------
+app.{$ULP_DOMAIN} {
+	encode gzip zstd
+	reverse_proxy web:80
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "geolocation=(), camera=(), microphone=()"
+		# CSP — relaxed during beta; CP22 will tighten
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://api.{$ULP_DOMAIN} https://kc.{$ULP_DOMAIN}; frame-ancestors 'none'"
+	}
+
+	log {
+		output file /data/caddy/logs/web.access.log {
+			roll_size 50mb
+			roll_keep 14
+		}
+	}
+}
+
+# ----------------------------------------------------------------------------
+# API — .NET host (8080)
+# ----------------------------------------------------------------------------
+api.{$ULP_DOMAIN} {
+	encode gzip zstd
+	reverse_proxy api:8080 {
+		header_up X-Forwarded-Proto https
+		header_up X-Real-IP {remote_host}
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		# CORS handled by API itself (CORS allowlist in Program.cs)
+	}
+
+	# Per-IP rate limit — CP22 plugs in caddy-ratelimit module
+	# rate_limit {
+	#     zone api_global {
+	#         key {remote_host}
+	#         events 600
+	#         window 1m
+	#     }
+	# }
+
+	log {
+		output file /data/caddy/logs/api.access.log {
+			roll_size 100mb
+			roll_keep 14
+		}
+	}
+}
+
+# ----------------------------------------------------------------------------
+# Keycloak — proxy with edge TLS termination (KC_PROXY=edge in compose)
+# ----------------------------------------------------------------------------
+kc.{$ULP_DOMAIN} {
+	encode gzip zstd
+	reverse_proxy keycloak:8080 {
+		header_up X-Forwarded-Proto https
+		header_up X-Forwarded-Port 443
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+	}
+	log {
+		output file /data/caddy/logs/kc.access.log {
+			roll_size 50mb
+			roll_keep 14
+		}
+	}
+}
+
+# ----------------------------------------------------------------------------
+# MinIO console (admin only). Browser ops go to console:9001; API stays internal.
+# ----------------------------------------------------------------------------
+minio.{$ULP_DOMAIN} {
+	encode gzip zstd
+	reverse_proxy minio:9001 {
+		header_up Host {host}
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Frame-Options "SAMEORIGIN"
+	}
+}
+
+# ----------------------------------------------------------------------------
+# Grafana (CP21). Optional — only resolved when the observability compose is
+# running. If only the main compose is up, this block returns 502; that's fine.
+# ----------------------------------------------------------------------------
+grafana.{$ULP_DOMAIN} {
+	encode gzip zstd
+	reverse_proxy grafana:3000
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+	}
+}

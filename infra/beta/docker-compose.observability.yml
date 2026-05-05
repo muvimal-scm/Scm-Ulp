@@ -1,0 +1,104 @@
+name: ulp-beta-observability
+
+# =============================================================================
+# CP21 — Observability stack for the beta deployment.
+#
+# Layered on top of docker-compose.beta.yml. Bring up together with:
+#   docker compose -f docker-compose.beta.yml \
+#                  -f docker-compose.observability.yml \
+#                  --env-file .env.beta up -d
+#
+# Why a separate file (instead of merging into the main compose):
+#   - Keeps the core stack runnable on hosts where Grafana isn't wanted
+#   - Lets us tear down + restart observability without bouncing the API
+#   - Adds optional disk pressure (Loki retains logs) only when asked for
+#
+# Stack:
+#   - loki     11.2.0  — log aggregation (ingest + query)
+#   - promtail 11.2.0  — host-level log shipper (scrapes /var/lib/docker/containers)
+#   - grafana  10.4    — UI; pre-provisioned with the Loki datasource + dashboards
+#
+# Grafana is fronted by Caddy at https://grafana.<ULP_DOMAIN>. CP19's DNS
+# preflight needs a 6th hostname (grafana.<domain>); add it before bring-up.
+# =============================================================================
+
+services:
+  loki:
+    image: grafana/loki:2.9.8
+    container_name: ulp-beta-loki
+    restart: always
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./observability/loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    expose:
+      - "3100"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3100/ready"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - default
+      - ulp-beta-network
+
+  promtail:
+    image: grafana/promtail:2.9.8
+    container_name: ulp-beta-promtail
+    restart: always
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./observability/promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/log:/var/log:ro
+    depends_on:
+      loki:
+        condition: service_healthy
+    networks:
+      - default
+
+  grafana:
+    image: grafana/grafana:10.4.4
+    container_name: ulp-beta-grafana
+    restart: always
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_SERVER_ROOT_URL: https://grafana.${ULP_DOMAIN}
+      GF_SERVER_DOMAIN: grafana.${ULP_DOMAIN}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_INSTALL_PLUGINS: ""
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./observability/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./observability/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./observability/grafana/dashboard-defs:/var/lib/grafana/dashboards:ro
+    depends_on:
+      loki:
+        condition: service_healthy
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost:3000/api/health | grep -q '\"database\":\\s*\"ok\"'"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - default
+      - ulp-beta-network
+
+volumes:
+  loki_data:
+  grafana_data:
+
+networks:
+  # Reuse the main compose's network so promtail can scrape API/web/keycloak
+  # logs without an extra bridge. Compose marks it external so it doesn't try
+  # to (re)create it.
+  ulp-beta-network:
+    external: true
+  default:
+    name: ulp-beta-observability-network
