@@ -1,0 +1,1412 @@
+﻿
+
+
+
+ULP M17: Accounts LLD
+
+Module Low-Level Design — Multi-Region Architecture
+
+Version 2.0
+
+May 2026 (supersedes v1.0)
+
+Confidential — for ULP Engineering and Finance Teams
+
+
+
+
+Change Log
+Version
+Date
+Author
+Changes
+
+1.0
+
+2026-04-26
+
+Shankar
+
+Initial release. India-only Accounts: GL, AR, AP, GST, IRN, TDS, Indian period close.
+
+2.0
+
+2026-05-XX
+
+Shankar
+
+MAJOR refactor (50%): Split into M17-Core (universal GL/AR/AP/period-close primitives, multi-currency) + M17-IN-Plugin (GST, IRN, TDS, GSTR returns) + M17-US-Plugin (separate doc). Money type adopted; FX revaluation native. All v1.0 Indian functionality preserved as M17-IN-Plugin.
+
+
+
+
+Indian Client Continuity Statement
+
+
+
+CRITICAL: Every accounting feature documented in v1.0 remains fully present in v2.0. The refactor is structural — Indian GST, IRN, TDS, and statutory return capabilities are repackaged as M17-IN-Plugin but functionally identical to v1.0.
+
+
+v1.0 Feature
+v2.0 Location
+Status
+
+Chart of Accounts (Indian Ind AS aligned)
+
+M17-IN-Plugin (Section 12)
+
+Unchanged
+
+GST computation (CGST/SGST/IGST)
+
+M17-IN-Plugin (Section 12)
+
+Unchanged
+
+IRN generation via IRP
+
+M17-IN-Plugin (Section 12)
+
+Unchanged
+
+e-Invoice JSON schema
+
+M17-IN-Plugin (Section 12)
+
+Unchanged
+
+TDS computation per section
+
+M17-IN-Plugin (Section 12)
+
+Unchanged
+
+TCS handling
+
+M17-IN-Plugin (Section 12)
+
+Unchanged
+
+GSTR-1 / GSTR-3B preparation
+
+M17-IN-Plugin (Section 12)
+
+Unchanged
+
+Form 16A / TDS certificates
+
+M17-IN-Plugin (Section 12)
+
+Unchanged
+
+Indian fiscal year (Apr-Mar)
+
+M17-IN-Plugin / configurable
+
+Unchanged
+
+Indian audit trail (Section 138 Companies Act)
+
+M17-Core (universal mandate)
+
+Unchanged + extended
+
+Period close (Indian conventions)
+
+M17-Core + M17-IN-Plugin
+
+Unchanged
+
+NACH/IMPS/RTGS/NEFT handling
+
+M17-IN-Plugin (Section 12)
+
+Unchanged
+
+
+
+
+1. Introduction
+
+
+1.1 Module purpose
+
+M17 (Accounts) provides accounting infrastructure for ULP tenants. It records financial transactions, manages GL/AR/AP, computes taxes, supports period close, and produces statutory and management reports. As of v2.0, the module is structured as Core + Plugins to support multiple tax regimes.
+
+
+
+
+1.2 Architectural model
+Component
+Scope
+Country Awareness
+
+M17-Core
+
+Universal: GL, journals, AR, AP, period close primitives, multi-currency, FX, audit trail, ageing, dunning
+
+NONE
+
+M17-IN Plugin
+
+India: GST, IRN, e-Invoice, TDS, TCS, GSTR returns, NACH integration, Form 16A
+
+India only
+
+M17-US Plugin
+
+United States: Sales tax (multi-state), 1099, W-9, ACH, US GAAP period close
+
+US only (separate LLD)
+
+
+
+
+1.3 Related documents
+
+
+M17-US plugin: ULP_LLD_M17_US_Accounts_GAAP_v1.0.docx
+
+
+Internationalization Guide: ULP_Internationalization_Guide_v1.0.docx
+
+
+M16 Settlement: ULP_LLD_M16_v1.0_*.docx
+
+
+M19 TDS/TCS (India-specific): cross-references M17-IN
+
+
+M18 GST Returns (India-specific): cross-references M17-IN
+
+
+
+
+2. M17-Core: Universal Capabilities
+
+
+2.1 Universal accounting primitives
+
+
+Chart of Accounts (configurable per tenant; default trees per country)
+
+
+Double-entry journal system
+
+
+General Ledger with running balance
+
+
+Accounts Receivable: invoices, receipts, ageing, dunning
+
+
+Accounts Payable: bills, payments, ageing, vendor management
+
+
+Multi-currency support: Money type, FX rates, multi-currency journals
+
+
+Period close primitives: open/close/reopen with approvals
+
+
+Period lock enforcement: immutable closed periods
+
+
+Audit trail: who/what/when/why on every change
+
+
+Bank account management (universal)
+
+
+Reconciliation engine (universal logic; country-specific bank formats via plugin)
+
+
+Trial Balance, Income Statement, Balance Sheet (basic universal templates)
+
+
+
+
+2.2 Plugin extensions
+Concern
+M17-Core provides
+Plugin adds
+
+Tax computation
+
+ITaxProvider interface
+
+Country-specific rates and rules
+
+Tax filing prep
+
+Generic data extraction
+
+Country-specific return formats (GSTR vs sales tax)
+
+Vendor onboarding
+
+Universal vendor master
+
+W-9 / W-8 (US), PAN/GSTIN (India)
+
+Bank reconciliation formats
+
+Universal record matching
+
+BAI2 (US), MT940 (intl), bank-specific (India)
+
+Statutory reports
+
+Trial Balance, P&L, BS
+
+GSTR (India), 1099 (US), state filings (US)
+
+Period close
+
+Open/close/lock primitives
+
+Country-specific close checklists
+
+Withholding
+
+Generic withholding amount on payments
+
+TDS sections (India), backup withholding (US)
+
+
+
+
+3. Core Domain Model
+
+
+3.1 Chart of Accounts
+
+
+
+    CREATE TABLE m17_account (
+
+      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+      tenant_id INT NOT NULL,
+
+      country_code CHAR(2) NOT NULL,             -- NEW v2.0; "IN" for existing
+
+      account_code VARCHAR(20) NOT NULL,
+
+      account_name VARCHAR(100) NOT NULL,
+
+      account_class ENUM('ASSET','LIABILITY','EQUITY','REVENUE','EXPENSE') NOT NULL,
+
+      parent_account_id BIGINT,                   -- hierarchical
+
+      is_control_account TINYINT(1) DEFAULT 0,
+
+      is_postable TINYINT(1) DEFAULT 1,           -- summary accounts not postable
+
+      default_currency CHAR(3) NOT NULL,          -- functional currency typically
+
+      is_active TINYINT(1) DEFAULT 1,
+
+      created_at_utc DATETIME(3) NOT NULL,
+
+      UNIQUE KEY (tenant_id, account_code)
+
+    );
+
+
+
+
+3.2 Journal entries (multi-currency)
+
+
+
+    CREATE TABLE m17_journal (
+
+      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+      tenant_id INT NOT NULL,
+
+      journal_number VARCHAR(30) NOT NULL,        -- JR-2026-001234
+
+      journal_type ENUM('GENERAL','AR_INVOICE','AP_BILL','PAYMENT','RECEIPT',
+
+                        'PERIOD_CLOSE','FX_REVAL','OPENING_BALANCE','ADJUSTMENT') NOT NULL,
+
+      posting_date DATE NOT NULL,                 -- in tenant local
+
+      period_id BIGINT NOT NULL,
+
+      description VARCHAR(255),
+
+      source_module VARCHAR(20),                  -- "M4", "M14", "manual"
+
+      source_record_id BIGINT,
+
+      is_posted TINYINT(1) DEFAULT 0,
+
+      is_reversed TINYINT(1) DEFAULT 0,
+
+      reversal_journal_id BIGINT,
+
+      created_at_utc DATETIME(3) NOT NULL,
+
+      created_by BIGINT NOT NULL,
+
+      posted_at_utc DATETIME(3),
+
+      posted_by BIGINT,
+
+      INDEX idx_period (period_id),
+
+      INDEX idx_source (source_module, source_record_id)
+
+    );
+
+
+
+    CREATE TABLE m17_journal_line (
+
+      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+      tenant_id INT NOT NULL,
+
+      journal_id BIGINT NOT NULL,
+
+      line_number INT NOT NULL,
+
+      account_id BIGINT NOT NULL,
+
+      -- Multi-currency
+
+      amount_orig DECIMAL(18,4) NOT NULL,
+
+      currency_orig CHAR(3) NOT NULL,
+
+      amount_func DECIMAL(18,4) NOT NULL,
+
+      currency_func CHAR(3) NOT NULL,
+
+      fx_rate DECIMAL(18,8) NOT NULL,
+
+      fx_rate_date DATE NOT NULL,
+
+      -- Direction
+
+      debit_credit ENUM('DR','CR') NOT NULL,
+
+      -- Optional cost dimensions
+
+      cost_center_id BIGINT,
+
+      project_id BIGINT,
+
+      party_id BIGINT,                            -- customer/vendor
+
+      -- Reference
+
+      reference VARCHAR(100),
+
+      description VARCHAR(255),
+
+      INDEX idx_journal (journal_id),
+
+      INDEX idx_account (account_id, journal_id),
+
+      INDEX idx_party (party_id, account_id)
+
+    );
+
+
+
+
+3.3 Period management
+
+
+
+    CREATE TABLE m17_period (
+
+      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+      tenant_id INT NOT NULL,
+
+      fiscal_year INT NOT NULL,                   -- e.g., 2026
+
+      period_number INT NOT NULL,                 -- 1-12
+
+      period_name VARCHAR(20) NOT NULL,           -- "Apr-2026" or "Jan-2026"
+
+      start_date DATE NOT NULL,                   -- in tenant local
+
+      end_date DATE NOT NULL,
+
+      status ENUM('Future','Open','SoftClose','Closed') NOT NULL DEFAULT 'Future',
+
+      closed_at_utc DATETIME(3),
+
+      closed_by BIGINT,
+
+      reopened_count INT DEFAULT 0,
+
+      UNIQUE KEY (tenant_id, fiscal_year, period_number)
+
+    );
+
+
+
+
+4. Multi-Currency
+
+
+4.1 Money type
+
+All monetary fields use the Money type — (decimal Amount, string Currency). See Internationalization Guide Section 4 for details.
+
+
+
+
+4.2 FX revaluation
+
+
+Period-end revaluation of foreign-currency receivables/payables
+
+
+Spot rate at period-end determined from configured FX source (RBI for IN, Federal Reserve for US)
+
+
+Realized FX gain/loss on settlement: posted to GL
+
+
+Unrealized FX gain/loss on revaluation: posted to GL or OCI per accounting policy
+
+
+
+
+4.3 FX gain/loss accounts
+
+
+Account 8020 FX Gain (Other Income)
+
+
+Account 9020 FX Loss (Other Expense)
+
+
+Configurable per tenant
+
+
+
+
+5. AR (Accounts Receivable) Universal Workflow
+
+
+5.1 Invoice state machine
+
+
+
+    Draft ──[ready]──▶ PendingApproval ──[approve]──▶ Approved ──[post]──▶ Posted (Issued)
+
+      │                   │                                                    │
+
+      │                   └──[reject]──▶ Draft                                 │
+
+      │                                                                        │
+
+      │                                       ┌──partial──┐                    │
+
+      │                                       ▼           ▼                    │
+
+      │                                PartiallyPaid     Paid ◀────[receive]───┤
+
+      │                                                                        │
+
+      │                                                  Outstanding ──[overdue]
+
+      │                                                                        │
+
+      │                                                                  ──[write-off]──▶ Written-off
+
+      └──[void]──▶ Void (terminal, before posting)
+
+
+
+Plugin extension: When invoice transitions to Posted, the active plugin is invoked. M17-IN generates IRN via IRP. M17-US calls Avalara/TaxJar for sales tax. Plugin failures roll the invoice back to Draft with errors.
+
+
+
+
+5.2 Universal invoice fields
+
+
+Invoice number (configurable format per tenant)
+
+
+Invoice date (in tenant local time)
+
+
+Due date (computed from terms)
+
+
+Customer (FK m1_party)
+
+
+Bill to / Ship to addresses
+
+
+Line items: description, quantity, unit price, amount
+
+
+Subtotal, tax (delegated to plugin), discount, total
+
+
+Currency (transaction)
+
+
+Functional currency (tenant)
+
+
+Payment terms
+
+
+Notes
+
+
+Plugin-specific extensions stored in m17in_invoice_ext or m17us_invoice_ext
+
+
+
+
+5.3 Receipts and matching
+
+
+Universal receipt entity: amount, currency, date, payment method
+
+
+Match receipts to invoices (one-to-many; over/under payments)
+
+
+Auto-match by reference number
+
+
+Manual match for ambiguous
+
+
+Write-offs handled via M16 Settlement
+
+
+
+
+5.4 Ageing
+
+
+Standard buckets: Current, 1-30, 31-60, 61-90, >90
+
+
+Configurable per tenant
+
+
+Computed in real-time on demand
+
+
+Cached for dashboards (refreshed daily)
+
+
+
+
+6. AP (Accounts Payable) Universal Workflow
+
+
+6.1 Bill state machine
+
+
+
+    Draft ──[ready]──▶ PendingApproval ──[approve]──▶ Approved ──[post]──▶ Posted
+
+                                                                              │
+
+                                                    ┌──partial──┐             │
+
+                                                    ▼           ▼             │
+
+                                              PartiallyPaid    Paid ◀───[pay]─┘
+
+
+
+
+6.2 Universal bill fields
+
+
+Bill number (vendor reference)
+
+
+Bill date
+
+
+Due date
+
+
+Vendor (FK m1_party)
+
+
+Line items: description, quantity, unit price, amount, account assignment
+
+
+Subtotal, tax (delegated), withholding (delegated to plugin), total
+
+
+Currency
+
+
+Plugin-specific extensions: m17in_bill_ext (TDS section), m17us_bill_ext (1099 type)
+
+
+
+
+6.3 Payment workflow
+
+
+Payment runs (batch) or single
+
+
+Approval workflow per amount thresholds
+
+
+Bank file generation: NACH (India), ACH (US), wire, check
+
+
+Withholding deducted at payment time per plugin
+
+
+Payment notification to vendor (M27)
+
+
+
+
+7. Period Close (Universal)
+
+
+7.1 Period states
+State
+Description
+Allowed actions
+
+Future
+
+Period not yet active
+
+No journals
+
+Open
+
+Active period
+
+All journals allowed
+
+SoftClose
+
+Close in progress; no new journals
+
+Adjustment journals only with elevated permission
+
+Closed
+
+Period closed; immutable
+
+No changes; reopen requires approval
+
+
+
+
+7.2 Universal close checklist
+
+M17-Core provides a checklist framework; plugins inject country-specific items:
+
+
+
+
+All AR invoices for the month posted
+
+
+All AP bills for the month posted
+
+
+Bank reconciliations complete
+
+
+Inventory adjustments posted
+
+
+Depreciation posted
+
+
+Accruals posted
+
+
+Prepaid amortization posted
+
+
+FX revaluation (if multi-currency)
+
+
+Trial balance reviewed
+
+
+Plugin-injected items (GST reconciliation for IN, sales tax accrual for US)
+
+
+
+
+7.3 Period lock enforcement
+
+
+On status = Closed, ALL inserts/updates/deletes to journals in that period rejected at DB level
+
+
+Enforced via EF Core SaveChanges interceptor + DB triggers
+
+
+Reversal entries in CURRENT period (not in closed period)
+
+
+
+
+7.4 Reopening (rare)
+
+
+Requires CFO + Auditor RBAC permission
+
+
+Reason logged; visible in audit
+
+
+Subsequent reports flagged "Period reopened"
+
+
+reopened_count incremented
+
+
+
+
+8. Audit Trail
+
+
+8.1 Mandate
+
+Indian Companies Act Section 138: audit trail of all transactions, changes, deletions in accounting software is mandatory for Indian companies. M17-Core enforces this universally.
+
+
+
+US SOX (for public co): similar audit trail requirements. M17-Core covers both.
+
+
+
+
+8.2 Audit log schema
+
+
+
+    CREATE TABLE m17_audit_log (
+
+      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+      tenant_id INT NOT NULL,
+
+      occurred_at_utc DATETIME(3) NOT NULL,
+
+      user_id BIGINT NOT NULL,
+
+      action ENUM('CREATE','UPDATE','POST','REVERSE','DELETE','CLOSE_PERIOD','REOPEN_PERIOD') NOT NULL,
+
+      entity_type VARCHAR(50) NOT NULL,           -- "journal", "invoice", "bill", "period"
+
+      entity_id BIGINT NOT NULL,
+
+      before_json JSON,                            -- previous state
+
+      after_json JSON,                             -- new state
+
+      reason VARCHAR(500),                         -- for sensitive actions
+
+      ip_address VARCHAR(45),
+
+      user_agent VARCHAR(255),
+
+      INDEX idx_entity (entity_type, entity_id),
+
+      INDEX idx_user_time (user_id, occurred_at_utc),
+
+      INDEX idx_time (occurred_at_utc)
+
+    ) ENGINE=InnoDB ROW_FORMAT=COMPRESSED;
+
+
+
+
+8.3 Append-only enforcement
+
+
+No DELETE permission on m17_audit_log granted to application user
+
+
+No UPDATE permission
+
+
+Read-only export for auditors
+
+
+Backed up daily; retained 7+ years
+
+
+
+
+9. Reconciliation Engine
+
+
+9.1 Universal logic
+
+
+Match by exact amount + close date + reference
+
+
+Suggest by amount tolerance + date proximity
+
+
+Manual match for ambiguous
+
+
+Tolerance configurable per tenant
+
+
+
+
+9.2 Bank statement formats by region
+Region
+Primary format
+Other formats
+
+India
+
+CSV (most banks)
+
+Excel, PDF (OCR), MT940 (corporate banking)
+
+United States
+
+BAI2
+
+OFX, QFX, CSV, MT940 international
+
+
+
+
+9.3 Direct connections
+
+
+India: Plaid (limited), bank-direct APIs
+
+
+US: Plaid (most banks), Yodlee, MX, Finicity
+
+
+Manual upload supported in all cases
+
+
+
+
+10. Plugin Interface for Tax
+
+
+10.1 ITaxProvider
+
+
+
+    public interface ITaxProvider
+
+    {
+
+        string CountryCode { get; }
+
+    
+
+        Task<TaxComputeResult> ComputeTaxAsync(
+
+            TaxableTransaction txn, ITenantContext tenant, CancellationToken ct);
+
+    
+
+        Task<WithholdingResult> ComputeWithholdingAsync(
+
+            Payment payment, ITenantContext tenant, CancellationToken ct);
+
+    
+
+        Task<TaxFilingPrep> PrepareReturnDataAsync(
+
+            ReturnRequest req, ITenantContext tenant, CancellationToken ct);
+
+    }
+
+
+
+
+10.2 Resolution at runtime
+
+
+
+    // In M17 invoice service
+
+    var taxProvider = _resolver.ResolveTaxProvider(tenantContext);
+
+    // Returns IndiaTaxProvider (GST) or UsTaxProvider (Sales tax)
+
+    // based on tenantContext.CountryCode
+
+    
+
+    var taxResult = await taxProvider.ComputeTaxAsync(txn, tenantContext, ct);
+
+    
+
+    // taxResult.LineBreakdown contains:
+
+    //   - For India: {tax_type: "CGST", rate: 9%, amount: ...}, {tax_type: "SGST", ...}
+
+    //   - For US: {jurisdiction: "CA", rate: 7.25%, amount: ...}, {jurisdiction: "06037", ...}
+
+
+
+
+11. M17-Core REST API Surface
+
+
+Method
+Path
+Purpose
+
+POST
+
+/api/v1/m17/invoices
+
+Create invoice (delegates tax to plugin)
+
+POST
+
+/api/v1/m17/invoices/{id}/post
+
+Post (issue) invoice
+
+POST
+
+/api/v1/m17/invoices/{id}/void
+
+Void invoice (pre-post)
+
+GET
+
+/api/v1/m17/invoices/{id}
+
+Get invoice
+
+GET
+
+/api/v1/m17/invoices
+
+Search invoices
+
+POST
+
+/api/v1/m17/bills
+
+Create bill
+
+POST
+
+/api/v1/m17/bills/{id}/post
+
+Post bill
+
+POST
+
+/api/v1/m17/payments
+
+Create payment
+
+POST
+
+/api/v1/m17/receipts
+
+Create receipt
+
+POST
+
+/api/v1/m17/journals
+
+Create journal entry
+
+POST
+
+/api/v1/m17/periods/{id}/close
+
+Close period
+
+POST
+
+/api/v1/m17/periods/{id}/reopen
+
+Reopen period (privileged)
+
+GET
+
+/api/v1/m17/reports/trial-balance
+
+Trial Balance
+
+GET
+
+/api/v1/m17/reports/income-statement
+
+P&L
+
+GET
+
+/api/v1/m17/reports/balance-sheet
+
+Balance Sheet
+
+GET
+
+/api/v1/m17/reports/ar-aging
+
+AR Aging
+
+GET
+
+/api/v1/m17/reports/ap-aging
+
+AP Aging
+
+
+
+
+12. M17-IN: India Compliance Plugin
+
+
+12.1 Scope
+
+M17-IN implements all Indian accounting compliance per the original v1.0 design. Functionality unchanged from v1.0; only repackaged as plugin.
+
+
+
+
+12.2 GST computation
+Transaction type
+Tax components
+
+Intra-state (same state)
+
+CGST + SGST (each typically half of total rate)
+
+Inter-state (different state / export)
+
+IGST (full rate)
+
+Imports (post-customs)
+
+IGST on assessable value + customs duties
+
+Exports
+
+Zero-rated (with refund) or LUT-based
+
+
+
+    // India tax computation (preserved from v1.0)
+
+    public class IndiaTaxProvider : ITaxProvider
+
+    {
+
+        public string CountryCode => "IN";
+
+    
+
+        public async Task<TaxComputeResult> ComputeTaxAsync(
+
+            TaxableTransaction txn, ITenantContext t, CancellationToken ct)
+
+        {
+
+            var hsn = txn.HsnCode;
+
+            var rate = await _gstRates.GetRateAsync(hsn, txn.PostingDate);
+
+    
+
+            var supplierState = await GetSupplierStateAsync(t);
+
+            var recipientState = await GetRecipientStateAsync(txn);
+
+    
+
+            if (supplierState == recipientState) {
+
+                // Intra-state: split CGST + SGST
+
+                var half = rate / 2;
+
+                return TaxComputeResult.Split(
+
+                    cgst: txn.Amount * half / 100m,
+
+                    sgst: txn.Amount * half / 100m);
+
+            } else {
+
+                // Inter-state: IGST
+
+                return TaxComputeResult.IGST(
+
+                    igst: txn.Amount * rate / 100m);
+
+            }
+
+        }
+
+    }
+
+
+
+
+12.3 IRN generation
+
+
+Triggered on invoice POST event for B2B invoices with value > threshold
+
+
+Calls IRP API (NIC1, NIC2, IRIS, GSTHero, etc.)
+
+
+Receives IRN (64-char hash), QR code, signed JSON
+
+
+Stores IRN on m17in_invoice_ext.irn column
+
+
+Failed IRN: invoice goes to retry queue; alerts after 3 failures
+
+
+
+
+12.4 TDS computation
+TDS Section
+Applies to
+Rate
+
+Section 194C
+
+Contractor payments
+
+1% (individual) / 2% (other)
+
+Section 194I
+
+Rent
+
+10% (land/building) / 2% (machinery)
+
+Section 194J
+
+Professional services
+
+10%
+
+Section 194Q
+
+Purchase of goods > 50L
+
+0.1%
+
+Section 194O
+
+E-commerce operator
+
+1%
+
+Section 195
+
+Foreign payments
+
+Per treaty
+
+Section 206C
+
+TCS on collection
+
+0.1% / 1% / 5% per type
+
+
+
+
+12.5 GSTR returns prep
+
+
+GSTR-1: outward supplies (monthly/quarterly)
+
+
+GSTR-3B: monthly summary return
+
+
+GSTR-9: annual return
+
+
+GSTR-9C: reconciliation statement
+
+
+Data prepared in M17-IN; user reviews; submission via IRP/GSTN portal
+
+
+
+
+12.6 Form 16A (TDS Certificate)
+
+
+Generated quarterly per vendor
+
+
+Includes: TDS Section, amount paid, TDS deducted, TAN of deductor
+
+
+Auto-fetched from TRACES portal for verification
+
+
+PDF generated with embedded digital signature where required
+
+
+
+
+12.7 Bank integrations (India)
+
+
+NACH: bulk debit/credit mandates
+
+
+IMPS: instant payments < 5 lakh
+
+
+RTGS: real-time gross settlement > 2 lakh
+
+
+NEFT: batch electronic transfer
+
+
+UPI: linked customer/vendor accounts
+
+
+Bank statement formats: typically CSV from each bank; SBI, HDFC, ICICI specifics handled
+
+
+
+
+13. M17-US: United States Plugin (Reference)
+
+M17-US is documented in detail in: ULP_LLD_M17_US_Accounts_GAAP_v1.0.docx. Capabilities:
+
+
+
+
+US GAAP chart of accounts
+
+
+Sales tax computation (multi-state, multi-jurisdiction) via Avalara/TaxJar
+
+
+1099-NEC, 1099-MISC, 1099-K reporting
+
+
+W-9 vendor onboarding + TIN matching
+
+
+Backup withholding (24%)
+
+
+US bank reconciliation (BAI2 format primary)
+
+
+Multi-state nexus management
+
+
+Exemption certificate handling
+
+
+US fiscal year support (typically calendar)
+
+
+
+
+14. Non-Functional Requirements
+Metric
+Target
+
+Invoice creation API p99
+
+< 1500ms (incl. tax compute)
+
+Invoice creation cached path p99
+
+< 400ms
+
+Period close (single tenant)
+
+< 5 minutes
+
+Trial Balance generation
+
+< 60 seconds for full year
+
+GL search (paginated)
+
+< 500ms
+
+Audit log write throughput
+
+5,000 events/second per tenant
+
+Statutory report generation
+
+< 5 minutes for full year
+
+
+
+
+15. Migration from v1.0
+
+
+Add country_code column to m17_account, m17_journal, m17_invoice, m17_bill (default "IN")
+
+
+Add functional_currency to m_tenant
+
+
+Existing m17in_* tables (gst, irn, tds, gstr) unchanged in shape
+
+
+Existing endpoints continue to work transparently
+
+
+M17-IN plugin assembly deployed alongside main app
+
+
+IndiaTaxProvider registered as ITaxProvider for IN tenants
+
+
+No data migration; only schema additions
+
+
+
+
+
+
+
+— End of M17 v2.0 LLD —
+
+
+
+

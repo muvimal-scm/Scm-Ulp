@@ -1,0 +1,243 @@
+﻿Milestone 1
+Sales – Leads, New Quote
+ERP for Vendor Account (Shipment Details) **need tab for Ocean Export, Ocean Import, Air Export, Air Import**
+Generating New Shipment (MBL / HBL)
+Generating Documents
+Bill of Lading (with surrender, telex release, original stamps)
+Arrival Notice (rated and non-rated)
+Invoices (A/R, A/P)
+Delivery Order
+Release Instructions
+Letter of Guarantee
+Air Shipments
+Authority to Make Entry
+Turnover / Release Order
+I.T.
+U.S. Customs Hold / Exam Notice
+Document Management (for a shipment)
+Separate: 1) shipping docs and 2) invoices / payment receipts
+Memo Notes (internal) - task history
+Profiles & Settings
+Logins tracked by email address but need organization admin account
+Document Management (for a profile)
+POA (expiration date, incomplete, complete)
+Permits
+Company permits (with expiration)
+Commodity permits (with expiration)
+Misc Docs (agreements, additional info, etc)
+Milestone 2
+Control Tower
+Shipment stages
+Watchlist
+Reminders / Holds
+Chat Box
+Sales – RFQ **only for 3PL vendors**
+Order Management – New Booking Request
+Active Shipments – Bookings
+Columns:
+Status
+Order confirmed
+Booking Requested
+Pending Booking
+Booking Confirmed
+Estimated CRD (mandatory for order confirmed)
+FF assigned
+Column: “Updated as of [date]”
+Active Shipments – Shipments In-Transit
+Be able to see status of each shipment
+Track Shipment Holds (BL, Freight, Customs, Terminal Fees)
+**task history**
+Customs info
+PGA holds (need to transfer over to warehouse status as well – FDA holds)
+Calculate out landed costs
+Milestone 3
+Accounting
+Invoice should be sent to accounting department in the system for payment approval and populate on screen of accounting department
+Can generate invoice drafts
+Connect invoice line receivable to payable even if receivable has been paid/logged
+Credit Card Payments
+Add photo of receipt as proof from phone app
+Add document proof if done online
+General Expense
+General Expense
+Fixed General Expense
+Settlement
+A/R & A/P Settlement
+Reverse Settlement
+Deposit from A/R (only when payment method is check)
+Deposit Reverse
+Print Multiple Checks
+Aging Report
+Based on invoice date (lock ability to post date invoice)
+Based on reference date
+Based on ETD
+Based on ETA
+Based on Final ETA
+Based on Due Date
+Invoice history
+Invoice Charge Details
+Payment – Check Payment History
+Payment History Inquiry (turn on more than one filter)
+To / From Dates
+By Invoice #
+Customer #
+Master BL #
+Check #
+Amount
+Pay #
+Ref #
+Payment Method
+Billing codes
+A/R A/P Report
+Income / Expense Details - shipments < 0% Profit
+Invoice Details Inquiry
+Comparative Profit Report by Year
+Operation Income / Expense
+General Income / Expense
+Total Profit / Loss
+Past Due Notices
+Customer Statements
+Print Multiple Invoices (select which ones)
+Bank
+Voided checks
+Deposit without A/R
+Print check without A/P
+Fund transfer between bank accounts
+Void check entry
+Bank statement
+Monthly bank statement
+Bank reconciliation
+Monthly bank balance
+General Ledger
+Chart of accounts
+Trial Balance
+Balance Sheet & Profit / Loss
+Invoice Status (Tab 5: Invoices: Shipments In-Transit)
+Email connection setup
+Send emails from software to outside organizations
+Users can generate custom email templates when sending out documents (or also use pre-defined templates)
+Automatic notifications for:
+Shipments on hold (arriving within 7 days)
+Statement of Account
+Shipments arriving
+Containers not returned past 5 days
+Containers ready for return (maybe send twice a day?)
+Milestone 4
+Trucking
+Appointment scheduling
+Tracking of equipment
+drivers availability
+which containers are being used by which chassis
+which chassis is owned by company
+chassis under maintenance
+Trucks under maintenance
+Company trucks, owner operators
+Workflow
+Input New Orders
+Job #
+Driver
+Move type (FCL, LTL, FTL)
+Notes (special equipment)
+Customer
+Availability
+ETA
+LFD
+PU Location
+PU Date
+PU Time
+Appointment Required (checkbox)
+BL #
+SSL
+Cntr #
+Cntr Size
+Del Location
+Del Date
+Del Time
+Appointment Required (checkbox)
+Chassis #
+Mark if owned by trucking company
+Chassis Type
+Return Location
+Empty Date – *cnee needs to indicate on portal which should notify trucker
+Return Date
+Return Time
+Return #
+Weight
+Cust Ref #
+Availability
+Not ready for pick up (indicate all holds)
+Available – Pending Appointment
+Dispatched (assign drivers to loads)
+Put calendar with container appointments, drag and drop available driver with chassis
+If driver is still marked as working on load, give warning if trying to move to another load during same time
+Outgated (waiting for notify to return)
+Notification status when container is ready for return
+Completed – container is returned and waiting billing
+Accessorial – any extra fees that occur
+*this should show up on all workflow pages on the side so charges can be added throughout the process* --> when marked completed, should show suggestion of the accessorial to add into billing
+Document Management
+App
+Driver updates status / location
+Driver uploads signed POD / gate receipts to doc control
+Order Management – Purchase Orders
+Approval workflow between shipper / cnee
+Milestone 5
+Warehousing
+Inventory
+Track by individual unit, case, and pallet
+Track bin #, rack #, stock transfer request/order
+Product catalog should indicate shipper product code #, internal product code #,  image (if applicable), weight of individual item, weight of individual case, pallet (row, height)
+Barcode generation for each pallet?
+Calculate cost of SKU per case based on all landed cost and warehousing cost
+What happens when purchased at 2 different prices and both are in inventory?
+Pick list (and ability to assign soemone in warehouse to pick list)
+Cycle Count Sheet: physical inventory verification during assigned period
+Warning of products expiring within 6 months
+Auto billing of storage to client
+Options to bill weekly, bi-weekly, monthly
+Options to bill per cbm or per pallet
+Sales Order
+Tells you how much product is readily available in warehouse, how much product is in-transit, and how much is ordered (at origin)
+Generate sales order with purchasing price / quantity
+Generate bill of lading
+App
+Barcode scanning for products coming in？
+Document Management
+PO / PI – what was purchased
+POD – from trucker
+Goods Receipt Note – verify quantity / quality
+Shipping Order – request of pick & pack and warehouse task assignment
+B/L - for trucker
+Other Operations
+Blank Master / House template
+Falls in own category (used to bill / pay for services not tied to specific freight, trucking, warehouse, customs shipment)
+Milestone 6
+Documentation Functions
+Should be able to leave text on top of document that can be printed out with document
+Should be able to create stamps / signatures to put on document generated by the system
+Reports
+For shipper / cnee
+Top suppliers
+Top country of origins
+Top final shipping destination ports
+Where all SKUs are (quantity/% ordered and at origin, quantity/% in-transit, quantity/% at destination)
+Top moving SKU
+Slowest moving SKU
+Vendor
+Volume percentage increase / decrease per TEU for each
+Top performers this year (list all clients based on volume)
+Non-activity customers within the past 2 months
+Profit report by:
+House agent
+Master agent
+Sales person
+Customer
+Shipper
+Consignee
+Work load report by user
+Shipment tracking by:
+Country
+POL
+POD
+Carrier
+Type of Move

@@ -1,0 +1,192 @@
+name: CI
+
+# CP16: Run on every PR + push to main. Three independent jobs:
+#   - backend: dotnet build + integration tests (Testcontainers spins up MySQL inside the runner)
+#   - frontend: ng build + ng test (Karma headless Chrome)
+#   - e2e: Playwright against a stack started via docker compose
+#
+# E2E is the slowest job (~5–8 min) so it's gated to push-to-main + label trigger
+# rather than every PR; tweak the on: condition if you want it on every PR.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  NODE_VERSION: '20'
+
+jobs:
+  # ---- Backend build + integration tests ----------------------------------
+  backend:
+    name: Backend (.NET 8)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: NuGet cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj','**/Directory.Packages.props') }}
+          restore-keys: ${{ runner.os }}-nuget-
+
+      - name: Restore (solution)
+        run: dotnet restore src/backend/Ulp.sln
+
+      - name: Build (solution, no restore)
+        run: dotnet build src/backend/Ulp.sln --configuration Release --no-restore
+
+      - name: Restore integration tests
+        run: dotnet restore tests/integration/Ulp.Integration.Tests/Ulp.Integration.Tests.csproj
+
+      - name: Build integration tests
+        run: dotnet build tests/integration/Ulp.Integration.Tests/Ulp.Integration.Tests.csproj --configuration Release --no-restore
+
+      - name: Run integration tests
+        # Testcontainers needs a Docker socket; ubuntu-latest has it.
+        run: dotnet test tests/integration/Ulp.Integration.Tests/Ulp.Integration.Tests.csproj
+             --configuration Release --no-build --logger "trx;LogFileName=integration.trx"
+             --results-directory ${{ github.workspace }}/TestResults
+
+      - name: Upload backend test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: ${{ github.workspace }}/TestResults
+
+  # ---- Frontend build + unit tests ----------------------------------------
+  frontend:
+    name: Frontend (Angular 17)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: src/frontend/ulp-web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: src/frontend/ulp-web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build (development)
+        run: npm run build
+
+      - name: Test (Karma headless Chrome)
+        env:
+          CHROME_BIN: /usr/bin/google-chrome-stable
+        run: npx ng test --watch=false --browsers=ChromeHeadlessCI --code-coverage
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: src/frontend/ulp-web/coverage
+
+  # ---- Playwright E2E -----------------------------------------------------
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Skip on draft PRs; E2E is slow.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: dev_password
+          MYSQL_DATABASE: ulp_dev
+          MYSQL_USER: ulp
+          MYSQL_PASSWORD: dev_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -uroot -pdev_password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Apply DB migrations
+        run: |
+          # Ad-hoc apply: the init-db.ps1 logic in Bash form. Same file order.
+          cd db
+          for f in $(find . -name "*.sql" | sort); do
+            echo "Applying $f"
+            mysql -h 127.0.0.1 -u root -pdev_password ulp_dev < "$f" || exit 1
+          done
+
+      - name: Build & start API
+        run: |
+          dotnet build src/backend/Ulp.sln --configuration Release
+          dotnet run --project src/backend/host/Ulp.Api --configuration Release \
+            --urls "http://0.0.0.0:5080" &
+          # Poll /health until ready
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:5080/health > /dev/null; then break; fi
+            sleep 2
+          done
+
+      - name: Install + start SPA
+        working-directory: src/frontend/ulp-web
+        run: |
+          npm ci
+          npm run build
+          npx http-server dist/ulp-web/browser -p 4200 &
+          for i in $(seq 1 20); do
+            if curl -sf http://localhost:4200 > /dev/null; then break; fi
+            sleep 2
+          done
+
+      - name: Install Playwright
+        working-directory: tests/e2e
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Run Playwright
+        working-directory: tests/e2e
+        run: npx playwright test
+        env:
+          ULP_BASE_URL: http://localhost:4200
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: tests/e2e/playwright-report
+          retention-days: 7

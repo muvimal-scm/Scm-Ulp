@@ -1,0 +1,48 @@
+name: CI Stack Smoke
+
+on:
+  pull_request:
+    paths:
+      - 'infra/docker/**'
+      - 'infra/scripts/**'
+      - 'ci/github-actions/ci-stack.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'infra/docker/**'
+      - 'infra/scripts/**'
+
+permissions:
+  contents: read
+
+jobs:
+  stack-up:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bring up stack
+        working-directory: infra/docker
+        run: |
+          cp .env.example .env
+          docker compose up -d --wait
+
+      - name: Verify health
+        run: |
+          docker compose -f infra/docker/docker-compose.yml ps
+          # All services with healthchecks should be `healthy`
+          # `minio-init` is one-shot — it should have exited with code 0
+          status=$(docker inspect -f "{{.State.ExitCode}}" ulp-minio-init || echo "missing")
+          if [ "$status" != "0" ]; then
+            echo "::error::minio-init exited with $status"
+            docker logs ulp-minio-init || true
+            exit 1
+          fi
+
+      - name: Logs (on failure)
+        if: failure()
+        run: docker compose -f infra/docker/docker-compose.yml logs
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f infra/docker/docker-compose.yml down -v

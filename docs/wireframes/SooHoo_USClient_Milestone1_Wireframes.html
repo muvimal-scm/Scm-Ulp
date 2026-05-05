@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCMCube – Milestone 1 Wireframes</title>
+<style>
+:root {
+  --navy: #0B1D3A;
+  --blue: #1757A8;
+  --blue-light: #EBF4FF;
+  --teal: #0F7B7E;
+  --teal-light: #E3F5F5;
+  --gold: #B5862B;
+  --gold-light: #FBF4E5;
+  --purple: #4A2D8E;
+  --purple-light: #EFEBF8;
+  --green: #0F7B4F;
+  --green-light: #E6F5ED;
+  --red: #B83A2B;
+  --red-light: #FDECEB;
+  --gray-50: #F7F9FC;
+  --gray-100: #EEF1F6;
+  --gray-200: #E0E4EC;
+  --gray-300: #C8CFD9;
+  --gray-500: #6B7A95;
+  --gray-700: #2E4057;
+  --gray-900: #0D1824;
+  --white: #FFFFFF;
+  --card-bg: #FFFFFF;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-700);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ── TOP NAV ── */
+.top-nav {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--navy);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0 24px;
+  display: flex; align-items: center; gap: 0;
+  height: 52px;
+}
+.nav-logo {
+  font-size: 15px; font-weight: 700; color: #fff;
+  letter-spacing: -0.3px; margin-right: 32px;
+}
+.nav-logo span { color: #60B3D8; }
+.nav-scroll {
+  display: flex; gap: 2px; flex: 1; overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-scroll::-webkit-scrollbar { display: none; }
+.nav-btn {
+  padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  font-size: 12px; color: rgba(255,255,255,0.55);
+  white-space: nowrap; transition: all 0.15s;
+  border: none; background: none;
+}
+.nav-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.nav-btn.active { color: #fff; background: rgba(87,163,224,0.22); }
+.screen-count {
+  font-size: 11px; color: rgba(255,255,255,0.35);
+  margin-left: 16px; white-space: nowrap;
+}
+
+/* ── MAIN CANVAS ── */
+.canvas {
+  display: flex; flex-direction: column; gap: 0;
+}
+.screen-section {
+  display: none; padding: 28px 28px 40px;
+}
+.screen-section.active { display: block; }
+
+/* ── SCREEN CARD ── */
+.screen-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.screen-header {
+  padding: 14px 20px;
+  background: var(--navy);
+  display: flex; align-items: center; gap: 12px;
+}
+.screen-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  padding: 3px 8px; border-radius: 4px;
+  background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7);
+}
+.screen-title-wrap { flex: 1; }
+.screen-title { font-size: 15px; font-weight: 600; color: #fff; }
+.screen-subtitle { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+.screen-tag {
+  font-size: 10px; padding: 2px 8px; border-radius: 4px;
+  font-weight: 600;
+}
+.tag-mandatory { background: #FDECEB; color: #B83A2B; }
+.tag-optional { background: #E6F5ED; color: #0F7B4F; }
+
+/* ── WIREFRAME BODY ── */
+.wf-body { padding: 20px; background: var(--gray-50); border-top: 1px solid var(--gray-200); }
+
+/* ── MOCK BROWSER ── */
+.mock-browser {
+  background: var(--white);
+  border-radius: 10px;
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+}
+.browser-bar {
+  background: var(--gray-100); height: 32px; border-bottom: 1px solid var(--gray-200);
+  display: flex; align-items: center; padding: 0 12px; gap: 6px;
+}
+.browser-dot { width: 9px; height: 9px; border-radius: 50%; }
+.browser-url {
+  flex: 1; height: 18px; background: var(--white);
+  border-radius: 4px; margin: 0 8px;
+  border: 1px solid var(--gray-200);
+  display: flex; align-items: center; padding: 0 8px;
+  font-size: 10px; color: var(--gray-500);
+}
+
+/* ── APP SHELL ── */
+.app-shell { display: flex; min-height: 520px; }
+.sidebar {
+  width: 200px; background: var(--navy); flex-shrink: 0;
+  padding: 12px 8px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.sidebar-logo {
+  padding: 8px 10px 16px;
+  font-size: 14px; font-weight: 700; color: #fff;
+}
+.sidebar-logo span { color: #60B3D8; }
+.nav-item {
+  padding: 7px 10px; border-radius: 6px; cursor: pointer;
+  font-size: 12px; color: rgba(255,255,255,0.5);
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-item.active { background: rgba(87,163,224,0.2); color: #fff; }
+.nav-item .icon { font-size: 14px; }
+.app-main { flex: 1; padding: 16px; background: var(--gray-50); overflow: auto; }
+
+/* ── TOP BAR ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.page-title { font-size: 17px; font-weight: 700; color: var(--gray-900); }
+.topbar-actions { display: flex; gap: 8px; }
+
+/* ── BUTTONS ── */
+.btn {
+  padding: 6px 14px; border-radius: 6px; font-size: 12px;
+  font-weight: 500; cursor: pointer; border: none;
+  transition: opacity 0.15s;
+}
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-secondary { background: var(--white); color: var(--gray-700); border: 1px solid var(--gray-200); }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-ghost { background: transparent; color: var(--gray-500); padding: 6px 10px; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex; border-bottom: 1px solid var(--gray-200);
+  margin-bottom: 14px; gap: 0;
+}
+.tab {
+  padding: 8px 14px; font-size: 12px; font-weight: 500;
+  color: var(--gray-500); cursor: pointer; position: relative;
+  white-space: nowrap;
+}
+.tab.active { color: var(--blue); }
+.tab.active::after {
+  content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+  height: 2px; background: var(--blue); border-radius: 2px 2px 0 0;
+}
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: 8px; padding: 10px 12px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 12px;
+}
+.filter-chip {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 8px; border-radius: 5px; font-size: 11px;
+  background: var(--blue-light); color: var(--blue);
+  border: 1px solid #BDD7F7;
+}
+.filter-input {
+  flex: 1; min-width: 120px;
+  padding: 4px 8px; border-radius: 5px;
+  border: 1px solid var(--gray-200); font-size: 11px;
+  background: var(--gray-50);
+}
+
+/* ── TABLE ── */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--white); border-radius: 8px; overflow: hidden;
+  border: 1px solid var(--gray-200); font-size: 11px;
+}
+.data-table th {
+  background: var(--gray-100); padding: 7px 10px;
+  text-align: left; font-weight: 600; color: var(--gray-500);
+  border-bottom: 1px solid var(--gray-200); font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.data-table td {
+  padding: 7px 10px; border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--gray-50); }
+
+/* ── STATUS BADGES ── */
+.badge {
+  display: inline-flex; align-items: center; padding: 2px 8px;
+  border-radius: 4px; font-size: 10px; font-weight: 600;
+}
+.badge-blue   { background: var(--blue-light); color: var(--blue); }
+.badge-green  { background: var(--green-light); color: var(--green); }
+.badge-gold   { background: var(--gold-light); color: var(--gold); }
+.badge-red    { background: var(--red-light); color: var(--red); }
+.badge-teal   { background: var(--teal-light); color: var(--teal); }
+.badge-gray   { background: var(--gray-100); color: var(--gray-500); }
+
+/* ── STAGE PIPELINE ── */
+.pipeline { display: flex; gap: 0; margin-bottom: 16px; }
+.stage-node {
+  flex: 1; text-align: center; position: relative;
+}
+.stage-node::after {
+  content: ''; position: absolute; top: 14px; right: -1px;
+  width: 2px; height: 2px; background: var(--gray-300);
+}
+.stage-pill {
+  padding: 5px 6px; border-radius: 6px; font-size: 10px;
+  font-weight: 600; border: 1px solid transparent;
+}
+.stage-active { background: var(--blue); color: #fff; }
+.stage-done   { background: var(--green-light); color: var(--green); border-color: #9FD9BE; }
+.stage-future { background: var(--gray-100); color: var(--gray-500); border-color: var(--gray-200); }
+
+/* ── FORMS ── */
+.form-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group.span2 { grid-column: span 2; }
+.form-group.span3 { grid-column: span 3; }
+.form-label {
+  font-size: 11px; font-weight: 600; color: var(--gray-700);
+  display: flex; align-items: center; gap: 4px;
+}
+.required-dot {
+  width: 5px; height: 5px; background: var(--red);
+  border-radius: 50%; display: inline-block;
+}
+.form-input, .form-select, .form-textarea {
+  padding: 7px 10px; border-radius: 6px; font-size: 12px;
+  border: 1px solid var(--gray-200); background: var(--white);
+  color: var(--gray-700); outline: none;
+  transition: border-color 0.15s;
+}
+.form-input:focus, .form-select:focus { border-color: var(--blue); }
+.form-input.mandatory { border-left: 3px solid var(--blue); }
+.form-textarea { resize: none; min-height: 64px; }
+.form-section-title {
+  font-size: 12px; font-weight: 700; color: var(--navy);
+  padding: 10px 0 6px;
+  border-bottom: 1px solid var(--gray-200);
+  margin-bottom: 10px; grid-column: span 3;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--white); border-radius: 8px;
+  border: 1px solid var(--gray-200); padding: 14px;
+}
+.card-mini {
+  background: var(--white); border-radius: 6px;
+  border: 1px solid var(--gray-200); padding: 10px 12px;
+  font-size: 11px;
+}
+
+/* ── LEGEND ── */
+.legend {
+  display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;
+  padding: 12px 16px; background: var(--white);
+  border-radius: 8px; border: 1px solid var(--gray-200);
+}
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+/* ── FIELD INVENTORY ── */
+.field-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 12px; }
+.field-table th {
+  background: var(--gray-100); padding: 6px 10px; text-align: left;
+  font-weight: 600; color: var(--gray-500); border-bottom: 1px solid var(--gray-200);
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.field-table td { padding: 5px 10px; border-bottom: 1px solid var(--gray-100); }
+.field-table tr:last-child td { border-bottom: none; }
+.field-m { color: var(--red); font-weight: 700; font-size: 10px; }
+.field-o { color: var(--green); font-weight: 600; font-size: 10px; }
+
+/* ── QUESTIONS BOX ── */
+.questions-box {
+  background: var(--gold-light); border: 1px solid #E8C96A;
+  border-radius: 8px; padding: 14px 16px; margin-top: 20px;
+}
+.questions-box h4 {
+  font-size: 12px; font-weight: 700; color: var(--gold);
+  margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.questions-box ol {
+  margin: 0; padding-left: 16px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.questions-box li { font-size: 11px; color: var(--gray-700); }
+
+/* ── LOGIN SCREEN ── */
+.login-bg {
+  min-height: 500px;
+  background: linear-gradient(135deg, #0B1D3A 0%, #163352 60%, #0F4F72 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.login-box {
+  width: 360px; background: var(--white);
+  border-radius: 14px; padding: 32px; text-align: center;
+}
+.login-logo { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+.login-logo span { color: var(--blue); }
+.login-tagline { font-size: 11px; color: var(--gray-500); margin-bottom: 24px; }
+.login-input-group { text-align: left; margin-bottom: 12px; }
+.login-input-group label {
+  display: block; font-size: 11px; font-weight: 600;
+  color: var(--gray-700); margin-bottom: 4px;
+}
+.login-input {
+  width: 100%; padding: 9px 12px; border-radius: 7px;
+  border: 1px solid var(--gray-200); font-size: 13px;
+  background: var(--gray-50);
+}
+.login-btn {
+  width: 100%; padding: 10px; border-radius: 7px;
+  background: var(--blue); color: #fff; font-size: 13px; font-weight: 600;
+  border: none; cursor: pointer; margin-top: 4px;
+}
+.mfa-dots { display: flex; justify-content: center; gap: 10px; margin: 16px 0 8px; }
+.mfa-dot {
+  width: 44px; height: 44px; border-radius: 8px;
+  border: 2px solid var(--gray-200); background: var(--gray-50);
+  font-size: 18px; font-weight: 700; text-align: center;
+  line-height: 40px; color: var(--navy);
+}
+.mfa-dot.filled { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+
+/* ── WATCHLIST / CHAT ── */
+.chat-box {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: 8px; overflow: hidden;
+}
+.chat-header {
+  padding: 8px 12px; background: var(--navy);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.chat-header span { font-size: 12px; font-weight: 600; color: #fff; }
+.chat-messages { padding: 10px 12px; min-height: 100px; display: flex; flex-direction: column; gap: 6px; }
+.msg { padding: 6px 10px; border-radius: 8px; font-size: 11px; max-width: 75%; }
+.msg-in { background: var(--gray-100); align-self: flex-start; }
+.msg-out { background: var(--blue); color: #fff; align-self: flex-end; }
+.chat-input-row {
+  padding: 8px; border-top: 1px solid var(--gray-200);
+  display: flex; gap: 6px;
+}
+.chat-input-row input {
+  flex: 1; padding: 6px 10px; border-radius: 6px;
+  border: 1px solid var(--gray-200); font-size: 11px;
+}
+
+/* ── DOC MANAGEMENT ── */
+.doc-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 6px; font-size: 11px;
+  background: var(--white); border: 1px solid var(--gray-200);
+  margin-bottom: 4px;
+}
+.doc-icon { font-size: 16px; }
+.doc-info { flex: 1; }
+.doc-name { font-weight: 600; color: var(--gray-900); }
+.doc-meta { color: var(--gray-500); font-size: 10px; }
+
+/* ── REMINDER ── */
+.reminder-card {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border-radius: 8px;
+  border: 1px solid var(--gray-200); background: var(--white);
+  margin-bottom: 6px;
+}
+.reminder-icon {
+  width: 32px; height: 32px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 720px) {
+  .form-grid { grid-template-columns: 1fr 1fr; }
+  .form-group.span3 { grid-column: span 2; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <div class="nav-logo">SCM<span>Cube</span></div>
+  <div class="nav-scroll">
+    <button class="nav-btn active" onclick="showScreen('mfa-login')">MFA Login</button>
+    <button class="nav-btn" onclick="showScreen('control-tower')">Control Tower</button>
+    <button class="nav-btn" onclick="showScreen('shipment-list')">Shipment List</button>
+    <button class="nav-btn" onclick="showScreen('shipment-stages')">Shipment Stages</button>
+    <button class="nav-btn" onclick="showScreen('watchlist')">Watchlist</button>
+    <button class="nav-btn" onclick="showScreen('reminders')">Reminders / Holds</button>
+    <button class="nav-btn" onclick="showScreen('chatbox')">Chat Box</button>
+    <button class="nav-btn" onclick="showScreen('order-leads')">Order Mgmt – Leads</button>
+    <button class="nav-btn" onclick="showScreen('new-shipment')">New Shipment</button>
+    <button class="nav-btn" onclick="showScreen('gen-documents')">Generate Documents</button>
+    <button class="nav-btn" onclick="showScreen('doc-management')">Doc Management</button>
+    <button class="nav-btn" onclick="showScreen('memo-notes')">Memo Notes</button>
+    <button class="nav-btn" onclick="showScreen('profile-settings')">Profiles & Settings</button>
+    <button class="nav-btn" onclick="showScreen('profile-docs')">Profile Documents</button>
+    <button class="nav-btn" onclick="showScreen('permits')">Permits</button>
+  </div>
+  <div class="screen-count">15 screens · Milestone 1</div>
+</div>
+
+<div class="canvas">
+
+<!-- ════════════════════════════════
+     SCREEN 1 · MFA LOGIN
+════════════════════════════════ -->
+<div class="screen-section active" id="screen-mfa-login">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 1 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">MFA Login Screen</div>
+        <div class="screen-subtitle">Two-factor authentication — email-tracked session</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar">
+          <div class="browser-dot" style="background:#F75F56"></div>
+          <div class="browser-dot" style="background:#FFBF2E"></div>
+          <div class="browser-dot" style="background:#27C840"></div>
+          <div class="browser-url">app.scmcube.com/login</div>
+        </div>
+        <!-- Step 1: Credentials -->
+        <div class="login-bg" id="login-step1" style="min-height:480px; padding:40px 0;">
+          <div class="login-box">
+            <div class="login-logo">SCM<span>Cube</span></div>
+            <div class="login-tagline">Logistics Intelligence Platform</div>
+            <div class="login-input-group">
+              <label>Email Address <span style="color:var(--red)">*</span></label>
+              <input class="login-input" type="email" placeholder="you@company.com" readonly>
+            </div>
+            <div class="login-input-group">
+              <label>Password <span style="color:var(--red)">*</span></label>
+              <input class="login-input" type="password" placeholder="••••••••" readonly>
+            </div>
+            <div style="text-align:right; font-size:11px; color:var(--blue); margin: -6px 0 12px;">Forgot password?</div>
+            <button class="login-btn" onclick="showLoginStep2()">Sign In →</button>
+            <div id="mfa-step2" style="display:none; margin-top:20px;">
+              <div style="border-top:1px solid var(--gray-200); padding-top:18px; text-align:center;">
+                <div style="font-size:13px; font-weight:600; color:var(--navy); margin-bottom:4px;">Two-Factor Authentication</div>
+                <div style="font-size:11px; color:var(--gray-500); margin-bottom:4px;">Enter the 6-digit code sent to your email</div>
+                <div style="font-size:11px; color:var(--blue); margin-bottom:14px;">j***@company.com</div>
+                <div class="mfa-dots">
+                  <div class="mfa-dot filled">3</div>
+                  <div class="mfa-dot filled">7</div>
+                  <div class="mfa-dot">_</div>
+                  <div class="mfa-dot">_</div>
+                  <div class="mfa-dot">_</div>
+                  <div class="mfa-dot">_</div>
+                </div>
+                <div style="font-size:10px; color:var(--gray-500); margin-bottom:14px;">Code expires in <strong>4:32</strong> · <span style="color:var(--blue); cursor:pointer">Resend code</span></div>
+                <button class="login-btn">Verify & Continue →</button>
+                <div style="margin-top:10px; font-size:10px; color:var(--gray-500);">Session tracked by email address per login</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Field Inventory -->
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Email Address</td><td>Email input</td><td class="field-m">MANDATORY</td><td>Used to track login session</td></tr>
+          <tr><td>Password</td><td>Password input</td><td class="field-m">MANDATORY</td><td>Min 8 chars, masked</td></tr>
+          <tr><td>OTP / MFA Code</td><td>6-digit input</td><td class="field-m">MANDATORY</td><td>Emailed per login, 5-min expiry</td></tr>
+          <tr><td>Remember this device</td><td>Checkbox</td><td class="field-o">OPTIONAL</td><td>Skip MFA for X days on trusted device</td></tr>
+          <tr><td>Resend code</td><td>Action link</td><td class="field-o">OPTIONAL</td><td>Throttled to prevent abuse</td></tr>
+        </tbody>
+      </table>
+
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Login</h4>
+        <ol>
+          <li>Should MFA be enforced for all user roles, or only for admin / accounting roles?</li>
+          <li>What is the OTP expiry window — 5 mins standard, or configurable per org?</li>
+          <li>Do you need an SSO / SAML integration path (Google Workspace, Microsoft 365) in addition to email+password?</li>
+          <li>Should failed login attempts trigger account lockout — if so, after how many attempts?</li>
+          <li>Is session tracking by email address sufficient, or do you also need device/IP logging per audit trail?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 2 · CONTROL TOWER
+════════════════════════════════ -->
+<div class="screen-section" id="screen-control-tower">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 2 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Control Tower — Dashboard Home</div>
+        <div class="screen-subtitle">Primary landing page after login — top-level overview with KPIs and module access</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar">
+          <div class="browser-dot" style="background:#F75F56"></div>
+          <div class="browser-dot" style="background:#FFBF2E"></div>
+          <div class="browser-dot" style="background:#27C840"></div>
+          <div class="browser-url">app.scmcube.com/control-tower</div>
+        </div>
+        <div class="app-shell">
+          <div class="sidebar">
+            <div class="sidebar-logo">SCM<span>Cube</span></div>
+            <div class="nav-item active"><span class="icon">🏠</span> Control Tower</div>
+            <div class="nav-item"><span class="icon">📦</span> Shipments</div>
+            <div class="nav-item"><span class="icon">📋</span> Order Mgmt</div>
+            <div class="nav-item"><span class="icon">🏢</span> Vendor ERP</div>
+            <div class="nav-item"><span class="icon">👤</span> Profiles</div>
+            <div class="nav-item"><span class="icon">⚙️</span> Settings</div>
+          </div>
+          <div class="app-main">
+            <div class="topbar">
+              <div class="page-title">Control Tower</div>
+              <div class="topbar-actions">
+                <button class="btn btn-secondary">🔔 Alerts (3)</button>
+                <button class="btn btn-primary">+ New Shipment</button>
+              </div>
+            </div>
+            <!-- KPI row -->
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px;">
+              <div class="card-mini"><div style="font-size:10px;color:var(--gray-500);margin-bottom:4px;">Active Shipments</div><div style="font-size:22px;font-weight:800;color:var(--navy);">148</div></div>
+              <div class="card-mini"><div style="font-size:10px;color:var(--gray-500);margin-bottom:4px;">Arriving This Week</div><div style="font-size:22px;font-weight:800;color:var(--blue);">24</div></div>
+              <div class="card-mini"><div style="font-size:10px;color:var(--gray-500);margin-bottom:4px;">Holds / Exam</div><div style="font-size:22px;font-weight:800;color:var(--red);">5</div></div>
+              <div class="card-mini"><div style="font-size:10px;color:var(--gray-500);margin-bottom:4px;">Watchlist</div><div style="font-size:22px;font-weight:800;color:var(--gold);">12</div></div>
+            </div>
+            <!-- Sub-nav -->
+            <div class="tabs">
+              <div class="tab active">View Shipments ▾</div>
+              <div class="tab">Shipment Stages</div>
+              <div class="tab">Watchlist</div>
+              <div class="tab">Reminders / Holds</div>
+              <div class="tab">Chat Box</div>
+            </div>
+            <div style="font-size:11px;color:var(--gray-500);padding:20px;text-align:center;">
+              ↑ Select a tab to view corresponding screen wireframes
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Mandatory field</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Optional field</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div> Stakeholder question</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Alert / hold</div>
+      </div>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Control Tower</h4>
+        <ol>
+          <li>What KPIs are most critical for the default landing view — volume, holds, ETA, or profitability?</li>
+          <li>Should the Control Tower show all company shipments by default, or filtered to the logged-in user's team?</li>
+          <li>Is role-based visibility required — e.g. a broker sees only customs shipments, a trucker sees only trucking?</li>
+          <li>Should the Chat Box be a global company-wide chat or shipment-specific threads?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 3 · SHIPMENT LIST (View Shipments)
+════════════════════════════════ -->
+<div class="screen-section" id="screen-shipment-list">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 3 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">View Shipments — All / Ocean / Air Tabs + Filters</div>
+        <div class="screen-subtitle">Filterable shipment grid with sub-tab dropdown: All, Ocean Import, Ocean Export, Air Import, Air Export</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar">
+          <div class="browser-dot" style="background:#F75F56"></div>
+          <div class="browser-dot" style="background:#FFBF2E"></div>
+          <div class="browser-dot" style="background:#27C840"></div>
+          <div class="browser-url">app.scmcube.com/control-tower/shipments</div>
+        </div>
+        <div class="app-shell">
+          <div class="sidebar">
+            <div class="sidebar-logo">SCM<span>Cube</span></div>
+            <div class="nav-item"><span class="icon">🏠</span> Control Tower</div>
+            <div class="nav-item active"><span class="icon">📦</span> Shipments</div>
+            <div class="nav-item"><span class="icon">📋</span> Order Mgmt</div>
+            <div class="nav-item"><span class="icon">🏢</span> Vendor ERP</div>
+          </div>
+          <div class="app-main">
+            <div class="topbar">
+              <div class="page-title">View Shipments</div>
+              <div class="topbar-actions">
+                <button class="btn btn-secondary">⬇ Export</button>
+                <button class="btn btn-primary">+ New Shipment</button>
+              </div>
+            </div>
+            <!-- Type tabs (dropdown from Control Tower) -->
+            <div class="tabs">
+              <div class="tab active">All Shipments</div>
+              <div class="tab">Ocean Import</div>
+              <div class="tab">Ocean Export</div>
+              <div class="tab">Air Import</div>
+              <div class="tab">Air Export</div>
+            </div>
+            <!-- Filter bar -->
+            <div class="filter-bar">
+              <div style="font-size:11px;font-weight:600;color:var(--gray-700);align-self:center;">Filters:</div>
+              <input class="filter-input" placeholder="File #" style="width:80px">
+              <input class="filter-input" placeholder="MBL #" style="width:90px">
+              <input class="filter-input" placeholder="HBL #" style="width:90px">
+              <input class="filter-input" placeholder="Cntr #" style="width:90px">
+              <input class="filter-input" placeholder="Shipper" style="width:90px">
+              <input class="filter-input" placeholder="Cnee" style="width:80px">
+              <input class="filter-input" placeholder="PO #" style="width:70px">
+              <input class="filter-input" placeholder="POL" style="width:60px">
+              <input class="filter-input" placeholder="POD" style="width:60px">
+              <input class="filter-input" placeholder="ETA from" style="width:90px">
+              <input class="filter-input" placeholder="ETA to" style="width:85px">
+              <input class="filter-input" placeholder="Team Code" style="width:90px">
+              <button class="btn btn-primary" style="padding:4px 12px;font-size:11px;">Apply</button>
+              <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;">Clear</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>File #</th><th>MBL #</th><th>HBL #</th><th>Cntr #</th><th>Shipper</th><th>Cnee</th>
+                  <th>POL</th><th>POD</th><th>ETA</th><th>Status</th><th>Team</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>SCM-2024-001</td><td>MSKU1234567</td><td>SCM001HBL</td><td>TCKU3456789</td><td>ABC Mfg Co.</td><td>XYZ Retail</td><td>CNSHA</td><td>USLAX</td><td>2024-12-15</td><td><span class="badge badge-blue">In Transit</span></td><td>WEST</td></tr>
+                <tr><td>SCM-2024-002</td><td>COSU9876543</td><td>SCM002HBL</td><td>GESU1122334</td><td>Global Tech</td><td>Metro Dist.</td><td>JPYOK</td><td>USNYC</td><td>2024-12-18</td><td><span class="badge badge-gold">Customs</span></td><td>EAST</td></tr>
+                <tr><td>SCM-2024-003</td><td>HLXU5551234</td><td>SCM003HBL</td><td>MSCU4455667</td><td>Pacific Exp.</td><td>Alpha LLC</td><td>KRPUS</td><td>USLB</td><td>2024-12-20</td><td><span class="badge badge-red">Hold</span></td><td>WEST</td></tr>
+                <tr><td>SCM-2024-004</td><td>EGLV3334455</td><td>SCM004HBL</td><td>TTNU8877665</td><td>Euro Goods</td><td>Delta Corp</td><td>DEHAM</td><td>USCHI</td><td>2024-12-22</td><td><span class="badge badge-green">Cleared</span></td><td>CENT</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <table class="field-table">
+        <thead><tr><th>Filter Field</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>File #</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Internal reference number</td></tr>
+          <tr><td>MBL #</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Master Bill of Lading</td></tr>
+          <tr><td>HBL #</td><td>Text</td><td class="field-o">OPTIONAL</td><td>House Bill of Lading</td></tr>
+          <tr><td>Cntr #</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Container number</td></tr>
+          <tr><td>Shipper</td><td>Typeahead</td><td class="field-o">OPTIONAL</td><td>Search by company name</td></tr>
+          <tr><td>Cnee (Consignee)</td><td>Typeahead</td><td class="field-o">OPTIONAL</td><td>Search by company name</td></tr>
+          <tr><td>PO #</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Purchase Order number</td></tr>
+          <tr><td>Team Code</td><td>Dropdown</td><td class="field-o">OPTIONAL</td><td>Team assignment code</td></tr>
+          <tr><td>POL</td><td>Dropdown / text</td><td class="field-o">OPTIONAL</td><td>Port of Loading (UN/LOCODE)</td></tr>
+          <tr><td>POD</td><td>Dropdown / text</td><td class="field-o">OPTIONAL</td><td>Port of Discharge</td></tr>
+          <tr><td>POFD</td><td>Dropdown / text</td><td class="field-o">OPTIONAL</td><td>Port of Final Destination</td></tr>
+          <tr><td>ETA Range (from/to)</td><td>Date range</td><td class="field-o">OPTIONAL</td><td>Date picker — start and end</td></tr>
+          <tr><td>Firms Code</td><td>Text</td><td class="field-o">OPTIONAL</td><td>US Customs Firms Code</td></tr>
+          <tr><td>Supplier Product #</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Supplier's product identifier</td></tr>
+          <tr><td>Internal Product #</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Company's internal product code</td></tr>
+        </tbody>
+      </table>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Shipment List</h4>
+        <ol>
+          <li>Should multiple filters apply as AND logic or AND/OR configurable by the user?</li>
+          <li>Is there a default sort order (newest first, ETA ascending)? Should it be configurable per user?</li>
+          <li>Should column visibility be customisable per user / per role?</li>
+          <li>Are Supplier Product # and Internal Product # linked to a product catalogue, or free-text search?</li>
+          <li>Should the POFD filter be different from POD, or are they always the same port?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 4 · SHIPMENT STAGES
+════════════════════════════════ -->
+<div class="screen-section" id="screen-shipment-stages">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 4 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Shipment Stages — Pipeline View</div>
+        <div class="screen-subtitle">Visual stage progression for each shipment; click stage to update or view detail</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar">
+          <div class="browser-dot" style="background:#F75F56"></div>
+          <div class="browser-dot" style="background:#FFBF2E"></div>
+          <div class="browser-dot" style="background:#27C840"></div>
+          <div class="browser-url">app.scmcube.com/control-tower/stages</div>
+        </div>
+        <div class="app-shell">
+          <div class="sidebar">
+            <div class="sidebar-logo">SCM<span>Cube</span></div>
+            <div class="nav-item active"><span class="icon">🏠</span> Control Tower</div>
+            <div class="nav-item"><span class="icon">📦</span> Shipments</div>
+          </div>
+          <div class="app-main">
+            <div class="topbar">
+              <div class="page-title">Shipment Stages</div>
+              <div class="topbar-actions"><button class="btn btn-secondary">Filter by Stage</button></div>
+            </div>
+            <!-- Stage pipeline for a single shipment -->
+            <div class="card" style="margin-bottom:12px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--navy);">SCM-2024-001 — MSKU1234567</div>
+                  <div style="font-size:11px;color:var(--gray-500);">ABC Mfg Co. → XYZ Retail · CNSHA → USLAX · ETA Dec 15</div>
+                </div>
+                <span class="badge badge-blue">Ocean Import</span>
+              </div>
+              <!-- Stage bar -->
+              <div style="display:flex; align-items:center; gap:4px; overflow-x:auto; padding-bottom:4px;">
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-done" style="font-size:9px;padding:3px 4px;">Booking</div><div style="font-size:9px;color:var(--green);margin-top:2px;">Nov 10</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-done" style="font-size:9px;padding:3px 4px;">Departed</div><div style="font-size:9px;color:var(--green);margin-top:2px;">Nov 22</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-active" style="font-size:9px;padding:3px 4px;">In Transit</div><div style="font-size:9px;color:var(--blue);margin-top:2px;">Now</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-future" style="font-size:9px;padding:3px 4px;">Arrived</div><div style="font-size:9px;color:var(--gray-300);margin-top:2px;">Dec 15</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-future" style="font-size:9px;padding:3px 4px;">Customs</div><div style="font-size:9px;color:var(--gray-300);margin-top:2px;">—</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-future" style="font-size:9px;padding:3px 4px;">Cleared</div><div style="font-size:9px;color:var(--gray-300);margin-top:2px;">—</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-future" style="font-size:9px;padding:3px 4px;">Delivered</div><div style="font-size:9px;color:var(--gray-300);margin-top:2px;">—</div></div>
+              </div>
+            </div>
+            <!-- Second shipment -->
+            <div class="card" style="margin-bottom:12px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--navy);">SCM-2024-002 — COSU9876543</div>
+                  <div style="font-size:11px;color:var(--gray-500);">Global Tech → Metro Dist. · JPYOK → USNYC</div>
+                </div>
+                <span class="badge badge-red">Hold</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:4px; overflow-x:auto; padding-bottom:4px;">
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-done" style="font-size:9px;padding:3px 4px;">Booking</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-done" style="font-size:9px;padding:3px 4px;">Departed</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-done" style="font-size:9px;padding:3px 4px;">Arrived</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-future" style="font-size:9px;padding:3px 4px;background:var(--red-light);color:var(--red);border-color:#EFAAA4;">Customs Hold</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-future" style="font-size:9px;padding:3px 4px;">Cleared</div></div>
+                <div style="color:var(--gray-300);font-size:14px;">›</div>
+                <div style="text-align:center;min-width:72px;"><div class="stage-pill stage-future" style="font-size:9px;padding:3px 4px;">Delivered</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Shipment Stages</h4>
+        <ol>
+          <li>What are all the stages to be defined for Ocean Import, Ocean Export, Air Import, and Air Export — are they different or shared?</li>
+          <li>Who has permission to manually advance or revert a stage — any team member or only assigned team?</li>
+          <li>Should stage updates trigger automatic notifications to the shipper/cnee/client?</li>
+          <li>Should a hold state block stage progression, or just flag it visually while allowing movement?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 5 · WATCHLIST
+════════════════════════════════ -->
+<div class="screen-section" id="screen-watchlist">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 5 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Watchlist</div>
+        <div class="screen-subtitle">User-curated list of flagged shipments requiring close monitoring</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar">
+          <div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div>
+          <div class="browser-url">app.scmcube.com/control-tower/watchlist</div>
+        </div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">⭐</span> Watchlist</div></div>
+          <div class="app-main">
+            <div class="topbar"><div class="page-title">Watchlist</div><div class="topbar-actions"><button class="btn btn-primary">+ Add to Watchlist</button></div></div>
+            <table class="data-table">
+              <thead><tr><th>File #</th><th>MBL #</th><th>Shipper</th><th>Cnee</th><th>ETA</th><th>Status</th><th>Watch Note</th><th>Added By</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>SCM-2024-003</td><td>HLXU5551234</td><td>Pacific Exp.</td><td>Alpha LLC</td><td>Dec 20</td><td><span class="badge badge-red">Hold</span></td><td>Customs exam — awaiting CES</td><td>J. Smith</td><td><button class="btn btn-ghost">Remove</button></td></tr>
+                <tr><td>SCM-2024-007</td><td>MSCU7778899</td><td>Euro Goods</td><td>Gamma Inc.</td><td>Dec 22</td><td><span class="badge badge-gold">Customs</span></td><td>FDA hold — PGA required</td><td>M. Lee</td><td><button class="btn btn-ghost">Remove</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Shipment (File # / MBL)</td><td>Lookup</td><td class="field-m">MANDATORY</td><td>Select from existing shipments</td></tr>
+          <tr><td>Watch Note / Reason</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Freeform reason for watchlist</td></tr>
+          <tr><td>Added By</td><td>Auto (user)</td><td class="field-m">MANDATORY</td><td>System-populated from login</td></tr>
+          <tr><td>Date Added</td><td>Auto (date)</td><td class="field-m">MANDATORY</td><td>System timestamp</td></tr>
+        </tbody>
+      </table>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Watchlist</h4>
+        <ol>
+          <li>Is the watchlist personal (per user) or team-shared — can one user see another's watchlist?</li>
+          <li>Should watchlisted shipments auto-remove when they reach a certain stage (e.g. Delivered)?</li>
+          <li>Should there be a priority/urgency level (High / Medium / Low) on watchlist items?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 6 · REMINDERS / HOLDS
+════════════════════════════════ -->
+<div class="screen-section" id="screen-reminders">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 6 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Reminders & Holds</div>
+        <div class="screen-subtitle">Scheduled reminders and active hold notices tied to shipments</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar">
+          <div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div>
+          <div class="browser-url">app.scmcube.com/control-tower/reminders</div>
+        </div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">🔔</span> Reminders</div></div>
+          <div class="app-main">
+            <div class="topbar"><div class="page-title">Reminders / Holds</div><div class="topbar-actions"><button class="btn btn-primary">+ Add Reminder</button></div></div>
+            <div class="tabs"><div class="tab active">All</div><div class="tab">Reminders</div><div class="tab">Active Holds</div></div>
+            <div class="reminder-card"><div class="reminder-icon" style="background:var(--red-light);">🚨</div><div style="flex:1;"><div style="font-weight:600;font-size:12px;">US Customs Hold — SCM-2024-003</div><div style="font-size:11px;color:var(--gray-500);">CES Exam ordered — awaiting exam results · Due Dec 16</div></div><span class="badge badge-red">Hold</span></div>
+            <div class="reminder-card"><div class="reminder-icon" style="background:var(--gold-light);">⏰</div><div style="flex:1;"><div style="font-weight:600;font-size:12px;">OBL Surrender Reminder — SCM-2024-001</div><div style="font-size:11px;color:var(--gray-500);">Original B/L must be surrendered before Dec 14 · Assigned to: J. Smith</div></div><span class="badge badge-gold">Due soon</span></div>
+            <div class="reminder-card"><div class="reminder-icon" style="background:var(--blue-light);">📋</div><div style="flex:1;"><div style="font-weight:600;font-size:12px;">Delivery Order Follow-up — SCM-2024-002</div><div style="font-size:11px;color:var(--gray-500);">Check DO status with terminal · Reminder set for Dec 15 9:00 AM</div></div><span class="badge badge-blue">Scheduled</span></div>
+          </div>
+        </div>
+      </div>
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Shipment link</td><td>Lookup</td><td class="field-m">MANDATORY</td><td>Tie reminder to a shipment</td></tr>
+          <tr><td>Reminder Type</td><td>Dropdown</td><td class="field-m">MANDATORY</td><td>Hold / Document / Follow-up / Custom</td></tr>
+          <tr><td>Description</td><td>Text</td><td class="field-m">MANDATORY</td><td>What needs to be done</td></tr>
+          <tr><td>Due Date / Time</td><td>DateTime</td><td class="field-m">MANDATORY</td><td>When the action is needed</td></tr>
+          <tr><td>Assigned To</td><td>User lookup</td><td class="field-o">OPTIONAL</td><td>Default: current user</td></tr>
+          <tr><td>Priority</td><td>Dropdown</td><td class="field-o">OPTIONAL</td><td>High / Medium / Low</td></tr>
+          <tr><td>Recurring</td><td>Toggle + schedule</td><td class="field-o">OPTIONAL</td><td>For repeating reminders</td></tr>
+        </tbody>
+      </table>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Reminders / Holds</h4>
+        <ol>
+          <li>Should holds block document generation or invoice creation until the hold is resolved?</li>
+          <li>Are holds entered manually by staff, or auto-triggered from a carrier / customs data feed?</li>
+          <li>Should reminder notifications be sent via email, in-app, or both?</li>
+          <li>Should a Reminder have a completion workflow (mark as done with a note/timestamp)?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 7 · CHAT BOX
+════════════════════════════════ -->
+<div class="screen-section" id="screen-chatbox">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 7 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Chat Box</div>
+        <div class="screen-subtitle">In-app messaging — shipment-linked threads and general team chat</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar"><div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div><div class="browser-url">app.scmcube.com/chat</div></div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">💬</span> Chat</div></div>
+          <div class="app-main">
+            <div style="display:grid;grid-template-columns:200px 1fr;gap:12px;height:380px;">
+              <!-- Channel list -->
+              <div class="card" style="padding:0;overflow:hidden;">
+                <div style="padding:10px 12px;font-size:11px;font-weight:700;color:var(--gray-500);border-bottom:1px solid var(--gray-200);">CHANNELS</div>
+                <div style="padding:8px 12px;font-size:12px;color:var(--navy);font-weight:600;background:var(--blue-light);border-left:2px solid var(--blue);"># general</div>
+                <div style="padding:8px 12px;font-size:12px;color:var(--gray-700);"># SCM-2024-001</div>
+                <div style="padding:8px 12px;font-size:12px;color:var(--gray-700);"># SCM-2024-003</div>
+                <div style="padding:10px 12px;font-size:11px;font-weight:700;color:var(--gray-500);border-top:1px solid var(--gray-200);">DIRECT MESSAGES</div>
+                <div style="padding:6px 12px;font-size:12px;color:var(--gray-700);">J. Smith</div>
+                <div style="padding:6px 12px;font-size:12px;color:var(--gray-700);">M. Lee</div>
+              </div>
+              <!-- Chat window -->
+              <div class="chat-box" style="display:flex;flex-direction:column;">
+                <div class="chat-header"><span># general</span><span style="font-size:10px;color:rgba(255,255,255,0.4);">12 members</span></div>
+                <div class="chat-messages" style="flex:1;">
+                  <div class="msg msg-in"><strong>J. Smith</strong><br>Has anyone confirmed the DO for SCM-001?</div>
+                  <div class="msg msg-in"><strong>M. Lee</strong><br>Not yet — I'll follow up with the terminal</div>
+                  <div class="msg msg-out">Following up now — will update by EOD</div>
+                </div>
+                <div class="chat-input-row"><input placeholder="Type a message…"><button class="btn btn-primary" style="padding:4px 12px;font-size:11px;">Send</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Chat Box</h4>
+        <ol>
+          <li>Should chat messages be searchable — including historical messages per shipment?</li>
+          <li>Can external parties (clients, carriers) be invited to a shipment-specific chat channel?</li>
+          <li>Should file/document attachments be allowed in chat, and should they link to document management?</li>
+          <li>Are read receipts / message status (sent/read) required?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 8 · ORDER MANAGEMENT — LEADS
+════════════════════════════════ -->
+<div class="screen-section" id="screen-order-leads">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 8 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Order Management — Leads (3PL Vendors Only)</div>
+        <div class="screen-subtitle">Quote template covering freight, brokerage, trucking, warehousing · General lead freeform area</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar"><div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div><div class="browser-url">app.scmcube.com/order-management/leads/new</div></div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">📋</span> Order Mgmt</div></div>
+          <div class="app-main">
+            <div class="topbar"><div class="page-title">New Lead / Quote</div><div class="topbar-actions"><button class="btn btn-secondary">Save Draft</button><button class="btn btn-primary">Submit Lead</button></div></div>
+            <div class="form-grid" style="background:var(--white);border:1px solid var(--gray-200);border-radius:8px;padding:16px;">
+              <div class="form-section-title">Lead Information</div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> Lead Source</div><select class="form-select mandatory"><option>-- Select --</option><option>Referral</option><option>Cold Outreach</option><option>Inbound Request</option></select></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> Client / Company</div><input class="form-input mandatory" placeholder="Company name"></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> Contact Name</div><input class="form-input mandatory" placeholder="Primary contact"></div>
+              <div class="form-group"><div class="form-label">Contact Email</div><input class="form-input" placeholder="email@company.com"></div>
+              <div class="form-group"><div class="form-label">Contact Phone</div><input class="form-input" placeholder="+1 (555) 000-0000"></div>
+              <div class="form-group span3"><div class="form-label">General Remarks / Lead Description</div><textarea class="form-textarea" placeholder="Freeform area — describe the general lead, customer requirements, or any context not covered by the quote template fields below…"></textarea></div>
+
+              <div class="form-section-title">Quote Template — Services Required</div>
+              <div class="form-group"><div class="form-label">Freight Type</div><select class="form-select"><option>-- Select --</option><option>Ocean FCL</option><option>Ocean LCL</option><option>Air</option><option>Rail</option></select></div>
+              <div class="form-group"><div class="form-label">Origin</div><input class="form-input" placeholder="City / Port"></div>
+              <div class="form-group"><div class="form-label">Destination</div><input class="form-input" placeholder="City / Port"></div>
+              <div class="form-group"><div class="form-label">Commodity</div><input class="form-input" placeholder="Commodity type"></div>
+              <div class="form-group"><div class="form-label">Volume (CBM / TEU)</div><input class="form-input" placeholder="0.00"></div>
+              <div class="form-group"><div class="form-label">Target Rate (USD)</div><input class="form-input" placeholder="0.00"></div>
+
+              <div class="form-section-title">Additional Services</div>
+              <div class="form-group"><div class="form-label">Brokerage Required</div><select class="form-select"><option>No</option><option>Yes — Import</option><option>Yes — Export</option></select></div>
+              <div class="form-group"><div class="form-label">Trucking Required</div><select class="form-select"><option>No</option><option>Yes — Drayage</option><option>Yes — Long Haul</option></select></div>
+              <div class="form-group"><div class="form-label">Warehousing Required</div><select class="form-select"><option>No</option><option>Yes</option></select></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Lead Source</td><td>Dropdown</td><td class="field-m">MANDATORY</td><td></td></tr>
+          <tr><td>Client / Company</td><td>Text / Lookup</td><td class="field-m">MANDATORY</td><td>Auto-link if existing profile</td></tr>
+          <tr><td>Contact Name</td><td>Text</td><td class="field-m">MANDATORY</td><td></td></tr>
+          <tr><td>General Remarks</td><td>Textarea</td><td class="field-m">MANDATORY</td><td>Freeform for general leads not tied to a specific service</td></tr>
+          <tr><td>Freight Type</td><td>Dropdown</td><td class="field-o">OPTIONAL</td><td>Only if freight service is relevant</td></tr>
+          <tr><td>Origin / Destination</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Port / city</td></tr>
+          <tr><td>Commodity</td><td>Text</td><td class="field-o">OPTIONAL</td><td></td></tr>
+          <tr><td>Volume (CBM/TEU)</td><td>Number</td><td class="field-o">OPTIONAL</td><td></td></tr>
+          <tr><td>Brokerage / Trucking / Warehousing</td><td>Dropdown</td><td class="field-o">OPTIONAL</td><td>Per service selection</td></tr>
+        </tbody>
+      </table>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Order Management Leads</h4>
+        <ol>
+          <li>Should a Lead flow into a formal RFQ workflow (Milestone 2), or is this a standalone pre-RFQ capture?</li>
+          <li>When the lead becomes a client, should the Lead record link to their Vendor Profile automatically?</li>
+          <li>Is there a sales pipeline view needed (e.g. New → Contacted → Quoted → Won/Lost)?</li>
+          <li>Can a single lead include multiple services (e.g. freight + brokerage + warehousing together)?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 9 · NEW SHIPMENT (MBL / HBL)
+════════════════════════════════ -->
+<div class="screen-section" id="screen-new-shipment">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 9 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">ERP — Generate New Shipment (MBL / HBL)</div>
+        <div class="screen-subtitle">Shipment creation form for vendor account — Ocean and Air modes</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar"><div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div><div class="browser-url">app.scmcube.com/erp/shipments/new</div></div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">🏢</span> Vendor ERP</div></div>
+          <div class="app-main">
+            <div class="topbar"><div class="page-title">New Shipment</div><div class="topbar-actions"><button class="btn btn-secondary">Save Draft</button><button class="btn btn-primary">Create Shipment</button></div></div>
+            <div class="form-grid" style="background:var(--white);border:1px solid var(--gray-200);border-radius:8px;padding:16px;">
+              <div class="form-section-title">Shipment Type</div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> Mode</div><select class="form-select mandatory"><option>Ocean</option><option>Air</option></select></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> Direction</div><select class="form-select mandatory"><option>Import</option><option>Export</option></select></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> File #</div><input class="form-input mandatory" placeholder="Auto-generated or manual"></div>
+
+              <div class="form-section-title">Parties</div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> Shipper</div><input class="form-input mandatory" placeholder="Company name or ID"></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> Consignee</div><input class="form-input mandatory" placeholder="Company name or ID"></div>
+              <div class="form-group"><div class="form-label">Notify Party</div><input class="form-input" placeholder="Optional notify party"></div>
+              <div class="form-group"><div class="form-label">Team Code</div><select class="form-select"><option>WEST</option><option>EAST</option><option>CENT</option></select></div>
+              <div class="form-group"><div class="form-label">Sales Rep</div><input class="form-input" placeholder="Assigned sales rep"></div>
+              <div class="form-group"><div class="form-label">Agent</div><input class="form-input" placeholder="Overseas agent"></div>
+
+              <div class="form-section-title">Routing</div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> POL</div><input class="form-input mandatory" placeholder="Port of Loading (e.g. CNSHA)"></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> POD</div><input class="form-input mandatory" placeholder="Port of Discharge (e.g. USLAX)"></div>
+              <div class="form-group"><div class="form-label">POFD</div><input class="form-input" placeholder="Port of Final Destination"></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> Carrier / Airline</div><input class="form-input mandatory" placeholder="Carrier name or SCAC"></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> MBL #</div><input class="form-input mandatory" placeholder="Master Bill of Lading #"></div>
+              <div class="form-group"><div class="form-label">HBL #</div><input class="form-input" placeholder="House Bill of Lading # (if applicable)"></div>
+              <div class="form-group"><div class="form-label">Container # (Cntr)</div><input class="form-input" placeholder="TCKU1234567"></div>
+              <div class="form-group"><div class="form-label">Container Size</div><select class="form-select"><option>20GP</option><option>40GP</option><option>40HC</option><option>45HC</option><option>LCL</option></select></div>
+              <div class="form-group"><div class="form-label">Vessel / Flight</div><input class="form-input" placeholder="Vessel name or flight #"></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> ETD</div><input class="form-input mandatory" type="date"></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> ETA</div><input class="form-input mandatory" type="date"></div>
+              <div class="form-group"><div class="form-label">Firms Code</div><input class="form-input" placeholder="US Customs Firms Code"></div>
+
+              <div class="form-section-title">Cargo</div>
+              <div class="form-group"><div class="form-label">Commodity</div><input class="form-input" placeholder="Commodity description"></div>
+              <div class="form-group"><div class="form-label">PO #</div><input class="form-input" placeholder="Purchase order #"></div>
+              <div class="form-group"><div class="form-label">Gross Weight (kg)</div><input class="form-input" placeholder="0.00"></div>
+              <div class="form-group"><div class="form-label">Volume (CBM)</div><input class="form-input" placeholder="0.00"></div>
+              <div class="form-group"><div class="form-label">Pkgs / Pieces</div><input class="form-input" placeholder="0"></div>
+              <div class="form-group"><div class="form-label">Supplier Product #</div><input class="form-input" placeholder="Supplier's product code"></div>
+              <div class="form-group"><div class="form-label">Internal Product #</div><input class="form-input" placeholder="Internal product code"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — New Shipment</h4>
+        <ol>
+          <li>Should File # be system-auto-generated or manually assigned — if auto, what is the numbering scheme (SCM-YYYY-####)?</li>
+          <li>For Air shipments, do routing fields (vessel/voyage) change to MAWB/HAWB and flight number?</li>
+          <li>Can a single MBL have multiple HBL children — should this be modelled as a parent–child relationship in the form?</li>
+          <li>Is there a multi-container shipment scenario (multiple Cntr #s under one MBL) — how should those be captured?</li>
+          <li>Are Supplier Product # and Internal Product # linked to a product catalogue, or free-text entry per shipment?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 10 · GENERATE DOCUMENTS
+════════════════════════════════ -->
+<div class="screen-section" id="screen-gen-documents">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 10 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">ERP — Generate Documents</div>
+        <div class="screen-subtitle">Generate all shipment documents from the shipment record — rated/non-rated, stamped, surrendered</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar"><div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div><div class="browser-url">app.scmcube.com/erp/shipments/SCM-2024-001/documents/generate</div></div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">🏢</span> Vendor ERP</div></div>
+          <div class="app-main">
+            <div class="topbar"><div class="page-title">Generate Documents — SCM-2024-001</div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <!-- Ocean docs -->
+              <div class="card">
+                <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--gray-200);">🚢 Ocean Documents</div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>Arrival Notice (Non-rated)</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>Arrival Notice (Rated)</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>Invoice — A/R</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>Invoice — A/P</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>Delivery Order</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>Release Instructions</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>Letter of Guarantee</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>I.T. (In-bond Transfer)</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>U.S. Customs Hold / Exam Notice</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>Bill of Lading (Surrender)</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>Bill of Lading (Telex Release)</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--gray-50);border-radius:5px;font-size:11px;"><span>Bill of Lading (Original Stamp)</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                </div>
+              </div>
+              <!-- Air docs -->
+              <div class="card">
+                <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--gray-200);">✈️ Air Shipment Documents</div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--teal-light);border-radius:5px;font-size:11px;"><span>Authority to Make Entry (AMS)</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--teal-light);border-radius:5px;font-size:11px;"><span>Turnover / Release Order</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--teal-light);border-radius:5px;font-size:11px;"><span>Arrival Notice (Air)</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--teal-light);border-radius:5px;font-size:11px;"><span>Invoice — A/R (Air)</span><button class="btn btn-secondary" style="padding:3px 8px;font-size:10px;">Generate</button></div>
+                </div>
+                <div style="font-size:12px;font-weight:700;color:var(--navy);margin:14px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--gray-200);">⚙️ Document Options</div>
+                <div style="display:flex;flex-direction:column;gap:8px;font-size:11px;">
+                  <div style="display:flex;align-items:center;gap:8px;"><input type="checkbox" checked><label>Add letterhead / logo</label></div>
+                  <div style="display:flex;align-items:center;gap:8px;"><input type="checkbox"><label>Add stamp / signature</label></div>
+                  <div style="display:flex;align-items:center;gap:8px;"><input type="checkbox"><label>Include rate details (Rated version)</label></div>
+                  <div style="display:flex;align-items:center;gap:8px;"><input type="checkbox"><label>Email document after generation</label></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Generate Documents</h4>
+        <ol>
+          <li>For rated vs non-rated Arrival Notice — what data fields change between the two versions?</li>
+          <li>Can stamps / signatures be pre-configured per user or per company, or uploaded per generation?</li>
+          <li>Should document generation be restricted by role (e.g. only senior staff can generate invoices)?</li>
+          <li>Can documents be bulk-generated for multiple shipments at once, or always one at a time?</li>
+          <li>Are all documents PDF output, or should some be editable (Word format) before finalisation?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 11 · DOCUMENT MANAGEMENT (Shipment)
+════════════════════════════════ -->
+<div class="screen-section" id="screen-doc-management">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 11 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Document Management — Shipment Level</div>
+        <div class="screen-subtitle">Separate buckets for 1) shipping documents and 2) invoices / payment receipts</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar"><div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div><div class="browser-url">app.scmcube.com/erp/shipments/SCM-2024-001/documents</div></div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">🏢</span> Vendor ERP</div></div>
+          <div class="app-main">
+            <div class="topbar"><div class="page-title">Documents — SCM-2024-001</div><div class="topbar-actions"><button class="btn btn-primary">+ Upload Document</button></div></div>
+            <div class="tabs"><div class="tab active">Shipping Documents</div><div class="tab">Invoices & Receipts</div></div>
+            <div class="doc-row"><div class="doc-icon">📄</div><div class="doc-info"><div class="doc-name">Original Bill of Lading</div><div class="doc-meta">Uploaded Nov 25 · by J. Smith · PDF · 1.2 MB</div></div><span class="badge badge-green">Received</span><button class="btn btn-ghost" style="margin-left:8px;">View</button></div>
+            <div class="doc-row"><div class="doc-icon">📋</div><div class="doc-info"><div class="doc-name">Packing List</div><div class="doc-meta">Uploaded Nov 26 · by J. Smith · PDF · 0.8 MB</div></div><span class="badge badge-green">Received</span><button class="btn btn-ghost" style="margin-left:8px;">View</button></div>
+            <div class="doc-row"><div class="doc-icon">📦</div><div class="doc-info"><div class="doc-name">Commercial Invoice</div><div class="doc-meta">Uploaded Nov 26 · by J. Smith · PDF · 0.5 MB</div></div><span class="badge badge-green">Received</span><button class="btn btn-ghost" style="margin-left:8px;">View</button></div>
+            <div class="doc-row"><div class="doc-icon">🛃</div><div class="doc-info"><div class="doc-name">US Customs Entry (7501)</div><div class="doc-meta">Pending — not yet uploaded</div></div><span class="badge badge-gold">Pending</span><button class="btn btn-ghost" style="margin-left:8px;">Upload</button></div>
+          </div>
+        </div>
+      </div>
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Document Type</td><td>Dropdown</td><td class="field-m">MANDATORY</td><td>B/L, Packing List, Invoice, DO, etc.</td></tr>
+          <tr><td>File Upload</td><td>File picker</td><td class="field-m">MANDATORY</td><td>PDF, XLSX, DOCX, JPG accepted</td></tr>
+          <tr><td>Document Bucket</td><td>Auto / manual</td><td class="field-m">MANDATORY</td><td>Shipping Docs vs Invoices & Receipts</td></tr>
+          <tr><td>Document Name</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Override auto-name from type</td></tr>
+          <tr><td>Version</td><td>Auto-increment</td><td class="field-o">OPTIONAL</td><td>Track superseded versions</td></tr>
+          <tr><td>Notes / Description</td><td>Text</td><td class="field-o">OPTIONAL</td><td></td></tr>
+        </tbody>
+      </table>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Shipment Document Management</h4>
+        <ol>
+          <li>Should there be document versioning — i.e. when a corrected B/L is uploaded, does the old one become archived?</li>
+          <li>Who can delete or replace a document — any user, or only managers?</li>
+          <li>Should required documents be flagged per shipment type (e.g. AMS always required for ocean imports)?</li>
+          <li>Should clients (shippers/cnees) have read-only access to their shipment documents via a portal?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 12 · MEMO NOTES
+════════════════════════════════ -->
+<div class="screen-section" id="screen-memo-notes">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 12 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Memo Notes — Internal (Shipment Level)</div>
+        <div class="screen-subtitle">Internal-only notes attached to a shipment — not visible to clients</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar"><div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div><div class="browser-url">app.scmcube.com/erp/shipments/SCM-2024-001/memo</div></div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">🏢</span> Vendor ERP</div></div>
+          <div class="app-main">
+            <div class="topbar"><div class="page-title">Memo Notes — SCM-2024-001</div><div class="topbar-actions"><button class="btn btn-primary">+ Add Note</button></div></div>
+            <div class="card" style="margin-bottom:8px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <div style="font-size:11px;font-weight:700;color:var(--navy);">J. Smith</div>
+                <div style="font-size:10px;color:var(--gray-500);">Dec 12, 2024 · 10:34 AM</div>
+              </div>
+              <div style="font-size:11px;color:var(--gray-700);">Carrier confirmed telex release — no need for OBL surrender. Updated file accordingly. Customer was informed.</div>
+              <div style="margin-top:6px;"><span class="badge badge-purple" style="background:var(--purple-light);color:var(--purple);">Documentation</span></div>
+            </div>
+            <div class="card" style="margin-bottom:8px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <div style="font-size:11px;font-weight:700;color:var(--navy);">M. Lee</div>
+                <div style="font-size:10px;color:var(--gray-500);">Dec 11, 2024 · 2:15 PM</div>
+              </div>
+              <div style="font-size:11px;color:var(--gray-700);">Terminal appointment scheduled for Dec 16 at 8AM. Driver assigned: T. Johnson. Chassis: CHSS-4456.</div>
+              <div style="margin-top:6px;"><span class="badge badge-blue">Trucking</span></div>
+            </div>
+            <!-- Add note form -->
+            <div class="card" style="background:var(--gray-50);">
+              <div class="form-group" style="margin-bottom:8px;">
+                <div class="form-label">New Memo Note</div>
+                <textarea class="form-textarea" placeholder="Add an internal note for this shipment…" style="min-height:72px;"></textarea>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <select class="form-select" style="width:140px;"><option>General</option><option>Documentation</option><option>Customs</option><option>Trucking</option><option>Finance</option></select>
+                <button class="btn btn-primary">Save Note</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Memo Notes</h4>
+        <ol>
+          <li>Should memo notes be editable or delete-able after posting, or immutable once saved (audit trail)?</li>
+          <li>Should users be able to @mention teammates in a note to trigger a notification?</li>
+          <li>Is there a need for note categories / tags beyond the basic list (Customs, Finance, etc.)?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 13 · PROFILES & SETTINGS
+════════════════════════════════ -->
+<div class="screen-section" id="screen-profile-settings">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 13 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Profiles & Settings</div>
+        <div class="screen-subtitle">Company / vendor profile — login tracked by email address · Document management hub</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar"><div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div><div class="browser-url">app.scmcube.com/profiles/VENDOR-001</div></div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">👤</span> Profiles</div></div>
+          <div class="app-main">
+            <div class="topbar"><div class="page-title">Vendor Profile — ABC Manufacturing Co.</div><div class="topbar-actions"><button class="btn btn-secondary">Edit</button><button class="btn btn-primary">Save</button></div></div>
+            <div class="form-grid" style="background:var(--white);border:1px solid var(--gray-200);border-radius:8px;padding:16px;">
+              <div class="form-section-title">Company Information</div>
+              <div class="form-group span2"><div class="form-label"><span class="required-dot"></span> Company Name</div><input class="form-input mandatory" value="ABC Manufacturing Co."></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> Company Type</div><select class="form-select mandatory"><option>Shipper</option><option>Consignee</option><option>Both</option><option>3PL Vendor</option><option>Carrier</option></select></div>
+              <div class="form-group"><div class="form-label"><span class="required-dot"></span> Primary Email</div><input class="form-input mandatory" value="ops@abcmfg.com"></div>
+              <div class="form-group"><div class="form-label">Phone</div><input class="form-input" value="+1 (213) 555-0100"></div>
+              <div class="form-group"><div class="form-label">Tax ID / EIN</div><input class="form-input" placeholder="XX-XXXXXXX"></div>
+              <div class="form-group span2"><div class="form-label">Address</div><input class="form-input" placeholder="Street, City, State, ZIP"></div>
+
+              <div class="form-section-title">User Logins (tracked by email)</div>
+            </div>
+            <table class="data-table" style="margin-top:10px;">
+              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Last Login</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>John Smith</td><td>j.smith@company.com</td><td>Operations</td><td>Dec 12, 2024</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>Mary Lee</td><td>m.lee@company.com</td><td>Customs Broker</td><td>Dec 11, 2024</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>Admin User</td><td>admin@company.com</td><td>Admin</td><td>Dec 10, 2024</td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Profiles & Settings</h4>
+        <ol>
+          <li>Should "Profiles" cover both internal users (staff) and external clients (shippers/cnees) in the same module, or separate modules?</li>
+          <li>What roles and permission levels are needed — and should permissions be configurable per profile or fixed per role type?</li>
+          <li>Should login activity (email, timestamp, IP, device) be logged per user for compliance?</li>
+          <li>Can a single company profile have multiple linked contacts (billing, operations, management) with different roles?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 14 · PROFILE DOCUMENTS (POA)
+════════════════════════════════ -->
+<div class="screen-section" id="screen-profile-docs">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 14 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Profile Document Management — POA & Misc Docs</div>
+        <div class="screen-subtitle">Power of Attorney with expiry tracking · Misc agreements and supplemental documents</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar"><div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div><div class="browser-url">app.scmcube.com/profiles/VENDOR-001/documents</div></div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">👤</span> Profiles</div></div>
+          <div class="app-main">
+            <div class="topbar"><div class="page-title">Profile Documents — ABC Manufacturing</div><div class="topbar-actions"><button class="btn btn-primary">+ Upload Document</button></div></div>
+            <div class="tabs"><div class="tab active">Power of Attorney</div><div class="tab">Misc Documents</div></div>
+            <!-- POA section -->
+            <div class="card" style="margin-bottom:10px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><div style="font-size:12px;font-weight:700;color:var(--navy);">Power of Attorney (POA)</div><button class="btn btn-secondary" style="font-size:10px;">Upload New POA</button></div>
+              <table class="data-table">
+                <thead><tr><th>Document</th><th>Uploaded</th><th>Expiry Date</th><th>Status</th><th>Completeness</th></tr></thead>
+                <tbody>
+                  <tr><td>POA — Import Authority</td><td>Jan 15, 2024</td><td>Jan 14, 2025</td><td><span class="badge badge-gold">Expiring soon</span></td><td><span class="badge badge-green">Complete</span></td></tr>
+                  <tr><td>POA — Export Authority</td><td>Mar 10, 2023</td><td>Mar 9, 2025</td><td><span class="badge badge-green">Active</span></td><td><span class="badge badge-green">Complete</span></td></tr>
+                  <tr><td>POA — ISF Filing</td><td>—</td><td>—</td><td><span class="badge badge-red">Missing</span></td><td><span class="badge badge-red">Incomplete</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Misc docs -->
+            <div class="card">
+              <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">Misc Documents</div>
+              <div class="doc-row"><div class="doc-icon">📝</div><div class="doc-info"><div class="doc-name">Broker Service Agreement</div><div class="doc-meta">Uploaded Feb 1, 2024 · Valid indefinitely</div></div><span class="badge badge-green">Active</span><button class="btn btn-ghost" style="margin-left:8px;">View</button></div>
+              <div class="doc-row"><div class="doc-icon">📝</div><div class="doc-info"><div class="doc-name">Rate Agreement — Ocean Import</div><div class="doc-meta">Uploaded Mar 15, 2024 · Expires Mar 14, 2025</div></div><span class="badge badge-green">Active</span><button class="btn btn-ghost" style="margin-left:8px;">View</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Document Type</td><td>Dropdown</td><td class="field-m">MANDATORY</td><td>POA / Service Agreement / Other</td></tr>
+          <tr><td>File Upload</td><td>File picker</td><td class="field-m">MANDATORY</td><td>PDF required for POA</td></tr>
+          <tr><td>Expiry Date</td><td>Date</td><td class="field-m">MANDATORY</td><td>For POA — required; for Misc — optional</td></tr>
+          <tr><td>POA Completeness Status</td><td>Dropdown / auto</td><td class="field-m">MANDATORY</td><td>Incomplete / Complete — drives compliance flag</td></tr>
+          <tr><td>Description / Notes</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Additional context for the document</td></tr>
+        </tbody>
+      </table>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Profile Documents / POA</h4>
+        <ol>
+          <li>How many days before expiry should the system alert the team — 30, 60, 90 days?</li>
+          <li>Should an expired POA block the creation of new customs entries for that client?</li>
+          <li>Is "Incomplete" status for a POA manually set by staff, or auto-detected from the document contents?</li>
+          <li>Can a client upload their own POA via a self-serve portal, or only internal staff can upload?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 15 · PERMITS
+════════════════════════════════ -->
+<div class="screen-section" id="screen-permits">
+  <div class="screen-card">
+    <div class="screen-header">
+      <span class="screen-badge">SCREEN 15 / 15</span>
+      <div class="screen-title-wrap">
+        <div class="screen-title">Permits — Company & Commodity</div>
+        <div class="screen-subtitle">Company and commodity-level permits with expiration tracking — FDA, USDA, FCC, etc.</div>
+      </div>
+    </div>
+    <div class="wf-body">
+      <div class="mock-browser">
+        <div class="browser-bar"><div class="browser-dot" style="background:#F75F56"></div><div class="browser-dot" style="background:#FFBF2E"></div><div class="browser-dot" style="background:#27C840"></div><div class="browser-url">app.scmcube.com/profiles/VENDOR-001/permits</div></div>
+        <div class="app-shell">
+          <div class="sidebar"><div class="sidebar-logo">SCM<span>Cube</span></div><div class="nav-item active"><span class="icon">👤</span> Profiles</div></div>
+          <div class="app-main">
+            <div class="topbar"><div class="page-title">Permits — ABC Manufacturing</div><div class="topbar-actions"><button class="btn btn-primary">+ Add Permit</button></div></div>
+            <div class="tabs"><div class="tab active">Company Permits</div><div class="tab">Commodity Permits</div></div>
+            <!-- Company permits table -->
+            <div style="margin-bottom:10px;">
+              <table class="data-table">
+                <thead><tr><th>Permit Type</th><th>Permit #</th><th>Issuing Authority</th><th>Issue Date</th><th>Expiry Date</th><th>Status</th><th>Document</th></tr></thead>
+                <tbody>
+                  <tr><td>Importer of Record</td><td>IOR-20240001</td><td>US Customs & Border Protection</td><td>Jan 1, 2024</td><td>Dec 31, 2025</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-ghost" style="font-size:10px;">View</button></td></tr>
+                  <tr><td>Customs Bond</td><td>CB-987654</td><td>Surety Company</td><td>Mar 1, 2024</td><td>Feb 28, 2025</td><td><span class="badge badge-gold">Renewing</span></td><td><button class="btn btn-ghost" style="font-size:10px;">View</button></td></tr>
+                  <tr><td>FDA Food Facility Reg.</td><td>FDA-11223344</td><td>US FDA</td><td>Jul 1, 2022</td><td>Dec 31, 2024</td><td><span class="badge badge-red">Expiring</span></td><td><button class="btn btn-ghost" style="font-size:10px;">View</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Commodity permits add form snippet -->
+            <div class="card" style="background:var(--gray-50);">
+              <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:8px;">Add Permit</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                <div><div class="form-label" style="margin-bottom:3px;"><span class="required-dot"></span> Permit Type</div><select class="form-select mandatory"><option>Company Permit</option><option>Commodity Permit</option></select></div>
+                <div><div class="form-label" style="margin-bottom:3px;"><span class="required-dot"></span> Permit Name</div><input class="form-input mandatory" placeholder="e.g. USDA Permit"></div>
+                <div><div class="form-label" style="margin-bottom:3px;">Permit #</div><input class="form-input" placeholder="Permit number"></div>
+                <div><div class="form-label" style="margin-bottom:3px;"><span class="required-dot"></span> Expiry Date</div><input class="form-input mandatory" type="date"></div>
+              </div>
+              <div style="margin-top:8px;display:flex;gap:8px;align-items:center;"><label style="font-size:11px;">Commodity (if applicable):</label><input class="form-input" placeholder="HS Code or commodity name" style="flex:1;"><button class="btn btn-primary" style="white-space:nowrap;">Save Permit</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Permit Type</td><td>Dropdown</td><td class="field-m">MANDATORY</td><td>Company Permit / Commodity Permit</td></tr>
+          <tr><td>Permit Name</td><td>Text</td><td class="field-m">MANDATORY</td><td>e.g. FDA Food Facility, USDA, Customs Bond</td></tr>
+          <tr><td>Issuing Authority</td><td>Text</td><td class="field-m">MANDATORY</td><td>Agency or organisation name</td></tr>
+          <tr><td>Expiry Date</td><td>Date</td><td class="field-m">MANDATORY</td><td>Required for expiry tracking and alerts</td></tr>
+          <tr><td>Permit Number</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Reference number from issuing body</td></tr>
+          <tr><td>Issue Date</td><td>Date</td><td class="field-o">OPTIONAL</td><td></td></tr>
+          <tr><td>Commodity / HS Code</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Commodity Permits only</td></tr>
+          <tr><td>Document Upload</td><td>File picker</td><td class="field-o">OPTIONAL</td><td>Scanned permit document</td></tr>
+          <tr><td>Notes</td><td>Text</td><td class="field-o">OPTIONAL</td><td>Renewal instructions, contacts</td></tr>
+        </tbody>
+      </table>
+      <div class="questions-box">
+        <h4>❓ Stakeholder Questions — Permits</h4>
+        <ol>
+          <li>What is the full list of permit types expected — Customs Bond, FDA, USDA, FCC, DEA, others?</li>
+          <li>Should the system flag shipments where a required commodity permit is missing or expired at time of entry?</li>
+          <li>What is the expiry alert threshold — same 30/60/90 day rule as POA, or different per permit type?</li>
+          <li>Should Customs Bond renewal trigger an automated task / reminder assigned to the compliance team?</li>
+          <li>Can commodity permits be linked to specific HTS/HS codes to auto-validate against shipment cargo data?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /canvas -->
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('screen-' + id);
+  if (el) el.classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo(0, 0);
+}
+function showLoginStep2() {
+  document.getElementById('mfa-step2').style.display = 'block';
+}
+</script>
+</body>
+</html>

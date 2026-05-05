@@ -1,0 +1,1518 @@
+
+
+ULP M4-US: CBP / ABI Customs LLD
+
+Low-Level Design — US Customs Filing Plugin
+
+Version 1.0
+
+May 2026
+
+Confidential — for ULP Engineering and US Compliance SMEs
+
+Change Log
+
+Version
+
+Date
+
+Author
+
+Changes
+
+1.0
+
+2026-05-XX
+
+Shankar
+
+Initial release. US CBP/ABI plugin for ULP M4 module.
+
+1. Introduction
+
+1.1 Purpose
+
+M4-US is the United States compliance plugin for the ULP M4 (CHA / Customs) module. It implements US Customs and Border Protection (CBP) filing workflows via the Automated Broker Interface (ABI), Automated Export System (AES), and integrates with Partner Government Agency (PGA) portals.
+
+1.2 Scope
+
+CBP entry filing: types 01 (Consumption), 02 (Quota), 03 (AD/CV), 06 (FTZ), 11 (Informal), 23 (TIB)
+
+Form 7501 entry summary preparation, calculation, submission
+
+Authority to Make Entry (ATM) workflow
+
+Immediate Transportation (I.T.) and in-bond movements
+
+AES export filing (EEI - Electronic Export Information)
+
+Importer Security Filing (ISF / 10+2)
+
+PGA holds: FDA, USDA APHIS, EPA, FCC, FWS, ATF integration
+
+US Customs Hold and Exam Notice handling
+
+FIRMS Code lookup and validation
+
+Letter of Guarantee, Delivery Order, Release Instructions document generation
+
+Bond management (Single Transaction Bond, Continuous Bond)
+
+Duty, MPF, HMF computation
+
+1.3 Out of scope
+
+Drawback claims (separate module M15-US planned for v2.1)
+
+Reconciliation entries (separate workflow planned for v2.2)
+
+CBP Form 28/29/4647 dispute workflows (manual handling for v2.0)
+
+First Sale rule advanced computations (Phase 2 enhancement)
+
+1.4 Relationship to M4-Core
+
+M4-Core (country-agnostic) handles: shipment lifecycle, MBL/HBL tracking, document storage, basic customs entity model. M4-US extends M4-Core via the IComplianceProvider interface defined in the Internationalization Guide.
+
+Activation: 
+
+M4-US loads when tenant.country_code = &quot;US&quot; and tenant.compliance_plugins includes &quot;us-cbp-abi&quot;.
+
+2. CBP / ABI Primer (for engineers)
+
+2.1 Key entities
+
+Entity
+
+Description
+
+CBP
+
+US Customs and Border Protection - the federal agency that regulates imports and exports
+
+ACE
+
+Automated Commercial Environment - CBP&apos;s primary trade processing platform
+
+ABI
+
+Automated Broker Interface - the EDI mechanism brokers use to transmit entries to ACE
+
+AES
+
+Automated Export System - for filing export shipments
+
+Filer
+
+A person or company authorized by CBP to file entries; identified by 3-character Filer Code
+
+Importer of Record
+
+The party legally responsible for the goods entering US; has IRS number / EIN
+
+Customs Broker
+
+Licensed individual/firm that files on behalf of importers; needs ATM (Authority to Make Entry)
+
+Bond
+
+Financial guarantee filed with CBP; either Single Transaction Bond or Continuous Bond
+
+Entry Number
+
+11-character identifier: 3-char filer code + 7-digit sequence + 1-char check digit
+
+7501
+
+CBP Form 7501 - Entry Summary; the document with all classification, value, duty info
+
+HTS
+
+Harmonized Tariff Schedule - 10-digit codes for classification (US version of HSN)
+
+ITN
+
+Internal Transaction Number - unique ID returned by AES upon successful export filing
+
+ISF
+
+Importer Security Filing (10+2) - filed before ocean cargo loaded at origin
+
+PGA
+
+Partner Government Agency - FDA, USDA, EPA, etc. - non-CBP agencies with cargo authority
+
+DDP / DDU / FOB / CIF
+
+Incoterms - same as international standards
+
+2.2 ABI message types ULP must support
+
+Message
+
+Direction
+
+Purpose
+
+SE
+
+Outbound (broker → CBP)
+
+Cargo Release filing; transmits commercial invoice, BOL, classification
+
+SO
+
+Outbound
+
+Entry Summary filing (7501 data)
+
+SI
+
+Outbound
+
+In-bond move (immediate transportation)
+
+SX
+
+Outbound
+
+Cancellation request
+
+UC
+
+Inbound (CBP → broker)
+
+Cargo Release status / hold / exam notice
+
+US
+
+Inbound
+
+Entry Summary acceptance / rejection
+
+UR
+
+Inbound
+
+Release notification
+
+CD
+
+Both
+
+Periodic Monthly Statement (duty payment)
+
+QP
+
+Both
+
+Query / Response for entry status
+
+2.3 Filing flow (high-level)
+
+    1. Carrier transmits Manifest (MOM/AMS) to CBP
+
+    2. ULP receives manifest data via INTTRA / direct carrier feed
+
+    3. Broker (ULP user) creates entry, classifies goods, computes duty
+
+    4. ULP transmits SE to CBP via ABI
+
+    5. CBP responds: Released / Hold / Exam
+
+       - If Hold: ULP shows hold reason; broker resolves
+
+       - If PGA Hold (FDA, USDA): broker files PGA data
+
+    6. After cargo released, broker files SO (7501 entry summary)
+
+    7. Duty payment via Periodic Monthly Statement (PMS) or per-entry
+
+    8. CBP issues Liquidation notice (typically 314 days post-entry)
+
+3. Data Model
+
+3.1 Entry header
+
+    CREATE TABLE m4us_entry (
+
+      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+      tenant_id INT NOT NULL,
+
+      shipment_id BIGINT,                       -- FK to m4_shipment (M4-Core)
+
+      -- Entry identification
+
+      entry_number CHAR(11),                    -- e.g., &quot;ABC1234567X&quot;
+
+      filer_code CHAR(3) NOT NULL,
+
+      entry_type CHAR(2) NOT NULL,              -- 01, 02, 03, 06, 11, 23, etc.
+
+      entry_type_description VARCHAR(50),
+
+      -- Parties
+
+      importer_of_record_id BIGINT NOT NULL,    -- FK to m1_party
+
+      importer_ein VARCHAR(20) NOT NULL,
+
+      consignee_id BIGINT,
+
+      ultimate_consignee_id BIGINT,
+
+      bond_id BIGINT,                           -- FK to m4us_bond
+
+      -- Carrier / vessel
+
+      carrier_scac CHAR(4) NOT NULL,            -- Standard Carrier Alpha Code
+
+      vessel_name VARCHAR(100),
+
+      voyage_number VARCHAR(20),
+
+      -- Ports
+
+      port_of_unlading_code CHAR(4) NOT NULL,   -- Schedule D/K port codes
+
+      port_of_entry_code CHAR(4) NOT NULL,
+
+      firms_code CHAR(4),                       -- Facility code (warehouse / CFS)
+
+      -- Dates
+
+      entry_date DATE NOT NULL,                 -- in ET
+
+      import_date DATE NOT NULL,
+
+      estimated_arrival_date DATE,
+
+      release_date DATE,
+
+      -- Manifest reference
+
+      bill_of_lading VARCHAR(50),               -- MBL
+
+      scac_bill_id VARCHAR(60),
+
+      in_bond_number VARCHAR(20),
+
+      -- Status
+
+      abi_status ENUM(&apos;Draft&apos;,&apos;Submitted&apos;,&apos;Accepted&apos;,&apos;Rejected&apos;,&apos;Released&apos;,&apos;Hold&apos;,&apos;Exam&apos;,&apos;Liquidated&apos;,&apos;Cancelled&apos;) NOT NULL DEFAULT &apos;Draft&apos;,
+
+      cbp_status_message TEXT,
+
+      pga_hold_flag TINYINT(1) DEFAULT 0,
+
+      exam_type ENUM(&apos;NIL&apos;,&apos;XRAY&apos;,&apos;INTENSIVE&apos;,&apos;CET&apos;,&apos;TAILGATE&apos;) DEFAULT &apos;NIL&apos;,
+
+      -- Totals (computed)
+
+      total_value_usd DECIMAL(18,2),
+
+      duty_amount_usd DECIMAL(18,2),
+
+      mpf_usd DECIMAL(18,2),                    -- Merchandise Processing Fee
+
+      hmf_usd DECIMAL(18,2),                    -- Harbor Maintenance Fee
+
+      total_fees_usd DECIMAL(18,2),
+
+      -- Audit
+
+      created_at_utc DATETIME(3) NOT NULL,
+
+      created_by BIGINT NOT NULL,
+
+      submitted_at_utc DATETIME(3),
+
+      released_at_utc DATETIME(3),
+
+      liquidated_at_utc DATETIME(3),
+
+      INDEX idx_tenant_status (tenant_id, abi_status),
+
+      INDEX idx_entry_number (entry_number)
+
+    );
+
+3.2 Entry line items (HTS classification)
+
+    CREATE TABLE m4us_entry_line (
+
+      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+      tenant_id INT NOT NULL,
+
+      entry_id BIGINT NOT NULL,                 -- FK m4us_entry
+
+      line_number INT NOT NULL,
+
+      -- Classification
+
+      hts_number VARCHAR(15) NOT NULL,          -- 10-digit HTS, e.g., &quot;0703.10.4000&quot;
+
+      description VARCHAR(255) NOT NULL,
+
+      country_of_origin CHAR(2) NOT NULL,
+
+      -- Quantities
+
+      quantity DECIMAL(18,4) NOT NULL,
+
+      unit_of_measure VARCHAR(10) NOT NULL,
+
+      net_weight_kg DECIMAL(18,4),
+
+      -- Value
+
+      invoice_value_usd DECIMAL(18,2) NOT NULL,
+
+      invoice_currency CHAR(3) NOT NULL,
+
+      invoice_value_orig DECIMAL(18,2) NOT NULL,
+
+      fx_rate DECIMAL(18,8),
+
+      -- Duty rate and amount
+
+      duty_rate_pct DECIMAL(8,4),
+
+      duty_specific DECIMAL(18,4),               -- specific rate (e.g., $0.10/kg)
+
+      duty_amount_usd DECIMAL(18,2),
+
+      -- ADD/CVD
+
+      add_case_number VARCHAR(20),               -- Anti-dumping case
+
+      cvd_case_number VARCHAR(20),               -- Countervailing case
+
+      add_rate_pct DECIMAL(8,4),
+
+      cvd_rate_pct DECIMAL(8,4),
+
+      -- Special programs
+
+      special_program CHAR(2),                   -- e.g., GSP=A, NAFTA/USMCA=US/MX/CA
+
+      preferential_treatment_pct DECIMAL(8,4),
+
+      -- PGA flags
+
+      fda_required TINYINT(1) DEFAULT 0,
+
+      usda_required TINYINT(1) DEFAULT 0,
+
+      epa_required TINYINT(1) DEFAULT 0,
+
+      fcc_required TINYINT(1) DEFAULT 0,
+
+      -- Cross-references
+
+      manufacturer_id_code VARCHAR(15),          -- MID
+
+      INDEX idx_entry_line (entry_id, line_number)
+
+    );
+
+4. Entry Workflow
+
+4.1 State machine
+
+    Draft ───[validate]──▶ Validated ───[submit ABI SE]──▶ Submitted
+
+      │                                                       │
+
+      │                                              ┌────────┼─────────┐
+
+      │                                              ▼        ▼         ▼
+
+      │                                          Accepted  Rejected   Hold
+
+      │                                              │                  │
+
+      │                                              ▼                  │
+
+      │                                          Released ◀─────────────┘
+
+      │                                              │                  
+
+      │                                              ▼                  
+
+      │                                       [submit SO 7501]          
+
+      │                                              │                  
+
+      │                                              ▼                  
+
+      │                                       Entry Summary             
+
+      │                                       Accepted                  
+
+      │                                              │                  
+
+      │                                              ▼                  
+
+      │                                          Liquidated             
+
+      └─────[cancel]────▶ Cancelled (terminal, requires SX message)
+
+4.2 Validation rules
+
+Before transmitting to CBP, M4-US enforces these validations to prevent rejection:
+
+Rule
+
+Description
+
+Severity
+
+EIN format
+
+Importer EIN must match XX-XXXXXXX or XXXXXXXXX
+
+Error
+
+Filer code
+
+3 characters; CBP-assigned to broker
+
+Error
+
+Entry type
+
+Must be valid CBP entry type code
+
+Error
+
+Bond coverage
+
+For Type 01: continuous bond OR STB amount &gt;= 110% of duty + fees
+
+Error
+
+HTS validity
+
+HTS number must exist in current HTSUS
+
+Error
+
+HTS units
+
+Quantity unit must match HTS-required unit
+
+Error
+
+MID format
+
+Manufacturer ID must match CBP MID format (country code + chars)
+
+Error
+
+Country of origin
+
+ISO 3166-1 alpha-2; must not be embargoed (OFAC check)
+
+Error
+
+Currency conversion
+
+If invoice in foreign currency, FX rate from entry date
+
+Error
+
+ISF status
+
+For ocean import: ISF must be filed (10+2 = 24h before loading)
+
+Warning
+
+Permit/license
+
+PGA-required permits must be on file
+
+Error
+
+ADD/CVD case
+
+If applicable, case must be open and rate looked up
+
+Error
+
+4.3 OFAC / sanctions screening
+
+Importer of Record screened against OFAC SDN list at entry creation
+
+Country of Origin checked against country sanctions list (Iran, North Korea, Cuba, etc.)
+
+Use Treasury OFAC API or licensed providers (Sanctions.io, Visual Compliance)
+
+Hits block submission; reviewed by compliance officer
+
+5. Duty and Fee Computation
+
+5.1 Duty calculation methods
+
+Method
+
+Formula
+
+When used
+
+Ad valorem
+
+Duty = Value × Rate%
+
+Most common; e.g., apparel 16.5%
+
+Specific
+
+Duty = Quantity × $/unit
+
+e.g., footwear $0.84/pair
+
+Compound
+
+Specific + Ad valorem
+
+e.g., footwear 12% + $0.84/pair
+
+Other
+
+Various per HTS
+
+Tobacco, alcohol, special programs
+
+5.2 Customs value (entered value)
+
+Per 19 USC 1401a, transaction value (price actually paid or payable) is the primary basis. Adjustments per 1401a(b):
+
+ADDED to price: packing costs, selling commissions, assists, royalties, proceeds of subsequent resale to seller, foreign inland freight, foreign loading
+
+NOT INCLUDED: international freight, marine insurance, US destination charges (if separately billed)
+
+Currency: convert to USD using CBP-published exchange rate for the date of export
+
+    // Pseudo-code for entered value computation
+
+    public Money ComputeEnteredValue(EntryLine line)
+
+    {
+
+        var basePrice = line.InvoicePriceUsd;       // converted from invoice currency
+
+        var adds = line.PackingCosts + line.SellingCommissions
+
+                 + line.Assists + line.Royalties
+
+                 + line.ForeignInlandFreight + line.ForeignLoading;
+
+        var deducts = 0m;  // none for transaction value method
+
+        return Money.Usd(basePrice + adds - deducts);
+
+    }
+
+5.3 Merchandise Processing Fee (MPF)
+
+Entry value
+
+MPF amount
+
+Formal entry (&gt;$2,500)
+
+0.3464% of entered value, min $32.71, max $634.62 (FY2026 rates)
+
+Informal entry ($800-$2,500)
+
+$2.62, $6.53, or $9.99 depending on type
+
+De minimis (&lt;$800)
+
+Exempt
+
+Note: 
+
+MPF rates change annually (typically October 1). M4-US must read current rates from m4us_mpf_rate table; never hardcode.
+
+5.4 Harbor Maintenance Fee (HMF)
+
+Applies to: imports arriving by ocean vessel through US ports (and some IT moves)
+
+Rate: 0.125% of entered value
+
+Does NOT apply to: air, road, rail imports; US Virgin Islands; some Alaska/Hawaii movements
+
+5.5 Anti-dumping (ADD) and Countervailing (CVD)
+
+ADD/CVD cases are administered by Department of Commerce. M4-US must:
+
+Maintain table of active ADD/CVD cases with effective rates per manufacturer
+
+Match entry line&apos;s HTS + country + manufacturer to applicable case
+
+Apply ADD/CVD on TOP of normal duty
+
+Cash deposit at entry; final assessment after review (often years later)
+
+Sync case data weekly from Commerce.gov / customsmobile.com
+
+6. ABI Message Transmission
+
+6.1 Connectivity
+
+CBP provides ABI access via VAN (GXS, IBM Sterling) or direct AS2
+
+Recommended: AS2 connection for production; SOAP-over-HTTP for sandbox testing
+
+Message format: ANSI X12 (some EDIFACT for international)
+
+CBP cert required: production filer applies via Form 5106; ABI testing program required first
+
+6.2 Outbound message construction
+
+Example SE (Cargo Release) message structure:
+
+    ISA*00*          *00*          *ZZ*FILERID        *ZZ*CBP            ~
+
+    GS*BC*FILERID*CBP*20260515*1430*1*X*004010~
+
+    ST*350*0001~
+
+    M10*ABC1234567X*01*FILERID*EIN123456789*...*~  -- Entry header
+
+    P4*USNYC*USDET*~                                 -- Ports
+
+    LX*1~                                            -- Line 1
+
+    M13*USABC*1*MFRID***...*~                       -- Manufacturer ID
+
+    N9*BM*BL12345678*~                               -- Bill of lading reference
+
+    LE*1~
+
+    SE*15*0001~
+
+    GE*1*1~
+
+    IEA*1*000000001~
+
+6.3 Inbound message processing
+
+Listen on AS2 endpoint for CBP-initiated messages
+
+Parse UC (Cargo Release Status), US (Entry Summary Status), UR (Release)
+
+Update m4us_entry.abi_status accordingly
+
+Trigger domain events: EntryReleased, EntryHeldForExam, PgaHold, EntryRejected
+
+6.4 Reliability patterns
+
+Pattern
+
+Implementation
+
+Idempotency
+
+Idempotency-Key on submission API; duplicate sends reuse last response
+
+Retry
+
+Polly retry pipeline; 3 attempts with exponential backoff
+
+Outbox
+
+All ABI messages persisted in m4us_abi_outbox before transmit
+
+Acknowledgment matching
+
+Match inbound 997 / TA1 to outbound by message reference; track timeout (15 min)
+
+Error parsing
+
+Map CBP rejection codes to user-friendly messages; create issue ticket if user input fix needed
+
+Audit
+
+Every transmit logged with: timestamp UTC, user, payload (redacted), response
+
+7. PGA (Partner Government Agency) Integration
+
+7.1 Overview
+
+PGAs are non-CBP federal agencies that hold authority over specific commodity types. CBP coordinates with them via PGA Message Sets in the ACE system. M4-US must support filing data for the major PGAs:
+
+Agency
+
+Commodities
+
+Forms / Data
+
+FDA
+
+Food, drugs, devices, cosmetics
+
+Prior Notice (PN), FDA 2877, 510(k), DUNS
+
+USDA APHIS
+
+Plants, plant products, animals
+
+PPQ Form 587, Lacey Act declaration
+
+USDA FSIS
+
+Meat, poultry, egg products
+
+FSIS 9540-1, foreign establishment list
+
+EPA
+
+Chemicals (TSCA), pesticides (FIFRA), motor vehicles
+
+TSCA 13(b) cert, FIFRA 17, EPA 3520-1
+
+FCC
+
+Radio frequency devices
+
+FCC 740, equipment authorization
+
+FWS
+
+Wildlife, endangered species, plants
+
+Form 3-177, CITES permits
+
+CPSC
+
+Consumer products
+
+General Conformity Cert, lab test reports
+
+ATF
+
+Firearms, explosives
+
+Form 6, Form 6 NFA, Form 9
+
+DOT NHTSA
+
+Motor vehicles
+
+HS-7
+
+7.2 PGA flag determination
+
+At entry line creation, M4-US determines required PGAs by HTS code lookup:
+
+    CREATE TABLE m4us_hts_pga_mapping (
+
+      hts_prefix VARCHAR(15) NOT NULL,           -- e.g., &quot;0703.10&quot;
+
+      pga_code ENUM(&apos;FDA&apos;,&apos;USDA-APHIS&apos;,&apos;USDA-FSIS&apos;,&apos;EPA-TSCA&apos;,&apos;EPA-FIFRA&apos;,
+
+                    &apos;FCC&apos;,&apos;FWS&apos;,&apos;CPSC&apos;,&apos;ATF&apos;,&apos;DOT-NHTSA&apos;) NOT NULL,
+
+      is_required TINYINT(1) NOT NULL,
+
+      pga_message_type VARCHAR(20),
+
+      effective_from DATE NOT NULL,
+
+      effective_to DATE,
+
+      PRIMARY KEY (hts_prefix, pga_code, effective_from)
+
+    );
+
+7.3 PGA hold workflow
+
+CBP / PGA inspector flags hold; status returned via UC message with hold reason code
+
+M4-US updates entry status to &quot;Hold&quot;; pga_hold_flag = 1
+
+Notification dispatched to broker user via M27
+
+Broker uploads PGA-required documents (PN, certificates, lab reports) via M21 Doc Mgmt
+
+Broker submits PGA Message Set update via ABI
+
+PGA reviews; releases or escalates to exam
+
+On release: ULP receives UC update with status &quot;Released&quot;; entry proceeds
+
+8. AES Export Filing
+
+8.1 When AES filing is required
+
+Single export commodity &gt; $2,500 (most common trigger)
+
+Goods requiring an export license regardless of value
+
+Goods to specific countries (e.g., Cuba, Iran, North Korea, Syria) with limited exceptions
+
+Used self-propelled vehicles regardless of value
+
+Re-exports of foreign goods originally imported under temporary entries
+
+8.2 EEI (Electronic Export Information) data elements
+
+    CREATE TABLE m4us_aes_eei (
+
+      id BIGINT PRIMARY KEY,
+
+      tenant_id INT NOT NULL,
+
+      shipment_id BIGINT,
+
+      -- Identification
+
+      itn VARCHAR(20),                          -- Internal Transaction Number (returned by AES)
+
+      shipment_reference_number VARCHAR(35) NOT NULL,
+
+      -- Parties
+
+      usppi_id BIGINT NOT NULL,                 -- US Principal Party in Interest
+
+      usppi_ein VARCHAR(20) NOT NULL,
+
+      ultimate_consignee_id BIGINT NOT NULL,
+
+      intermediate_consignee_id BIGINT,
+
+      forwarding_agent_id BIGINT,
+
+      -- Transport
+
+      mode_of_transport ENUM(&apos;10&apos;,&apos;11&apos;,&apos;12&apos;,&apos;20&apos;,&apos;21&apos;,&apos;40&apos;,&apos;41&apos;,&apos;30&apos;,&apos;31&apos;,&apos;32&apos;,&apos;33&apos;) NOT NULL,
+
+      carrier_scac CHAR(4),
+
+      conveyance_name VARCHAR(100),
+
+      -- Ports &amp; dates
+
+      port_of_export CHAR(4) NOT NULL,
+
+      port_of_unlading CHAR(4),
+
+      country_of_destination CHAR(2) NOT NULL,
+
+      date_of_export DATE NOT NULL,
+
+      -- Status
+
+      filing_status ENUM(&apos;Draft&apos;,&apos;Submitted&apos;,&apos;Accepted&apos;,&apos;Rejected&apos;,&apos;Cancelled&apos;,&apos;Replaced&apos;) NOT NULL,
+
+      filing_option ENUM(&apos;1&apos;,&apos;2&apos;,&apos;3&apos;,&apos;4&apos;) NOT NULL,
+
+      -- Audit
+
+      filed_at_utc DATETIME(3),
+
+      filed_by BIGINT
+
+    );
+
+8.3 AES filing options
+
+Option
+
+Description
+
+Timing
+
+Pre-departure (Option 1)
+
+File EEI before vessel/aircraft departure
+
+Pre-export
+
+Post-departure (Option 4)
+
+File within 5 calendar days after departure (USPPI must be approved)
+
+Post-export
+
+8.4 AES message types
+
+AES X12 (601) for transmission
+
+AES X12 (951) for response (acceptance / fatal error / verify message)
+
+AES amendment messages for corrections post-acceptance
+
+All transmissions retained per CBP recordkeeping requirements (5 years)
+
+9. Importer Security Filing (10+2)
+
+9.1 Overview
+
+Per 19 CFR 149, ISF requires importers to submit 10 specific data elements 24 hours before cargo is loaded onto a vessel destined for the US. Carriers submit the additional 2 elements (vessel stow plan, container status messages).
+
+9.2 ISF data elements (Importer&apos;s 10)
+
+#
+
+Element
+
+Notes
+
+1
+
+Importer of Record number
+
+EIN, SSN (last 4), or CBP-assigned
+
+2
+
+Consignee number(s)
+
+Same format
+
+3
+
+Seller name + address
+
+Foreign supplier
+
+4
+
+Buyer name + address
+
+US-based
+
+5
+
+Ship to name + address
+
+Final destination
+
+6
+
+Manufacturer (or supplier) name + address
+
+Where goods were produced
+
+7
+
+Country of origin
+
+ISO 3166-1
+
+8
+
+Commodity HTS-6
+
+6-digit harmonized code
+
+9
+
+Container stuffing location
+
+Where container was loaded
+
+10
+
+Consolidator name + address
+
+For LCL
+
+9.3 Filing timing
+
+ISF must be on file 24 hours before vessel loaded at foreign port
+
+Late filing: $5,000 per violation; ULP must alert if cutoff approaching
+
+Updates allowed: must be submitted before cargo arrives at first US port
+
+9.4 ULP workflow
+
+At booking creation, ULP captures ISF data
+
+M4-US validates 10 elements complete before vessel loading
+
+Auto-submit ISF (option configurable) or hold for broker review
+
+Track ISF status: Filed, Match (matched to bill of lading), No Match, Late
+
+Bond for ISF: continuous bond covers ISF filings; broker liable for late penalties
+
+10. Documents Generated by M4-US
+
+10.1 Document catalog
+
+Document
+
+Trigger
+
+Audience
+
+Format
+
+CBP Form 7501 Entry Summary
+
+On entry summary submission
+
+CBP, Importer, Internal
+
+PDF
+
+Authority to Make Entry (ATM)
+
+Importer empowers broker
+
+Importer signature, kept on file
+
+PDF
+
+Power of Attorney (POA)
+
+Importer authorizes broker
+
+Long-term filing authority
+
+PDF
+
+Letter of Guarantee
+
+Cargo not yet released; broker guarantees payment
+
+Steamship line
+
+PDF
+
+Delivery Order
+
+Authorize warehouse/CFS to release cargo
+
+Warehouse
+
+PDF
+
+Release Instructions
+
+Carrier-issued release
+
+Carrier
+
+PDF
+
+Authority to Make Entry / Power of Attorney combined
+
+Combined ATM+POA per CBP guidance
+
+Importer kept on file
+
+PDF
+
+Customs Entry Bond
+
+Single Transaction Bond filing
+
+Surety, CBP
+
+PDF + EDI
+
+Letter of Credit Reference
+
+Trade finance integration
+
+Banks
+
+PDF
+
+Immediate Transportation (I.T.) Permit
+
+In-bond move from POE to IT destination
+
+CBP, Bonded Carrier
+
+PDF + ABI
+
+Notice of Arrival
+
+Inform consignee of cargo arrival
+
+Consignee
+
+PDF + email
+
+Customs Hold / Exam Notice
+
+On CBP-issued hold
+
+Internal, Importer
+
+Auto-generated
+
+Liquidation Notice
+
+On CBP liquidation
+
+Internal, Importer
+
+Auto-generated
+
+10.2 Form 7501 specific fields
+
+M4-US generates a CBP Form 7501 that mirrors CBP&apos;s template exactly. Key fields:
+
+Box 1: Filer Code / Entry Number / Entry Type
+
+Box 2: Entry Summary Date
+
+Box 3: Mode of Transport (10/11/12/20/21/40/41/etc.)
+
+Box 4: Bond Type (8 = Single Transaction; 9 = Continuous)
+
+Box 5: Port of Entry (Schedule D code)
+
+Box 6-12: Carrier, vessel, voyage, B/L info
+
+Box 13-22: Importer, consignee, seller, broker info
+
+Box 23-29: HTS line items, classification, quantities, values
+
+Box 30-37: Duty calculations, MPF, HMF, totals
+
+Box 38-40: Authorization, certifications, signature
+
+11. Control Tower UI Surface
+
+M4-US contributes specific UI surfaces to the M24 Control Tower for US-region tenants:
+
+11.1 US shipment list view
+
+Filterable shipment list with US-specific filters:
+
+MBL / HBL / Container number search
+
+POL (Port of Loading) and POD (Port of Discharge)
+
+CBP entry status (Draft, Submitted, Released, Held, etc.)
+
+PGA hold status (any of: FDA, USDA, EPA, etc.)
+
+Exam status
+
+Liquidation status
+
+Per Diem / Demurrage status
+
+Bond status
+
+11.2 Reminders / Watchlist widgets
+
+Cargo arriving in next 7 days (sorted by ETA)
+
+CBP entries pending submission (drafts &gt; 24h old)
+
+PGA holds awaiting broker action
+
+ISF filings approaching 24h cutoff
+
+Exam appointments
+
+Bond expirations within 30 days
+
+Liquidation pending review
+
+11.3 Exception alerts
+
+Entry rejected by CBP — reason code + remediation needed
+
+PGA hold issued — agency + reason
+
+ADD/CVD case found applicable mid-flight
+
+Anti-dumping cash deposit shortfall
+
+Bond utilization &gt; 90% — renewal recommended
+
+12. Security and Audit
+
+12.1 PII / sensitive data handling
+
+EIN: stored encrypted at rest using Azure Key Vault keys; redacted to last-4 in logs
+
+SSN (last 4 only, when used): never store full SSN
+
+Credit card / bank account: not stored by M4-US (handled by M17)
+
+Power of Attorney documents: WORM storage in M21 with 5-year retention minimum
+
+12.2 Audit trail
+
+Per CBP recordkeeping requirements (19 CFR 163), the following are retained for 5 years from entry date:
+
+All ABI messages (sent and received)
+
+Form 7501 PDFs as filed
+
+Commercial invoices, packing lists, BLs, certificates of origin
+
+PGA-related documents
+
+User actions: who created entry, who submitted, who modified
+
+Bond filings and modifications
+
+12.3 CBP audit support
+
+Self-Assessment audit reports exportable from M4-US
+
+CF-28 (Request for Information) response workflow
+
+CF-29 (Notice of Action) response workflow
+
+Reconciliation entry support (out of v2.0 scope; planned v2.2)
+
+12.4 Broker license validation
+
+CBP issues licenses; brokers identified by 3-char Filer Code
+
+M4-US validates broker license is active before allowing ABI submission
+
+License expiry tracked; alerts at 90/30/7 days before expiry
+
+13. Non-Functional Requirements
+
+13.1 Performance
+
+Metric
+
+Target
+
+Entry creation API p99
+
+&lt; 800ms
+
+Duty computation per line
+
+&lt; 100ms
+
+ABI SE transmission round-trip
+
+&lt; 5s typical (CBP can take longer)
+
+Form 7501 PDF generation
+
+&lt; 3s
+
+Concurrent ABI sessions per region
+
+50 simultaneous
+
+HTS lookup (cached)
+
+&lt; 50ms
+
+13.2 Reliability
+
+ABI message dispatch via Outbox + Polly retry pipelines
+
+Graceful degradation if CBP ABI is down: queue messages; alert ops
+
+PGA portal failures: retry + manual fallback workflow
+
+FX rate cache fallback: previous-day rate if current unavailable
+
+13.3 Compliance with CBP regulations
+
+Recordkeeping: 5-year retention for all entry-related records (19 CFR 163.4)
+
+Reasonable Care doctrine: M4-US must support broker exercising reasonable care
+
+C-TPAT data: tenant can register as C-TPAT importer; M4-US tags C-TPAT entries
+
+Trusted Trader / FAST: similar tagging support
+
+14. Integration Points
+
+14.1 With M4-Core
+
+Inherits shipment lifecycle, MBL/HBL tracking
+
+Reads m4_shipment for vessel/voyage/B/L data
+
+Writes m4us_entry events back to m4_shipment for status sync
+
+14.2 With M17 Accounts
+
+Duty + MPF + HMF amounts published to M17 for AR (broker bills importer) and AP (broker pays CBP)
+
+PMS (Periodic Monthly Statement) reconciliation between M4-US filings and M17-US payments
+
+Bond utilization tracked; visible in M17 financial statements
+
+14.3 With M21 Doc Management
+
+All generated PDFs (7501, ATM, POA, etc.) stored in M21
+
+Uploaded supporting docs (commercial invoice, packing list, certs) referenced from M21
+
+OCR extraction of invoices via M28 AI Services for line item assist
+
+14.4 With M27 Notifications
+
+Hold notifications: dispatched on ABI inbound UC with hold flag
+
+PGA hold notifications: agency-specific templates
+
+Liquidation notifications: long-tail (314 days post-entry)
+
+ISF cutoff approaching: time-based alerts
+
+Bond expiry: 90/30/7 day reminders
+
+14.5 With M28 AI Services
+
+Commercial invoice OCR + line item extraction with HTS suggestion
+
+Pre-classification suggestions based on description (RAG over CROSS rulings database)
+
+PGA-required-document detection (e.g., is this an FDA-regulated commodity?)
+
+Broker assistance chat: answer regulatory questions citing CBP rulings
+
+15. Appendix
+
+15.1 References
+
+19 USC 1401a - Customs Valuation
+
+19 CFR 141 - Entry of Merchandise
+
+19 CFR 142 - Entry Process
+
+19 CFR 143 - Special Entry Procedures
+
+19 CFR 149 - Importer Security Filing
+
+19 CFR 163 - Recordkeeping
+
+CBP ACE Trade Reference Guide
+
+ABI CATAIR (Customs Automated Interface Technical Reference)
+
+AES Trade Interface Requirements (AESTIR)
+
+15.2 External integrations checklist
+
+Integration
+
+Endpoint
+
+Auth
+
+SLA
+
+CBP ABI
+
+AS2 / VAN
+
+PKI cert + Filer Code
+
+CBP commits 5s for ack
+
+CBP ACE Portal
+
+Web (manual fallback)
+
+CBP-issued credentials
+
+No SLA
+
+FDA PREDICT
+
+API or portal upload
+
+FDA Industry Systems credentials
+
+Variable
+
+USDA APHIS
+
+API + paper for permits
+
+USDA credentials
+
+Variable
+
+EPA ECMPS
+
+API + portal
+
+CDX (Central Data Exchange) account
+
+Variable
+
+HTSUS data
+
+USITC HTSUS API
+
+Public
+
+Cached daily
+
+Schedule D port codes
+
+CBP published list
+
+Public
+
+Updated quarterly
+
+MID validation
+
+CBP MID Builder
+
+Public
+
+Real-time
+
+ADD/CVD cases
+
+Department of Commerce
+
+Public
+
+Sync weekly
+
+CROSS rulings (for RAG)
+
+rulings.cbp.gov
+
+Public
+
+Sync monthly
+
+OFAC SDN
+
+Treasury OFAC API
+
+Public
+
+Sync daily
+
+15.3 Related ULP documents
+
+ULP_HLD_v2.0_MultiRegion.docx — High-Level Design
+
+ULP_Internationalization_Guide_v1.0.docx — Plugin pattern foundation
+
+ULP_LLD_M4_v2.0_CHA.docx — M4-Core (in rework)
+
+ULP_LLD_M17_US_Accounts_GAAP_v1.0.docx — US accounting partner doc
+
+ULP_DBD_v2.0_DatabaseDesign.docx — Database design
+
+— End of M4-US LLD —
+
