@@ -1,5 +1,7 @@
-# Path B variant — push everything EXCEPT node_modules (too big for HTTPS push).
-# Restore the full .gitignore from .gitignore.path-a-backup if you want
-# proper exclusions back later.
+# Path B variant — push everything EXCEPT regeneratable build output
+# that broke GitHub's receive-pack with HTTP 408 / connection-reset.
 node_modules/
 **/node_modules/
+**/bin/
+**/.angular/cache/
+**/dist/
