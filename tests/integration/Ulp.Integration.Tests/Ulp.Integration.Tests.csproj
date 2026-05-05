@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Ulp.Integration.Tests</RootNamespace>
+    <!-- This project lives under tests/, outside src/backend/Directory.Packages.props.
+         Versions are inlined below; disable CPM so dotnet doesn't search for a
+         packages props file that wouldn't apply here anyway. -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- CP14 baseline scope: SQL-only migration smoke tests don't need module
+       project refs. Service-level integration tests (CP14.5+) will pull
+       module Domain/Application/Infrastructure projects in as needed. -->
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageReference Include="xunit" Version="2.8.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Testcontainers.MySql" Version="3.9.0" />
+    <!-- MySqlConnector for direct SQL — Pomelo brings it transitively in module
+         projects, but the test project doesn't reference any of those, so add it
+         explicitly here. -->
+    <PackageReference Include="MySqlConnector" Version="2.3.7" />
+  </ItemGroup>
+
+</Project>

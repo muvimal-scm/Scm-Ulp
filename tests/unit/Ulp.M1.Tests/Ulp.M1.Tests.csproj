@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <RootNamespace>Ulp.M1.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\backend\modules\M1.MasterData\Ulp.M1.Domain\Ulp.M1.Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\backend\modules\M1.MasterData\Ulp.M1.Application\Ulp.M1.Application.csproj" />
+    <ProjectReference Include="..\..\..\src\backend\shared\Ulp.TestKit\Ulp.TestKit.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="FluentValidation" />
+  </ItemGroup>
+
+</Project>

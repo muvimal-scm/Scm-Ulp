@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Ulp.Core.Domain.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\backend\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\backend\shared\Ulp.TestKit\Ulp.TestKit.csproj" />
+  </ItemGroup>
+
+  <!-- Versions pinned inline because Directory.Packages.props lives at src/backend
+       and isn't visible to the tests/ tree. Keep these in sync with that file. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk"        Version="17.10.0" />
+    <PackageReference Include="xunit"                         Version="2.8.1" />
+    <PackageReference Include="xunit.runner.visualstudio"     Version="2.8.1" />
+    <PackageReference Include="FluentAssertions"              Version="6.12.0" />
+  </ItemGroup>
+
+</Project>

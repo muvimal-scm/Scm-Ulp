@@ -1,0 +1,487 @@
+{
+  "format": 1,
+  "restore": {
+    "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\tests\\unit\\Ulp.Core.Domain.Tests\\Ulp.Core.Domain.Tests.csproj": {}
+  },
+  "projects": {
+    "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Abstractions\\Ulp.Core.Abstractions.csproj": {
+      "version": "0.1.0-phase1",
+      "restore": {
+        "projectUniqueName": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Abstractions\\Ulp.Core.Abstractions.csproj",
+        "projectName": "Ulp.Core.Abstractions",
+        "projectPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Abstractions\\Ulp.Core.Abstractions.csproj",
+        "packagesPath": "C:\\Users\\91971\\.nuget\\packages\\",
+        "outputPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Abstractions\\obj\\",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "configFilePaths": [
+          "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\NuGet.Config",
+          "C:\\Users\\91971\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Domain\\Ulp.Core.Domain.csproj": {
+                "projectPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Domain\\Ulp.Core.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ],
+          "warnNotAsError": [
+            "NU1605",
+            "NU1902",
+            "NU1903",
+            "NU1904"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.2, )",
+              "versionCentrallyManaged": true
+            },
+            "NodaTime": {
+              "target": "Package",
+              "version": "[3.1.11, )",
+              "versionCentrallyManaged": true
+            }
+          },
+          "centralPackageVersions": {
+            "FluentAssertions": "6.12.0",
+            "FluentValidation": "11.9.2",
+            "FluentValidation.DependencyInjectionExtensions": "11.9.2",
+            "Hangfire.AspNetCore": "1.8.12",
+            "Hangfire.MySqlStorage": "2.0.3",
+            "MassTransit": "8.2.3",
+            "MassTransit.Extensions.DependencyInjection": "7.3.1",
+            "MassTransit.RabbitMQ": "8.2.3",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.6",
+            "Microsoft.AspNetCore.OpenApi": "8.0.6",
+            "Microsoft.EntityFrameworkCore": "8.0.6",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.6",
+            "Microsoft.EntityFrameworkCore.Relational": "8.0.6",
+            "Microsoft.Extensions.Caching.Memory": "8.0.1",
+            "Microsoft.Extensions.Caching.StackExchangeRedis": "8.0.6",
+            "Microsoft.Extensions.Configuration": "8.0.0",
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": "8.0.0",
+            "Microsoft.Extensions.Configuration.Json": "8.0.0",
+            "Microsoft.Extensions.DependencyInjection": "8.0.1",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+            "Microsoft.Extensions.Hosting": "8.0.0",
+            "Microsoft.Extensions.Hosting.Abstractions": "8.0.0",
+            "Microsoft.Extensions.Http": "8.0.0",
+            "Microsoft.Extensions.Http.Resilience": "8.6.0",
+            "Microsoft.Extensions.Logging.Abstractions": "8.0.1",
+            "Microsoft.Extensions.Options": "8.0.2",
+            "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
+            "Microsoft.NET.Test.Sdk": "17.10.0",
+            "Minio": "6.0.2",
+            "NodaTime": "3.1.11",
+            "NodaTime.Serialization.SystemTextJson": "1.2.0",
+            "NSubstitute": "5.1.0",
+            "Polly": "8.4.0",
+            "Pomelo.EntityFrameworkCore.MySql": "8.0.2",
+            "Scriban": "5.10.0",
+            "Serilog.AspNetCore": "8.0.1",
+            "Serilog.Enrichers.Environment": "3.0.1",
+            "Serilog.Enrichers.Process": "3.0.0",
+            "Serilog.Enrichers.Thread": "4.0.0",
+            "Serilog.Sinks.Console": "6.0.0",
+            "StackExchange.Redis": "2.7.33",
+            "Ulid": "1.3.4",
+            "xunit": "2.8.1",
+            "xunit.runner.visualstudio": "2.8.1"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.420/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Domain\\Ulp.Core.Domain.csproj": {
+      "version": "0.1.0-phase1",
+      "restore": {
+        "projectUniqueName": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Domain\\Ulp.Core.Domain.csproj",
+        "projectName": "Ulp.Core.Domain",
+        "projectPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Domain\\Ulp.Core.Domain.csproj",
+        "packagesPath": "C:\\Users\\91971\\.nuget\\packages\\",
+        "outputPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "configFilePaths": [
+          "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\NuGet.Config",
+          "C:\\Users\\91971\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ],
+          "warnNotAsError": [
+            "NU1605",
+            "NU1902",
+            "NU1903",
+            "NU1904"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "NodaTime": {
+              "target": "Package",
+              "version": "[3.1.11, )",
+              "versionCentrallyManaged": true
+            },
+            "Ulid": {
+              "target": "Package",
+              "version": "[1.3.4, )",
+              "versionCentrallyManaged": true
+            }
+          },
+          "centralPackageVersions": {
+            "FluentAssertions": "6.12.0",
+            "FluentValidation": "11.9.2",
+            "FluentValidation.DependencyInjectionExtensions": "11.9.2",
+            "Hangfire.AspNetCore": "1.8.12",
+            "Hangfire.MySqlStorage": "2.0.3",
+            "MassTransit": "8.2.3",
+            "MassTransit.Extensions.DependencyInjection": "7.3.1",
+            "MassTransit.RabbitMQ": "8.2.3",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.6",
+            "Microsoft.AspNetCore.OpenApi": "8.0.6",
+            "Microsoft.EntityFrameworkCore": "8.0.6",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.6",
+            "Microsoft.EntityFrameworkCore.Relational": "8.0.6",
+            "Microsoft.Extensions.Caching.Memory": "8.0.1",
+            "Microsoft.Extensions.Caching.StackExchangeRedis": "8.0.6",
+            "Microsoft.Extensions.Configuration": "8.0.0",
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": "8.0.0",
+            "Microsoft.Extensions.Configuration.Json": "8.0.0",
+            "Microsoft.Extensions.DependencyInjection": "8.0.1",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+            "Microsoft.Extensions.Hosting": "8.0.0",
+            "Microsoft.Extensions.Hosting.Abstractions": "8.0.0",
+            "Microsoft.Extensions.Http": "8.0.0",
+            "Microsoft.Extensions.Http.Resilience": "8.6.0",
+            "Microsoft.Extensions.Logging.Abstractions": "8.0.1",
+            "Microsoft.Extensions.Options": "8.0.2",
+            "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
+            "Microsoft.NET.Test.Sdk": "17.10.0",
+            "Minio": "6.0.2",
+            "NodaTime": "3.1.11",
+            "NodaTime.Serialization.SystemTextJson": "1.2.0",
+            "NSubstitute": "5.1.0",
+            "Polly": "8.4.0",
+            "Pomelo.EntityFrameworkCore.MySql": "8.0.2",
+            "Scriban": "5.10.0",
+            "Serilog.AspNetCore": "8.0.1",
+            "Serilog.Enrichers.Environment": "3.0.1",
+            "Serilog.Enrichers.Process": "3.0.0",
+            "Serilog.Enrichers.Thread": "4.0.0",
+            "Serilog.Sinks.Console": "6.0.0",
+            "StackExchange.Redis": "2.7.33",
+            "Ulid": "1.3.4",
+            "xunit": "2.8.1",
+            "xunit.runner.visualstudio": "2.8.1"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.420/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\shared\\Ulp.TestKit\\Ulp.TestKit.csproj": {
+      "version": "0.1.0-phase1",
+      "restore": {
+        "projectUniqueName": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\shared\\Ulp.TestKit\\Ulp.TestKit.csproj",
+        "projectName": "Ulp.TestKit",
+        "projectPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\shared\\Ulp.TestKit\\Ulp.TestKit.csproj",
+        "packagesPath": "C:\\Users\\91971\\.nuget\\packages\\",
+        "outputPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\shared\\Ulp.TestKit\\obj\\",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "configFilePaths": [
+          "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\NuGet.Config",
+          "C:\\Users\\91971\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Abstractions\\Ulp.Core.Abstractions.csproj": {
+                "projectPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Abstractions\\Ulp.Core.Abstractions.csproj"
+              },
+              "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Domain\\Ulp.Core.Domain.csproj": {
+                "projectPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Domain\\Ulp.Core.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ],
+          "warnNotAsError": [
+            "NU1605",
+            "NU1902",
+            "NU1903",
+            "NU1904"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[6.12.0, )",
+              "versionCentrallyManaged": true
+            },
+            "NSubstitute": {
+              "target": "Package",
+              "version": "[5.1.0, )",
+              "versionCentrallyManaged": true
+            },
+            "NodaTime": {
+              "target": "Package",
+              "version": "[3.1.11, )",
+              "versionCentrallyManaged": true
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.8.1, )",
+              "versionCentrallyManaged": true
+            }
+          },
+          "centralPackageVersions": {
+            "FluentAssertions": "6.12.0",
+            "FluentValidation": "11.9.2",
+            "FluentValidation.DependencyInjectionExtensions": "11.9.2",
+            "Hangfire.AspNetCore": "1.8.12",
+            "Hangfire.MySqlStorage": "2.0.3",
+            "MassTransit": "8.2.3",
+            "MassTransit.Extensions.DependencyInjection": "7.3.1",
+            "MassTransit.RabbitMQ": "8.2.3",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.6",
+            "Microsoft.AspNetCore.OpenApi": "8.0.6",
+            "Microsoft.EntityFrameworkCore": "8.0.6",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.6",
+            "Microsoft.EntityFrameworkCore.Relational": "8.0.6",
+            "Microsoft.Extensions.Caching.Memory": "8.0.1",
+            "Microsoft.Extensions.Caching.StackExchangeRedis": "8.0.6",
+            "Microsoft.Extensions.Configuration": "8.0.0",
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": "8.0.0",
+            "Microsoft.Extensions.Configuration.Json": "8.0.0",
+            "Microsoft.Extensions.DependencyInjection": "8.0.1",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+            "Microsoft.Extensions.Hosting": "8.0.0",
+            "Microsoft.Extensions.Hosting.Abstractions": "8.0.0",
+            "Microsoft.Extensions.Http": "8.0.0",
+            "Microsoft.Extensions.Http.Resilience": "8.6.0",
+            "Microsoft.Extensions.Logging.Abstractions": "8.0.1",
+            "Microsoft.Extensions.Options": "8.0.2",
+            "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
+            "Microsoft.NET.Test.Sdk": "17.10.0",
+            "Minio": "6.0.2",
+            "NodaTime": "3.1.11",
+            "NodaTime.Serialization.SystemTextJson": "1.2.0",
+            "NSubstitute": "5.1.0",
+            "Polly": "8.4.0",
+            "Pomelo.EntityFrameworkCore.MySql": "8.0.2",
+            "Scriban": "5.10.0",
+            "Serilog.AspNetCore": "8.0.1",
+            "Serilog.Enrichers.Environment": "3.0.1",
+            "Serilog.Enrichers.Process": "3.0.0",
+            "Serilog.Enrichers.Thread": "4.0.0",
+            "Serilog.Sinks.Console": "6.0.0",
+            "StackExchange.Redis": "2.7.33",
+            "Ulid": "1.3.4",
+            "xunit": "2.8.1",
+            "xunit.runner.visualstudio": "2.8.1"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.420/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\tests\\unit\\Ulp.Core.Domain.Tests\\Ulp.Core.Domain.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\tests\\unit\\Ulp.Core.Domain.Tests\\Ulp.Core.Domain.Tests.csproj",
+        "projectName": "Ulp.Core.Domain.Tests",
+        "projectPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\tests\\unit\\Ulp.Core.Domain.Tests\\Ulp.Core.Domain.Tests.csproj",
+        "packagesPath": "C:\\Users\\91971\\.nuget\\packages\\",
+        "outputPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\tests\\unit\\Ulp.Core.Domain.Tests\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\91971\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Domain\\Ulp.Core.Domain.csproj": {
+                "projectPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\core\\Ulp.Core.Domain\\Ulp.Core.Domain.csproj"
+              },
+              "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\shared\\Ulp.TestKit\\Ulp.TestKit.csproj": {
+                "projectPath": "d:\\Immortal-2025\\ProductRequirements\\ULPscmProject\\src\\backend\\shared\\Ulp.TestKit\\Ulp.TestKit.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[6.12.0, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.10.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.8.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.8.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.420/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
