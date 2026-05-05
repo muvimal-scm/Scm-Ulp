@@ -1,0 +1,5 @@
+# Path B variant — push everything EXCEPT node_modules (too big for HTTPS push).
+# Restore the full .gitignore from .gitignore.path-a-backup if you want
+# proper exclusions back later.
+node_modules/
+**/node_modules/

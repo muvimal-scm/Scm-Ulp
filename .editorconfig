@@ -1,0 +1,45 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{cs,csproj,sln,props,targets}]
+indent_size = 4
+
+[*.{ts,tsx,js,jsx,json,html,scss,css,yml,yaml,md}]
+indent_size = 2
+
+[*.{kt,kts}]
+indent_size = 4
+
+[*.py]
+indent_size = 4
+
+[*.sql]
+indent_size = 2
+
+[*.sh]
+indent_size = 2
+end_of_line = lf
+
+[*.{cmd,bat,ps1}]
+end_of_line = crlf
+
+[Makefile]
+indent_style = tab
+
+# C# specific — supplement to .editorconfig defaults
+[*.cs]
+dotnet_sort_system_directives_first = true
+csharp_new_line_before_open_brace = all
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_var_for_built_in_types = true:silent
+csharp_style_var_when_type_is_apparent = true:silent
+csharp_prefer_braces = true:warning
+dotnet_style_qualification_for_field = false:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
