@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M4 Customs (CHA) — domain entities. Includes M4-US scaffolding (entries, ABI msgs, PGA holds, ATM, ISF, in-bond, release orders, hold/exam) per sealed LLD ULP_LLD_M4_US_CBP_ABI_v1.0.docx.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>

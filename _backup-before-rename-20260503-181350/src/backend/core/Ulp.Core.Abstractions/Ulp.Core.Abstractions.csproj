@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>The 7 plugin contracts: IComplianceProvider, ITaxProvider, ICustomsProvider, IBankingProvider, IPayrollProvider, IIdentifierValidator, IStateTaxProvider. Country plugins implement; core depends only on these.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+</Project>

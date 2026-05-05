@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>M1 Master Data — HTTP API endpoint groups under /api/v1/m1/*.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\..\..\shared\Ulp.BuildingBlocks\Ulp.BuildingBlocks.csproj" />
+    <ProjectReference Include="..\Ulp.M1.Domain\Ulp.M1.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.M1.Application\Ulp.M1.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+</Project>

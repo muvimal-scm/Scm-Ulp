@@ -1,0 +1,94 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <Description>ULP API host — ASP.NET Core 8 Minimal API. Composes Core + modules + plugins.</Description>
+    <UserSecretsId>ulp-api-dev-2026</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\core\Ulp.Core.Abstractions\Ulp.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\..\core\Ulp.Core.Infrastructure\Ulp.Core.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\core\Ulp.Core.PluginHost\Ulp.Core.PluginHost.csproj" />
+    <ProjectReference Include="..\..\shared\Ulp.BuildingBlocks\Ulp.BuildingBlocks.csproj" />
+
+    <!-- Modules — composition root references each module's API + Infrastructure -->
+    <ProjectReference Include="..\..\modules\M1.MasterData\Ulp.M1.Domain\Ulp.M1.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M1.MasterData\Ulp.M1.Application\Ulp.M1.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M1.MasterData\Ulp.M1.Infrastructure\Ulp.M1.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M1.MasterData\Ulp.M1.Api\Ulp.M1.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M26.Rbac\Ulp.M26.Domain\Ulp.M26.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M26.Rbac\Ulp.M26.Application\Ulp.M26.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M26.Rbac\Ulp.M26.Infrastructure\Ulp.M26.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M26.Rbac\Ulp.M26.Api\Ulp.M26.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M21.DocManagement\Ulp.M21.Domain\Ulp.M21.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M21.DocManagement\Ulp.M21.Application\Ulp.M21.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M21.DocManagement\Ulp.M21.Infrastructure\Ulp.M21.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M21.DocManagement\Ulp.M21.Api\Ulp.M21.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M27.Notifications\Ulp.M27.Domain\Ulp.M27.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M27.Notifications\Ulp.M27.Application\Ulp.M27.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M27.Notifications\Ulp.M27.Infrastructure\Ulp.M27.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M27.Notifications\Ulp.M27.Api\Ulp.M27.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M3.VendorManagement\Ulp.M3.Domain\Ulp.M3.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M3.VendorManagement\Ulp.M3.Application\Ulp.M3.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M3.VendorManagement\Ulp.M3.Infrastructure\Ulp.M3.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M3.VendorManagement\Ulp.M3.Api\Ulp.M3.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M14.Pricing\Ulp.M14.Domain\Ulp.M14.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M14.Pricing\Ulp.M14.Application\Ulp.M14.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M14.Pricing\Ulp.M14.Infrastructure\Ulp.M14.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M14.Pricing\Ulp.M14.Api\Ulp.M14.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M6.DocGeneration\Ulp.M6.Domain\Ulp.M6.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M6.DocGeneration\Ulp.M6.Application\Ulp.M6.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M6.DocGeneration\Ulp.M6.Infrastructure\Ulp.M6.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M6.DocGeneration\Ulp.M6.Api\Ulp.M6.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M5.FreightForwarding\Ulp.M5.Domain\Ulp.M5.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M5.FreightForwarding\Ulp.M5.Application\Ulp.M5.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M5.FreightForwarding\Ulp.M5.Infrastructure\Ulp.M5.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M5.FreightForwarding\Ulp.M5.Api\Ulp.M5.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M2.SalesCrm\Ulp.M2.Domain\Ulp.M2.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M2.SalesCrm\Ulp.M2.Application\Ulp.M2.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M2.SalesCrm\Ulp.M2.Infrastructure\Ulp.M2.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M2.SalesCrm\Ulp.M2.Api\Ulp.M2.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M7.Procurement\Ulp.M7.Domain\Ulp.M7.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M7.Procurement\Ulp.M7.Application\Ulp.M7.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M7.Procurement\Ulp.M7.Infrastructure\Ulp.M7.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M7.Procurement\Ulp.M7.Api\Ulp.M7.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M9.LastMile\Ulp.M9.Domain\Ulp.M9.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M9.LastMile\Ulp.M9.Application\Ulp.M9.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M9.LastMile\Ulp.M9.Infrastructure\Ulp.M9.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M9.LastMile\Ulp.M9.Api\Ulp.M9.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M17.Accounts\Ulp.M17.Domain\Ulp.M17.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M17.Accounts\Ulp.M17.Application\Ulp.M17.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M17.Accounts\Ulp.M17.Infrastructure\Ulp.M17.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M17.Accounts\Ulp.M17.Api\Ulp.M17.Api.csproj" />
+
+    <ProjectReference Include="..\..\modules\M4.Cha\Ulp.M4.Domain\Ulp.M4.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\M4.Cha\Ulp.M4.Application\Ulp.M4.Application.csproj" />
+    <ProjectReference Include="..\..\modules\M4.Cha\Ulp.M4.Infrastructure\Ulp.M4.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\M4.Cha\Ulp.M4.Api\Ulp.M4.Api.csproj" />
+
+    <!-- Compliance plugins (loaded eagerly; resolved per-tenant by Core.PluginHost) -->
+    <ProjectReference Include="..\..\plugins\india\Ulp.Plugin.India.Tax\Ulp.Plugin.India.Tax.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="NodaTime.Serialization.SystemTextJson" />
+  </ItemGroup>
+
+</Project>

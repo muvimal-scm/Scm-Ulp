@@ -1,0 +1,20 @@
+# .NET build artifacts
+bin/
+obj/
+out/
+*.user
+*.suo
+*.userprefs
+
+# Visual Studio
+.vs/
+
+# Test results
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+*.trx
+
+# User secrets (managed by `dotnet user-secrets`)
+secrets.json
