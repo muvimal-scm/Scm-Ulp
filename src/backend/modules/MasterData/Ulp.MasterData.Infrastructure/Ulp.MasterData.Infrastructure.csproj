@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>M1 Master Data â€” EF Core persistence: MasterDataDbContext, entity configurations, repositories.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Abstractions\Ulp.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Infrastructure\Ulp.Core.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ulp.MasterData.Domain\Ulp.MasterData.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.MasterData.Application\Ulp.MasterData.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+
+</Project>
