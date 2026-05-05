@@ -1,0 +1,60 @@
+// =====================================================================
+// ULP / SCMCube — global stylesheet entry point
+// Imported once from angular.json (styles[]).
+// =====================================================================
+
+// 1. Brand tokens (variables only — no rules)
+@use 'styles/tokens' as *;
+
+// 2. Material 17 theme (uses tokens to build palettes)
+@use 'styles/theme';
+
+// 3. ULP component rules (top nav, sidebar, hero, hex tile, card, pill)
+@use 'styles/components';
+
+// ---- Global resets ----
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: $font-body;
+  background: $neutral-50;
+  color: $neutral-800;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: $brand-purple-900; text-decoration: none; }
+a:hover { color: $brand-purple-700; text-decoration: underline; }
+
+code, pre {
+  font-family: $font-mono;
+  background: $neutral-100;
+  padding: 2px $space-1;
+  border-radius: $radius-sm;
+}
+
+// Selection
+::selection {
+  background: $brand-purple-100;
+  color: $brand-purple-900;
+}
+
+// =====================================================================
+// .brand-heading — magenta → violet gradient text
+// Used ONLY on big H1 / H2 hero headings to mimic the SCMCube logo
+// (SCM in magenta-red, CUBE in violet purple). Body text and smaller
+// headings stay neutral. See docs/design/SCMCube-DesignSystem.md.
+// =====================================================================
+.brand-heading {
+  background: linear-gradient(90deg, #E54A8A 0%, #5B3FA0 50%, #3F2D7C 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+          color: transparent;
+  // Fallback for very old browsers — the gradient won't render but the text remains visible
+  @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+    background: none;
+    color: $brand-purple-900;
+  }
+}

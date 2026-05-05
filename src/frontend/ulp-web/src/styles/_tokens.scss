@@ -1,0 +1,79 @@
+// =====================================================================
+// ULP / SCMCube design tokens — v1.0
+// Source of truth: docs/design/SCMCube-DesignSystem.md
+// Extracted from: ulpReq/DesignColorReference.jpg
+// DO NOT modify values without updating the design system doc + an ADR.
+// =====================================================================
+
+// ---- Brand purple (primary) ----
+$brand-purple-900: #3F2D7C;  // logo wordmark, primary buttons
+$brand-purple-700: #5B3FA0;  // hover, focus ring
+$brand-purple-500: #8B6FC8;  // active/selected
+$brand-purple-300: #A397DF;  // gradient bottom-right
+$brand-purple-100: #E8E2F4;  // tint, hover row
+$brand-purple-050: #F5F2FB;  // page tint
+
+// ---- Accent red — MILD CORAL (matches reference image, not saturated) ----
+$accent-red-600:   #EF7D7E;  // primary CTA, module tiles — soft coral from image
+$accent-red-500:   #F49595;  // CTA hover (paler)
+$accent-red-400:   #F8AEAE;  // CTA pressed
+$accent-red-300:   #FBCBCB;  // subtle red tint bg
+$accent-red-200:   #FDE0E0;  // alert (light)
+$accent-red-050:   #FEF3F3;  // error message bg
+
+// Hero gradient red anchor — slightly deeper than CTA, matches hero top-left
+$hero-coral:       #DF7179;
+
+// Error/destructive only — slightly stronger so urgent actions still read
+$semantic-danger-strong: #D04E54;
+
+// ---- Hero gradient ----
+$gradient-pink-mid: #C27496;  // mid-stop only — never a flat fill
+
+// ---- Neutrals ----
+$neutral-white: #FFFFFF;
+$neutral-50:    #F8F8FA;
+$neutral-100:   #EFEFF3;
+$neutral-200:   #DDDDE3;
+$neutral-400:   #9A9AA3;  // tagline grey
+$neutral-600:   #5C5C66;
+$neutral-800:   #2C2C36;
+$neutral-900:   #16161D;
+
+// ---- Semantic ----
+$semantic-success: #2E8B57;
+$semantic-warning: #D49018;
+$semantic-info:    $brand-purple-700;
+$semantic-danger:  $semantic-danger-strong;  // urgent/destructive — slightly stronger than brand coral
+
+// ---- Spacing scale (px) ----
+$space-1:  4px;
+$space-2:  8px;
+$space-3:  12px;
+$space-4:  16px;
+$space-5:  20px;
+$space-6:  24px;
+$space-8:  32px;
+$space-10: 40px;
+$space-14: 56px;
+$space-18: 72px;
+
+// ---- Radius ----
+$radius-sm:   4px;
+$radius-md:   8px;
+$radius-lg:   16px;
+$radius-pill: 999px;
+
+// ---- Elevation (purple-tinted, soft) ----
+$elev-1: 0 1px 2px rgba(63, 45, 124, 0.06);
+$elev-2: 0 2px 6px rgba(63, 45, 124, 0.08);
+$elev-3: 0 6px 16px rgba(63, 45, 124, 0.12);
+
+// ---- Hero gradient (full + subdued) ----
+$hero-gradient: linear-gradient(120deg, $hero-coral 0%, $gradient-pink-mid 45%, $brand-purple-300 100%);
+$hero-gradient-subdued: linear-gradient(120deg, $accent-red-050 0%, $brand-purple-050 100%);
+
+// ---- Type families ----
+$font-display: 'Inter', sans-serif;
+$font-body:    'Inter', sans-serif;
+$font-mono:    'JetBrains Mono', 'Consolas', monospace;

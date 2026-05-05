@@ -1,0 +1,149 @@
+// =====================================================================
+// ULP / SCMCube — component styling rules
+// Implements §7 of docs/design/SCMCube-DesignSystem.md
+// =====================================================================
+@use './tokens' as *;
+
+// ---- App shell ----
+.ulp-top-nav {
+  background: $neutral-white;
+  border-bottom: 1px solid $neutral-200;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 $space-6;
+
+  .ulp-top-nav__link {
+    color: $neutral-800;
+    font-weight: 500;
+    padding: 0 $space-4;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    text-decoration: none;
+
+    &.active {
+      border-bottom-color: $accent-red-600;  // mild coral underline
+    }
+
+    &:hover {
+      color: $brand-purple-900;
+    }
+  }
+}
+
+.ulp-sidebar {
+  background: $neutral-50;
+  border-right: 1px solid $neutral-200;
+  width: 240px;
+
+  .ulp-sidebar__section-title {
+    color: $brand-purple-900;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    padding: $space-4 $space-4 $space-2;
+  }
+
+  .ulp-sidebar__item {
+    display: block;
+    padding: $space-3 $space-4;
+    color: $neutral-800;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+
+    &:hover { background: $brand-purple-050; }
+
+    &.active {
+      background: $brand-purple-100;
+      border-left-color: $brand-purple-700;
+      color: $brand-purple-900;
+      font-weight: 500;
+    }
+  }
+}
+
+// ---- Hero (marketing / onboarding) ----
+.ulp-hero {
+  background: $hero-gradient;
+  color: $neutral-white;
+  padding: $space-18 $space-8;
+  border-radius: 0 0 $radius-lg $radius-lg;
+
+  h1, h2 { color: $neutral-white; font-weight: 700; }
+  p { color: rgba(255,255,255,0.92); }
+
+  .ulp-hero__cta {
+    background: $accent-red-600;
+    color: $neutral-white;
+    border-radius: $radius-md;
+    padding: $space-3 $space-6;
+    font-weight: 600;
+    border: none;
+    box-shadow: $elev-2;
+
+    &:hover { background: $accent-red-500; }
+  }
+}
+
+.ulp-hero--subdued {
+  background: $hero-gradient-subdued;
+  color: $neutral-800;
+
+  h1, h2 { color: $brand-purple-900; }
+  p { color: $neutral-600; }
+}
+
+// ---- Module hex tile ----
+.ulp-hex-tile {
+  width: 96px;
+  height: 110px;
+  background: $accent-red-600;
+  color: $neutral-white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+// ---- Cards ----
+.ulp-card {
+  background: $neutral-white;
+  border: 1px solid $neutral-200;
+  border-radius: $radius-md;
+  padding: $space-6;
+  box-shadow: $elev-1;
+}
+
+// ---- Status pills (Mat-chip overrides via class) ----
+.ulp-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: $radius-pill;
+  padding: 2px $space-3;
+  font-size: 12px;
+  font-weight: 500;
+  background: $neutral-100;
+  color: $neutral-800;
+
+  &--success { background: rgba(46,139,87,0.12); color: $semantic-success; }
+  &--warning { background: rgba(212,144,24,0.12); color: $semantic-warning; }
+  &--danger  { background: $accent-red-050;       color: $semantic-danger-strong; }
+  &--info    { background: $brand-purple-100;     color: $brand-purple-900; }
+}
+
+// ---- Mat-form-field tweaks (consistency) ----
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+// ---- Dialog backdrop ----
+.cdk-overlay-dark-backdrop {
+  background: rgba(63, 45, 124, 0.45) !important;
+}

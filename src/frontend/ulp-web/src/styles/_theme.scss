@@ -1,0 +1,111 @@
+// =====================================================================
+// ULP / SCMCube — Angular Material 17 theme
+// Authoritative: docs/design/SCMCube-DesignSystem.md
+// Overrides the indigo+amber sample in skills/angular-material-17/SKILL.md.
+// =====================================================================
+@use '@angular/material' as mat;
+@use './tokens' as *;
+
+@include mat.core();
+
+// Build palettes from the SCMCube brand. Material 17 expects a 14-key palette
+// with a contrast map. We hand-pick stops so the canonical brand hexes land
+// on the most-used Material indices (500/700 for primary, 500 for accent).
+
+$ulp-purple-palette: (
+  50:  $brand-purple-050,
+  100: $brand-purple-100,
+  200: #C9BEEC,
+  300: $brand-purple-300,
+  400: #927BD0,
+  500: $brand-purple-500,
+  600: #745BB7,
+  700: $brand-purple-700,
+  800: #4A3590,
+  900: $brand-purple-900,
+  A100: #D4C8FF,
+  A200: #B5A0FF,
+  A400: #8C6BFF,
+  A700: #6A45FF,
+  contrast: (
+    50:  $neutral-800,
+    100: $neutral-800,
+    200: $neutral-800,
+    300: $neutral-800,
+    400: $neutral-white,
+    500: $neutral-white,
+    600: $neutral-white,
+    700: $neutral-white,
+    800: $neutral-white,
+    900: $neutral-white,
+    A100: $neutral-800,
+    A200: $neutral-800,
+    A400: $neutral-white,
+    A700: $neutral-white,
+  )
+);
+
+// Mild coral palette — anchored on $accent-red-600 (#EF7D7E) at 500 stop
+$ulp-red-palette: (
+  50:  $accent-red-050,
+  100: $accent-red-200,
+  200: $accent-red-300,
+  300: $accent-red-400,
+  400: $accent-red-500,
+  500: $accent-red-600,        // MILD CORAL — primary CTA color
+  600: #E26F70,                // slight darken
+  700: $semantic-danger-strong, // #D04E54 — urgent/destructive
+  800: #B23F45,
+  900: #8A2F35,
+  A100: #FFD0D0,
+  A200: #FFA8A8,
+  A400: #FF8080,
+  A700: #FF5C5C,
+  contrast: (
+    50:  $neutral-800,
+    100: $neutral-800,
+    200: $neutral-800,
+    300: $neutral-800,
+    400: $neutral-white,
+    500: $neutral-white,
+    600: $neutral-white,
+    700: $neutral-white,
+    800: $neutral-white,
+    900: $neutral-white,
+    A100: $neutral-800,
+    A200: $neutral-800,
+    A400: $neutral-white,
+    A700: $neutral-white,
+  )
+);
+
+// Warn (errors/destructive) — same palette but uses the stronger 700 stop
+$ulp-warn-palette: $ulp-red-palette;
+
+$ulp-primary: mat.define-palette($ulp-purple-palette, 900, 700, 500);
+$ulp-accent:  mat.define-palette($ulp-red-palette, 500, 300, 600);   // 500 = mild coral
+$ulp-warn:    mat.define-palette($ulp-warn-palette, 700, 500, 800);  // 700 = stronger danger
+
+$ulp-typography: mat.define-typography-config(
+  $font-family: '#{$font-body}',
+  $headline-1: mat.define-typography-level(36px, 44px, 700),
+  $headline-2: mat.define-typography-level(28px, 36px, 700),
+  $headline-3: mat.define-typography-level(22px, 30px, 600),
+  $headline-4: mat.define-typography-level(18px, 26px, 600),
+  $body-1:     mat.define-typography-level(16px, 24px, 400),
+  $body-2:     mat.define-typography-level(14px, 22px, 400),
+  $caption:    mat.define-typography-level(12px, 16px, 400),
+  $button:     mat.define-typography-level(14px, 20px, 500),
+);
+
+$ulp-theme: mat.define-light-theme((
+  color: (
+    primary: $ulp-primary,
+    accent:  $ulp-accent,
+    warn:    $ulp-warn,
+  ),
+  typography: $ulp-typography,
+  density: -1,
+));
+
+@include mat.all-component-themes($ulp-theme);

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html><head><title>silent-check-sso</title></head>
+<body>
+<script>
+  // Standard keycloak-js silent SSO helper. Re-posts the URL hash to the
+  // parent window so Keycloak can complete the silent token check.
+  parent.postMessage(location.href, location.origin);
+</script>
+</body>
+</html>
