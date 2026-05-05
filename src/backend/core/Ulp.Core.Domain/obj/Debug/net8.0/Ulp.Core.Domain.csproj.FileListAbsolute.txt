@@ -1,0 +1,16 @@
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\bin\Debug\net8.0\Ulp.Core.Domain.deps.json
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\bin\Debug\net8.0\Ulp.Core.Domain.dll
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\bin\Debug\net8.0\Ulp.Core.Domain.pdb
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\obj\Debug\net8.0\Ulp.Core.Domain.csproj.AssemblyReference.cache
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\obj\Debug\net8.0\Ulp.Core.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\obj\Debug\net8.0\Ulp.Core.Domain.AssemblyInfoInputs.cache
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\obj\Debug\net8.0\Ulp.Core.Domain.AssemblyInfo.cs
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\obj\Debug\net8.0\Ulp.Core.Domain.csproj.CoreCompileInputs.cache
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\obj\Debug\net8.0\Ulp.Core.Domain.dll
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\obj\Debug\net8.0\refint\Ulp.Core.Domain.dll
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\obj\Debug\net8.0\Ulp.Core.Domain.pdb
+D:\Immortal-2025\ProductRequirements\ULPscmProject\src\backend\core\Ulp.Core.Domain\obj\Debug\net8.0\ref\Ulp.Core.Domain.dll
+d:\Immortal-2025\ProductRequirements\ULPscmProject\.cp17-build-check\Ulp.Core.Domain.dll
+d:\Immortal-2025\ProductRequirements\ULPscmProject\.cp17-build-check\Ulp.Core.Domain.pdb
+d:\Immortal-2025\ProductRequirements\ULPscmProject\.cp22-build-check\Ulp.Core.Domain.dll
+d:\Immortal-2025\ProductRequirements\ULPscmProject\.cp22-build-check\Ulp.Core.Domain.pdb

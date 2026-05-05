@@ -1,0 +1,90 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- ASP.NET Core / .NET 8 -->
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+
+    <!-- EF Core 8 + Pomelo MySQL -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.6" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6" />
+    <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+
+    <!-- MassTransit (broker abstraction: RabbitMQ MVP → Service Bus prod) -->
+    <PackageVersion Include="MassTransit" Version="8.2.3" />
+    <PackageVersion Include="MassTransit.RabbitMQ" Version="8.2.3" />
+    <PackageVersion Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
+
+    <!-- Hangfire (background jobs) -->
+    <PackageVersion Include="Hangfire.AspNetCore" Version="1.8.12" />
+    <PackageVersion Include="Hangfire.MySqlStorage" Version="2.0.3" />
+
+    <!-- Polly (resilience) -->
+    <PackageVersion Include="Polly" Version="8.4.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="8.6.0" />
+
+    <!-- Serilog (structured logging) -->
+    <PackageVersion Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+    <PackageVersion Include="Serilog.Enrichers.Process" Version="3.0.0" />
+    <PackageVersion Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+
+    <!-- NodaTime + Luxon (server time, IANA tz) -->
+    <PackageVersion Include="NodaTime" Version="3.1.11" />
+    <PackageVersion Include="NodaTime.Serialization.SystemTextJson" Version="1.2.0" />
+
+    <!-- FluentValidation (AutoMapper removed; not used; CVE GHSA-rvv3-g6hj-g44x in 13.0.1) -->
+    <PackageVersion Include="FluentValidation" Version="11.9.2" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
+
+    <!-- MinIO (blob storage) -->
+    <PackageVersion Include="Minio" Version="6.0.2" />
+
+    <!-- StackExchange.Redis -->
+    <PackageVersion Include="StackExchange.Redis" Version="2.7.33" />
+
+    <!-- Testing -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageVersion Include="xunit" Version="2.8.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.1" />
+    <PackageVersion Include="FluentAssertions" Version="6.12.0" />
+    <PackageVersion Include="NSubstitute" Version="5.1.0" />
+    <!-- Testcontainers (CP14 — spins up real MySQL per integration test run) -->
+    <PackageVersion Include="Testcontainers" Version="3.9.0" />
+    <PackageVersion Include="Testcontainers.MySql" Version="3.9.0" />
+
+    <!-- Document rendering (M6) — QuestPDF Phase 2.1; Scriban for templating.
+         Bumped to 5.12.x for CP22 — fixes 8 CVEs flagged on 5.10.0
+         (GHSA-5rpf-x9jg-8j5p, GHSA-5wr9-m6jw-xx44, GHSA-c875-h985-hvrc,
+          GHSA-grr9-747v-xvcp, GHSA-m2p3-hwv5-xpqw, GHSA-p6q4-fgr8-vx4p,
+          GHSA-v66j-x4hw-fv9g, GHSA-wgh7-7m3c-fx25, GHSA-x6m9-38vm-2xhf,
+          GHSA-xcx6-vp38-8hr5, GHSA-xw6w-9jjh-p9cr). -->
+    <PackageVersion Include="Scriban" Version="5.12.1" />
+
+    <!-- Common -->
+    <PackageVersion Include="Ulid" Version="1.3.4" />
+
+    <!-- Sentry (CP21 — error reporting; activated only when SENTRY_DSN env is set) -->
+    <PackageVersion Include="Sentry.AspNetCore" Version="4.10.2" />
+  </ItemGroup>
+
+</Project>

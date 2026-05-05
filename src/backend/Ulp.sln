@@ -1,0 +1,486 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{B1B11111-1111-1111-1111-111111111111}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "host", "host", "{B2B22222-2222-2222-2222-222222222222}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{B3B33333-3333-3333-3333-333333333333}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B4B44444-4444-4444-4444-444444444444}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{B5B55555-5555-5555-5555-555555555555}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.MasterData.Domain", "modules\MasterData\Ulp.MasterData.Domain\Ulp.MasterData.Domain.csproj", "{D1000001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.MasterData.Application", "modules\MasterData\Ulp.MasterData.Application\Ulp.MasterData.Application.csproj", "{D1000002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.MasterData.Infrastructure", "modules\MasterData\Ulp.MasterData.Infrastructure\Ulp.MasterData.Infrastructure.csproj", "{D1000003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.MasterData.Api", "modules\MasterData\Ulp.MasterData.Api\Ulp.MasterData.Api.csproj", "{D1000004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Identity.Domain", "modules\Identity\Ulp.Identity.Domain\Ulp.Identity.Domain.csproj", "{D2600001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Identity.Application", "modules\Identity\Ulp.Identity.Application\Ulp.Identity.Application.csproj", "{D2600002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Identity.Infrastructure", "modules\Identity\Ulp.Identity.Infrastructure\Ulp.Identity.Infrastructure.csproj", "{D2600003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Identity.Api", "modules\Identity\Ulp.Identity.Api\Ulp.Identity.Api.csproj", "{D2600004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.DocumentManagement.Domain", "modules\DocumentManagement\Ulp.DocumentManagement.Domain\Ulp.DocumentManagement.Domain.csproj", "{D2100001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.DocumentManagement.Application", "modules\DocumentManagement\Ulp.DocumentManagement.Application\Ulp.DocumentManagement.Application.csproj", "{D2100002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.DocumentManagement.Infrastructure", "modules\DocumentManagement\Ulp.DocumentManagement.Infrastructure\Ulp.DocumentManagement.Infrastructure.csproj", "{D2100003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.DocumentManagement.Api", "modules\DocumentManagement\Ulp.DocumentManagement.Api\Ulp.DocumentManagement.Api.csproj", "{D2100004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Notifications.Domain", "modules\Notifications\Ulp.Notifications.Domain\Ulp.Notifications.Domain.csproj", "{D2700001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Notifications.Application", "modules\Notifications\Ulp.Notifications.Application\Ulp.Notifications.Application.csproj", "{D2700002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Notifications.Infrastructure", "modules\Notifications\Ulp.Notifications.Infrastructure\Ulp.Notifications.Infrastructure.csproj", "{D2700003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Notifications.Api", "modules\Notifications\Ulp.Notifications.Api\Ulp.Notifications.Api.csproj", "{D2700004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.VendorManagement.Domain", "modules\VendorManagement\Ulp.VendorManagement.Domain\Ulp.VendorManagement.Domain.csproj", "{D0300001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.VendorManagement.Application", "modules\VendorManagement\Ulp.VendorManagement.Application\Ulp.VendorManagement.Application.csproj", "{D0300002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.VendorManagement.Infrastructure", "modules\VendorManagement\Ulp.VendorManagement.Infrastructure\Ulp.VendorManagement.Infrastructure.csproj", "{D0300003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.VendorManagement.Api", "modules\VendorManagement\Ulp.VendorManagement.Api\Ulp.VendorManagement.Api.csproj", "{D0300004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.PricingQuotation.Domain", "modules\PricingQuotation\Ulp.PricingQuotation.Domain\Ulp.PricingQuotation.Domain.csproj", "{D1400001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.PricingQuotation.Application", "modules\PricingQuotation\Ulp.PricingQuotation.Application\Ulp.PricingQuotation.Application.csproj", "{D1400002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.PricingQuotation.Infrastructure", "modules\PricingQuotation\Ulp.PricingQuotation.Infrastructure\Ulp.PricingQuotation.Infrastructure.csproj", "{D1400003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.PricingQuotation.Api", "modules\PricingQuotation\Ulp.PricingQuotation.Api\Ulp.PricingQuotation.Api.csproj", "{D1400004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.DocumentGeneration.Domain", "modules\DocumentGeneration\Ulp.DocumentGeneration.Domain\Ulp.DocumentGeneration.Domain.csproj", "{D0600001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.DocumentGeneration.Application", "modules\DocumentGeneration\Ulp.DocumentGeneration.Application\Ulp.DocumentGeneration.Application.csproj", "{D0600002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.DocumentGeneration.Infrastructure", "modules\DocumentGeneration\Ulp.DocumentGeneration.Infrastructure\Ulp.DocumentGeneration.Infrastructure.csproj", "{D0600003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.DocumentGeneration.Api", "modules\DocumentGeneration\Ulp.DocumentGeneration.Api\Ulp.DocumentGeneration.Api.csproj", "{D0600004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.FreightForwarding.Domain", "modules\FreightForwarding\Ulp.FreightForwarding.Domain\Ulp.FreightForwarding.Domain.csproj", "{D0500001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.FreightForwarding.Application", "modules\FreightForwarding\Ulp.FreightForwarding.Application\Ulp.FreightForwarding.Application.csproj", "{D0500002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.FreightForwarding.Infrastructure", "modules\FreightForwarding\Ulp.FreightForwarding.Infrastructure\Ulp.FreightForwarding.Infrastructure.csproj", "{D0500003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.FreightForwarding.Api", "modules\FreightForwarding\Ulp.FreightForwarding.Api\Ulp.FreightForwarding.Api.csproj", "{D0500004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Sales.Domain", "modules\Sales\Ulp.Sales.Domain\Ulp.Sales.Domain.csproj", "{D0200001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Sales.Application", "modules\Sales\Ulp.Sales.Application\Ulp.Sales.Application.csproj", "{D0200002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Sales.Infrastructure", "modules\Sales\Ulp.Sales.Infrastructure\Ulp.Sales.Infrastructure.csproj", "{D0200003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Sales.Api", "modules\Sales\Ulp.Sales.Api\Ulp.Sales.Api.csproj", "{D0200004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Procurement.Domain", "modules\Procurement\Ulp.Procurement.Domain\Ulp.Procurement.Domain.csproj", "{D0700001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Procurement.Application", "modules\Procurement\Ulp.Procurement.Application\Ulp.Procurement.Application.csproj", "{D0700002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Procurement.Infrastructure", "modules\Procurement\Ulp.Procurement.Infrastructure\Ulp.Procurement.Infrastructure.csproj", "{D0700003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Procurement.Api", "modules\Procurement\Ulp.Procurement.Api\Ulp.Procurement.Api.csproj", "{D0700004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.LastMile.Domain", "modules\LastMile\Ulp.LastMile.Domain\Ulp.LastMile.Domain.csproj", "{D0900001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.LastMile.Application", "modules\LastMile\Ulp.LastMile.Application\Ulp.LastMile.Application.csproj", "{D0900002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.LastMile.Infrastructure", "modules\LastMile\Ulp.LastMile.Infrastructure\Ulp.LastMile.Infrastructure.csproj", "{D0900003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.LastMile.Api", "modules\LastMile\Ulp.LastMile.Api\Ulp.LastMile.Api.csproj", "{D0900004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Core.Domain", "core\Ulp.Core.Domain\Ulp.Core.Domain.csproj", "{C0000001-0001-0001-0001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Core.Abstractions", "core\Ulp.Core.Abstractions\Ulp.Core.Abstractions.csproj", "{C0000002-0002-0002-0002-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Core.Application", "core\Ulp.Core.Application\Ulp.Core.Application.csproj", "{C0000003-0003-0003-0003-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Core.Infrastructure", "core\Ulp.Core.Infrastructure\Ulp.Core.Infrastructure.csproj", "{C0000004-0004-0004-0004-000000000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Core.PluginHost", "core\Ulp.Core.PluginHost\Ulp.Core.PluginHost.csproj", "{C0000005-0005-0005-0005-000000000005}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Api", "host\Ulp.Api\Ulp.Api.csproj", "{C0000006-0006-0006-0006-000000000006}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Worker", "host\Ulp.Worker\Ulp.Worker.csproj", "{C0000007-0007-0007-0007-000000000007}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Migrations", "host\Ulp.Migrations\Ulp.Migrations.csproj", "{C0000008-0008-0008-0008-000000000008}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.BuildingBlocks", "shared\Ulp.BuildingBlocks\Ulp.BuildingBlocks.csproj", "{C0000009-0009-0009-0009-000000000009}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.TestKit", "shared\Ulp.TestKit\Ulp.TestKit.csproj", "{C000000A-000A-000A-000A-00000000000A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Core.Domain.Tests", "..\..\tests\unit\Ulp.Core.Domain.Tests\Ulp.Core.Domain.Tests.csproj", "{C000000B-000B-000B-000B-00000000000B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "M17.Accounts", "M17.Accounts", "{5813DB08-8595-4DC3-8126-835495488D32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Accounting.Domain", "modules\Accounting\Ulp.Accounting.Domain\Ulp.Accounting.Domain.csproj", "{818721F3-2F05-4E5C-80B9-EABB396389CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Accounting.Application", "modules\Accounting\Ulp.Accounting.Application\Ulp.Accounting.Application.csproj", "{7350ECCE-2519-4546-8781-28D2D6DBD357}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Accounting.Infrastructure", "modules\Accounting\Ulp.Accounting.Infrastructure\Ulp.Accounting.Infrastructure.csproj", "{5D414F7F-474B-4614-A209-99FB7DC73D61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Accounting.Api", "modules\Accounting\Ulp.Accounting.Api\Ulp.Accounting.Api.csproj", "{88697D93-CA18-48CA-AF2A-F9B25C7B5CC7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{8EDF26D0-33DF-4F90-9A08-711CC994E74E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "india", "india", "{76EE884D-7477-4924-9867-971EE610C8E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Plugin.India.Tax", "plugins\india\Ulp.Plugin.India.Tax\Ulp.Plugin.India.Tax.csproj", "{D399E7E1-8C97-4F8B-A262-65990ECA3902}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "M4.Cha", "M4.Cha", "{3DBAD557-30EB-4CAE-BD07-226D147D8A7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Customs.Domain", "modules\Customs\Ulp.Customs.Domain\Ulp.Customs.Domain.csproj", "{70460633-7465-478E-817D-69AD70C31758}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Customs.Application", "modules\Customs\Ulp.Customs.Application\Ulp.Customs.Application.csproj", "{6C839FD1-CB53-4A55-BC4C-D2CB0CBEA93B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Customs.Infrastructure", "modules\Customs\Ulp.Customs.Infrastructure\Ulp.Customs.Infrastructure.csproj", "{3CF900DF-EEF5-4E60-AF9E-FE1410F31246}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulp.Customs.Api", "modules\Customs\Ulp.Customs.Api\Ulp.Customs.Api.csproj", "{9BBABE8C-67E2-4DAD-8C95-8F6D1D24D1E7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C0000001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0000001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0000001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0000001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0000002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0000002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0000002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0000002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0000003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0000003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0000003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0000003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0000004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0000004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0000004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0000004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0000005-0005-0005-0005-000000000005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0000005-0005-0005-0005-000000000005}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0000005-0005-0005-0005-000000000005}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0000005-0005-0005-0005-000000000005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0000006-0006-0006-0006-000000000006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0000006-0006-0006-0006-000000000006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0000006-0006-0006-0006-000000000006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0000006-0006-0006-0006-000000000006}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0000007-0007-0007-0007-000000000007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0000007-0007-0007-0007-000000000007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0000007-0007-0007-0007-000000000007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0000007-0007-0007-0007-000000000007}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0000008-0008-0008-0008-000000000008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0000008-0008-0008-0008-000000000008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0000008-0008-0008-0008-000000000008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0000008-0008-0008-0008-000000000008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0000009-0009-0009-0009-000000000009}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0000009-0009-0009-0009-000000000009}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0000009-0009-0009-0009-000000000009}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0000009-0009-0009-0009-000000000009}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C000000A-000A-000A-000A-00000000000A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C000000A-000A-000A-000A-00000000000A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C000000A-000A-000A-000A-00000000000A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C000000A-000A-000A-000A-00000000000A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C000000B-000B-000B-000B-00000000000B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C000000B-000B-000B-000B-00000000000B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C000000B-000B-000B-000B-00000000000B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C000000B-000B-000B-000B-00000000000B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1000001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1000001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1000001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1000001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1000002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1000002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1000002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1000002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1000003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1000003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1000003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1000003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1000004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1000004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1000004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1000004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2600001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2600001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2600001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2600001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2600002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2600002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2600002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2600002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2600003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2600003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2600003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2600003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2600004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2600004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2600004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2600004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2100001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2100001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2100001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2100001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2100002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2100002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2100002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2100002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2100003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2100003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2100003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2100003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2100004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2100004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2100004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2100004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2700001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2700001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2700001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2700001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2700002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2700002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2700002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2700002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2700003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2700003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2700003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2700003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2700004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2700004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2700004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2700004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0300001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0300001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0300001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0300001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0300002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0300002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0300002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0300002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0300003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0300003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0300003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0300003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0300004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0300004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0300004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0300004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1400001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1400001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1400001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1400001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1400002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1400002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1400002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1400002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1400003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1400003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1400003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1400003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1400004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1400004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1400004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1400004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0600001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0600001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0600001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0600001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0600002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0600002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0600002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0600002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0600003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0600003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0600003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0600003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0600004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0600004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0600004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0600004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0500001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0500001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0500001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0500001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0500002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0500002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0500002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0500002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0500003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0500003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0500003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0500003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0500004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0500004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0500004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0500004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0200001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0200001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0200001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0200001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0200002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0200002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0200002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0200002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0200003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0200003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0200003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0200003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0200004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0200004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0200004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0200004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0700001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0700001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0700001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0700001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0700002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0700002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0700002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0700002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0700003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0700003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0700003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0700003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0700004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0700004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0700004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0700004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0900001-0001-0001-0001-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0900001-0001-0001-0001-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0900001-0001-0001-0001-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0900001-0001-0001-0001-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0900002-0002-0002-0002-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0900002-0002-0002-0002-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0900002-0002-0002-0002-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0900002-0002-0002-0002-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0900003-0003-0003-0003-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0900003-0003-0003-0003-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0900003-0003-0003-0003-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0900003-0003-0003-0003-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0900004-0004-0004-0004-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0900004-0004-0004-0004-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0900004-0004-0004-0004-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0900004-0004-0004-0004-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{818721F3-2F05-4E5C-80B9-EABB396389CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{818721F3-2F05-4E5C-80B9-EABB396389CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{818721F3-2F05-4E5C-80B9-EABB396389CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{818721F3-2F05-4E5C-80B9-EABB396389CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7350ECCE-2519-4546-8781-28D2D6DBD357}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7350ECCE-2519-4546-8781-28D2D6DBD357}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7350ECCE-2519-4546-8781-28D2D6DBD357}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7350ECCE-2519-4546-8781-28D2D6DBD357}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D414F7F-474B-4614-A209-99FB7DC73D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D414F7F-474B-4614-A209-99FB7DC73D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D414F7F-474B-4614-A209-99FB7DC73D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D414F7F-474B-4614-A209-99FB7DC73D61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88697D93-CA18-48CA-AF2A-F9B25C7B5CC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88697D93-CA18-48CA-AF2A-F9B25C7B5CC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88697D93-CA18-48CA-AF2A-F9B25C7B5CC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88697D93-CA18-48CA-AF2A-F9B25C7B5CC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D399E7E1-8C97-4F8B-A262-65990ECA3902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D399E7E1-8C97-4F8B-A262-65990ECA3902}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D399E7E1-8C97-4F8B-A262-65990ECA3902}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D399E7E1-8C97-4F8B-A262-65990ECA3902}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70460633-7465-478E-817D-69AD70C31758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70460633-7465-478E-817D-69AD70C31758}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70460633-7465-478E-817D-69AD70C31758}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70460633-7465-478E-817D-69AD70C31758}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C839FD1-CB53-4A55-BC4C-D2CB0CBEA93B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C839FD1-CB53-4A55-BC4C-D2CB0CBEA93B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C839FD1-CB53-4A55-BC4C-D2CB0CBEA93B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C839FD1-CB53-4A55-BC4C-D2CB0CBEA93B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CF900DF-EEF5-4E60-AF9E-FE1410F31246}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CF900DF-EEF5-4E60-AF9E-FE1410F31246}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CF900DF-EEF5-4E60-AF9E-FE1410F31246}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CF900DF-EEF5-4E60-AF9E-FE1410F31246}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BBABE8C-67E2-4DAD-8C95-8F6D1D24D1E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BBABE8C-67E2-4DAD-8C95-8F6D1D24D1E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BBABE8C-67E2-4DAD-8C95-8F6D1D24D1E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BBABE8C-67E2-4DAD-8C95-8F6D1D24D1E7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C0000001-0001-0001-0001-000000000001} = {B1B11111-1111-1111-1111-111111111111}
+		{C0000002-0002-0002-0002-000000000002} = {B1B11111-1111-1111-1111-111111111111}
+		{C0000003-0003-0003-0003-000000000003} = {B1B11111-1111-1111-1111-111111111111}
+		{C0000004-0004-0004-0004-000000000004} = {B1B11111-1111-1111-1111-111111111111}
+		{C0000005-0005-0005-0005-000000000005} = {B1B11111-1111-1111-1111-111111111111}
+		{C0000006-0006-0006-0006-000000000006} = {B2B22222-2222-2222-2222-222222222222}
+		{C0000007-0007-0007-0007-000000000007} = {B2B22222-2222-2222-2222-222222222222}
+		{C0000008-0008-0008-0008-000000000008} = {B2B22222-2222-2222-2222-222222222222}
+		{C0000009-0009-0009-0009-000000000009} = {B3B33333-3333-3333-3333-333333333333}
+		{C000000A-000A-000A-000A-00000000000A} = {B3B33333-3333-3333-3333-333333333333}
+		{C000000B-000B-000B-000B-00000000000B} = {B4B44444-4444-4444-4444-444444444444}
+		{D1000001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D1000002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D1000003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D1000004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{D2600001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D2600002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D2600003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D2600004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{D2100001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D2100002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D2100003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D2100004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{D2700001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D2700002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D2700003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D2700004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{D0300001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D0300002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D0300003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D0300004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{D1400001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D1400002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D1400003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D1400004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{D0600001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D0600002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D0600003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D0600004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{D0500001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D0500002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D0500003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D0500004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{D0200001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D0200002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D0200003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D0200004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{D0700001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D0700002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D0700003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D0700004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{D0900001-0001-0001-0001-000000000001} = {B5B55555-5555-5555-5555-555555555555}
+		{D0900002-0002-0002-0002-000000000002} = {B5B55555-5555-5555-5555-555555555555}
+		{D0900003-0003-0003-0003-000000000003} = {B5B55555-5555-5555-5555-555555555555}
+		{D0900004-0004-0004-0004-000000000004} = {B5B55555-5555-5555-5555-555555555555}
+		{5813DB08-8595-4DC3-8126-835495488D32} = {B5B55555-5555-5555-5555-555555555555}
+		{818721F3-2F05-4E5C-80B9-EABB396389CD} = {5813DB08-8595-4DC3-8126-835495488D32}
+		{7350ECCE-2519-4546-8781-28D2D6DBD357} = {5813DB08-8595-4DC3-8126-835495488D32}
+		{5D414F7F-474B-4614-A209-99FB7DC73D61} = {5813DB08-8595-4DC3-8126-835495488D32}
+		{88697D93-CA18-48CA-AF2A-F9B25C7B5CC7} = {5813DB08-8595-4DC3-8126-835495488D32}
+		{76EE884D-7477-4924-9867-971EE610C8E3} = {8EDF26D0-33DF-4F90-9A08-711CC994E74E}
+		{D399E7E1-8C97-4F8B-A262-65990ECA3902} = {76EE884D-7477-4924-9867-971EE610C8E3}
+		{3DBAD557-30EB-4CAE-BD07-226D147D8A7D} = {B5B55555-5555-5555-5555-555555555555}
+		{70460633-7465-478E-817D-69AD70C31758} = {3DBAD557-30EB-4CAE-BD07-226D147D8A7D}
+		{6C839FD1-CB53-4A55-BC4C-D2CB0CBEA93B} = {3DBAD557-30EB-4CAE-BD07-226D147D8A7D}
+		{3CF900DF-EEF5-4E60-AF9E-FE1410F31246} = {3DBAD557-30EB-4CAE-BD07-226D147D8A7D}
+		{9BBABE8C-67E2-4DAD-8C95-8F6D1D24D1E7} = {3DBAD557-30EB-4CAE-BD07-226D147D8A7D}
+	EndGlobalSection
+EndGlobal
