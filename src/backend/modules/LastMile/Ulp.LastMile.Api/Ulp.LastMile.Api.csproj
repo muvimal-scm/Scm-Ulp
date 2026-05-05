@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M9 Last-Mile Delivery â€” HTTP API endpoint groups under /api/v1/last-mile/*.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\Ulp.LastMile.Domain\Ulp.LastMile.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.LastMile.Application\Ulp.LastMile.Application.csproj" />
+    <ProjectReference Include="..\Ulp.LastMile.Infrastructure\Ulp.LastMile.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>

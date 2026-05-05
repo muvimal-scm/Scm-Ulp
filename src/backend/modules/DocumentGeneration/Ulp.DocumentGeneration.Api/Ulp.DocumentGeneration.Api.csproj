@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>M6 Doc Generation â€” HTTP API endpoint groups under /api/v1/document-generation/*.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Domain\Ulp.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\core\Ulp.Core.Application\Ulp.Core.Application.csproj" />
+    <ProjectReference Include="..\Ulp.DocumentGeneration.Domain\Ulp.DocumentGeneration.Domain.csproj" />
+    <ProjectReference Include="..\Ulp.DocumentGeneration.Application\Ulp.DocumentGeneration.Application.csproj" />
+    <ProjectReference Include="..\Ulp.DocumentGeneration.Infrastructure\Ulp.DocumentGeneration.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" />
+  </ItemGroup>
+</Project>

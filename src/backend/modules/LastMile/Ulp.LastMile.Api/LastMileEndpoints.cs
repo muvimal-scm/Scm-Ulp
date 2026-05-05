@@ -1,0 +1,87 @@
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Ulp.LastMile.Application;
+using Ulp.LastMile.Domain.Entities;
+
+namespace Ulp.LastMile.Api;
+
+public static class LastMileEndpoints
+{
+    public static IEndpointRouteBuilder MapLastMileEndpoints(this IEndpointRouteBuilder app)
+    {
+        var bookings = app.MapGroup("/api/v1/last-mile/bookings").WithTags("M9 · Courier Bookings").RequireAuthorization();
+        bookings.MapGet("/", async (
+            [FromServices] ILastMileService svc,
+            [FromQuery] CourierBookingStatus? status,
+            [FromQuery] CourierType? courierType,
+            [FromQuery] string? countryCode,
+            [FromQuery] int? page, [FromQuery] int? pageSize,
+            CancellationToken ct) =>
+            Results.Ok(await svc.ListBookingsAsync(new CourierBookingListQuery(status, courierType, countryCode, page ?? 1, pageSize ?? 50), ct)));
+        bookings.MapGet("/{id:long}", async (long id, [FromServices] ILastMileService svc, CancellationToken ct) =>
+        {
+            var d = await svc.GetBookingAsync(id, ct);
+            return d is null ? Results.NotFound() : Results.Ok(d);
+        });
+        bookings.MapPost("/", async ([FromBody] CreateCourierBookingRequest req, [FromServices] ILastMileService svc, CancellationToken ct) =>
+        {
+            try   { return Results.Created("/api/v1/last-mile/bookings/", await svc.CreateBookingAsync(req, ct)); }
+            catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+        });
+        bookings.MapPost("/{id:long}/status", async (long id, [FromBody] BookingStatusBody body, [FromServices] ILastMileService svc, CancellationToken ct) =>
+        {
+            try   { return Results.Ok(await svc.ChangeBookingStatusAsync(id, body.NewStatus, ct)); }
+            catch (InvalidOperationException) { return Results.NotFound(); }
+        });
+
+        var routes = app.MapGroup("/api/v1/last-mile/routes").WithTags("M9 · Routes").RequireAuthorization();
+        routes.MapGet("/", async ([FromServices] ILastMileService svc, CancellationToken ct) =>
+            Results.Ok(await svc.ListRoutesAsync(ct)));
+        routes.MapGet("/{id:long}", async (long id, [FromServices] ILastMileService svc, CancellationToken ct) =>
+        {
+            var d = await svc.GetRouteAsync(id, ct);
+            return d is null ? Results.NotFound() : Results.Ok(d);
+        });
+        routes.MapPost("/", async ([FromBody] CreateRouteRequest req, [FromServices] ILastMileService svc, CancellationToken ct) =>
+        {
+            try   { return Results.Created("/api/v1/last-mile/routes/", await svc.CreateRouteAsync(req, ct)); }
+            catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+        });
+
+        var manifests = app.MapGroup("/api/v1/last-mile/manifests").WithTags("M9 · Manifests").RequireAuthorization();
+        manifests.MapGet("/", async ([FromServices] ILastMileService svc, CancellationToken ct) =>
+            Results.Ok(await svc.ListManifestsAsync(ct)));
+
+        var pods = app.MapGroup("/api/v1/last-mile/pods").WithTags("M9 · POD").RequireAuthorization();
+        pods.MapGet("/", async ([FromServices] ILastMileService svc, [FromQuery] long? bookingId, CancellationToken ct) =>
+            Results.Ok(await svc.ListPodsAsync(bookingId, ct)));
+        pods.MapPost("/", async ([FromBody] CreatePodRequest req, [FromServices] ILastMileService svc, CancellationToken ct) =>
+            Results.Created("/api/v1/last-mile/pods/", await svc.RecordPodAsync(req, ct)));
+
+        var cods = app.MapGroup("/api/v1/last-mile/cod").WithTags("M9 · COD").RequireAuthorization();
+        cods.MapGet("/", async ([FromServices] ILastMileService svc, [FromQuery] CodSettledStatus? status, CancellationToken ct) =>
+            Results.Ok(await svc.ListCodAsync(status, ct)));
+        cods.MapPost("/", async ([FromBody] CreateCodRequest req, [FromServices] ILastMileService svc, CancellationToken ct) =>
+            Results.Created("/api/v1/last-mile/cod/", await svc.RecordCodAsync(req, ct)));
+
+        var attempts = app.MapGroup("/api/v1/last-mile/attempts").WithTags("M9 · Attempts").RequireAuthorization();
+        attempts.MapGet("/", async ([FromServices] ILastMileService svc, [FromQuery] long bookingId, CancellationToken ct) =>
+            Results.Ok(await svc.ListAttemptsAsync(bookingId, ct)));
+        attempts.MapPost("/", async ([FromBody] CreateAttemptRequest req, [FromServices] ILastMileService svc, CancellationToken ct) =>
+            Results.Created("/api/v1/last-mile/attempts/", await svc.RecordAttemptAsync(req, ct)));
+
+        var zones = app.MapGroup("/api/v1/last-mile/zone-rates").WithTags("M9 · Zone Rates").RequireAuthorization();
+        zones.MapGet("/", async (
+            [FromServices] ILastMileService svc,
+            [FromQuery] string? countryCode,
+            [FromQuery] CourierType? courierType,
+            CancellationToken ct) =>
+            Results.Ok(await svc.ListZoneRatesAsync(countryCode, courierType, ct)));
+
+        return app;
+    }
+
+    public sealed record BookingStatusBody(CourierBookingStatus NewStatus);
+}
