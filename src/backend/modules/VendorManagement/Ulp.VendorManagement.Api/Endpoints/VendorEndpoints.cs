@@ -18,11 +18,11 @@ public static class VendorEndpoints
             [FromQuery] VendorStatus? status,
             [FromQuery] string? countryCode,
             [FromQuery] VendorCategoryCode? category,
-            [FromQuery] int page,
-            [FromQuery] int pageSize,
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize,
             CancellationToken ct) =>
         {
-            var q = new VendorListQuery(status, countryCode, category, page, pageSize);
+            var q = new VendorListQuery(status, countryCode, category, page ?? 1, pageSize ?? 50);
             var items = await svc.ListAsync(q, ct);
             var total = await svc.CountAsync(q, ct);
             return Results.Ok(new { items, total });

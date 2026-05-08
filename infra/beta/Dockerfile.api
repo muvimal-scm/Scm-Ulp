@@ -20,11 +20,14 @@ WORKDIR /src
 COPY src/backend ./src/backend
 
 WORKDIR /src/src/backend
-RUN dotnet restore Ulp.sln \
-    && dotnet publish host/Ulp.Api/Ulp.Api.csproj \
+# Restore + publish from the API csproj directly — NOT from the solution.
+# The solution references `..\..\tests\unit\...\*.csproj` (one level above
+# src/backend/), and we only copy src/backend into the build context.
+# Publishing the API csproj walks ProjectReferences via Directory.Packages.props,
+# which is enough to build the production binary.
+RUN dotnet publish host/Ulp.Api/Ulp.Api.csproj \
         -c Release \
         -o /app/publish \
-        --no-restore \
         /p:UseAppHost=false
 
 # ---- runtime stage ---------------------------------------------------------

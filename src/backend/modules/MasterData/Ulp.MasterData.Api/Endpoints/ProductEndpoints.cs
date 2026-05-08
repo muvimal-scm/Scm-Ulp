@@ -31,13 +31,13 @@ public static class ProductEndpoints
         [FromQuery] string? search,
         [FromQuery] string? countryCode,
         [FromQuery] ProductType? productType,
-        [FromQuery] int page,
-        [FromQuery] int pageSize,
+        [FromQuery] int? page,
+        [FromQuery] int? pageSize,
         CancellationToken ct)
     {
-        var q = new ProductListQuery(search, countryCode, productType,
-                                     Math.Max(page, 1),
-                                     pageSize is <= 0 or > 200 ? 50 : pageSize);
+        var p  = Math.Max(page ?? 1, 1);
+        var ps = (pageSize ?? 50) is <= 0 or > 200 ? 50 : (pageSize ?? 50);
+        var q = new ProductListQuery(search, countryCode, productType, p, ps);
         var items = await repo.ListAsync(q, ct);
         var total = await repo.CountAsync(q, ct);
         return Results.Ok(new PagedList<ProductDto>(items.Select(ToDto).ToList(), q.Page, q.PageSize, total));

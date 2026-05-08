@@ -16,13 +16,13 @@ public static class InboxEndpoints
         g.MapGet("/", async (
             [FromServices] INotificationService svc,
             [FromServices] TenantContextHolder holder,
-            [FromQuery] bool includeRead,
-            [FromQuery] int page,
-            [FromQuery] int pageSize,
+            [FromQuery] bool? includeRead,
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize,
             CancellationToken ct) =>
         {
             if (holder.UserId is null) return Results.Unauthorized();
-            var items = await svc.GetInboxAsync(holder.UserId.Value, includeRead, page, pageSize, ct);
+            var items = await svc.GetInboxAsync(holder.UserId.Value, includeRead ?? false, page ?? 1, pageSize ?? 50, ct);
             return Results.Ok(items);
         });
 

@@ -25,10 +25,12 @@ async function loginViaKeycloak(page: Page) {
   await page.goto('/');
   // Landing page → click Sign in to bounce to Keycloak.
   await page.getByRole('button', { name: /sign in/i }).click();
-  // Keycloak hosted login form (separate domain on :8080).
-  await page.getByLabel(/username|email/i).fill(TEST_USER);
-  await page.getByLabel(/password/i).fill(TEST_PASS);
-  await page.getByRole('button', { name: /sign in/i }).click();
+  // Keycloak hosted login form (separate domain on :8080). Use stable IDs;
+  // the password label resolves to BOTH the input AND a "Show password" toggle
+  // button, which trips Playwright's strict-mode locator resolution.
+  await page.locator('#username').fill(TEST_USER);
+  await page.locator('#password').fill(TEST_PASS);
+  await page.locator('#kc-login').click();
   // Back to /app/dashboard after successful auth.
   await expect(page).toHaveURL(/\/app(\/dashboard)?\/?$/, { timeout: 15_000 });
 }
@@ -47,27 +49,33 @@ test.describe('Import flow — Milestone 1 happy path', () => {
   });
 
   test('Sales Lead create + redirect to leads list', async ({ page }) => {
+    // Unique per-run name so re-running this suite never trips strict-mode
+    // when prior runs left rows in the DB. (No automatic cleanup — beta DB
+    // accumulates test rows; the persistence test is also tolerant of that.)
+    const contactName = `E2E Smoke Contact ${Date.now()}`;
+
     await page.goto('/app/sales/leads');
     await page.getByRole('link', { name: /new lead/i }).first().click();
     await expect(page).toHaveURL(/\/sales\/leads\/new$/);
 
-    // Form is auto-populated with a generated lead number; verify required fields.
-    await page.getByLabel(/contact name/i).fill('E2E Smoke Contact');
+    // Form auto-populates leadNumber; only contactName is required beyond that.
+    await page.getByLabel(/contact name/i).fill(contactName);
     await page.getByRole('button', { name: /create lead/i }).click();
 
     // Redirects back to leads list; the new lead should appear in the table.
     await expect(page).toHaveURL(/\/sales\/leads$/, { timeout: 10_000 });
-    await expect(page.getByRole('cell', { name: /E2E Smoke Contact/ })).toBeVisible();
+    await expect(page.getByRole('cell', { name: contactName })).toBeVisible();
   });
 
   test('Freight Forwarding shipment list shows Ocean/Air × Imp/Exp tabs', async ({ page }) => {
     await page.goto('/app/freight-forwarding/shipments');
-    // CP3 v2 delta: 5 tabs.
-    await expect(page.getByRole('button', { name: /^all shipments$/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /ocean import/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /ocean export/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /air import/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /air export/i })).toBeVisible();
+    // CP3 v2 delta: 5 tabs. Component renders `<button role="tab">` so query
+    // by ARIA role 'tab', not 'button'.
+    await expect(page.getByRole('tab', { name: /^all shipments$/i })).toBeVisible();
+    await expect(page.getByRole('tab', { name: /ocean import/i })).toBeVisible();
+    await expect(page.getByRole('tab', { name: /ocean export/i })).toBeVisible();
+    await expect(page.getByRole('tab', { name: /air import/i })).toBeVisible();
+    await expect(page.getByRole('tab', { name: /air export/i })).toBeVisible();
   });
 
   test('Accounting Invoice list shows the v2 In-Transit tab', async ({ page }) => {

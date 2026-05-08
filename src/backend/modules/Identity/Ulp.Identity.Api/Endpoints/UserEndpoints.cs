@@ -32,13 +32,14 @@ public static class UserEndpoints
         [FromServices] IdentityDbContext db,
         [FromServices] ITenantContext tenant,
         [FromQuery] string? search,
-        [FromQuery] int page,
-        [FromQuery] int pageSize,
+        [FromQuery] int? page,
+        [FromQuery] int? pageSize,
         CancellationToken ct)
     {
         var tenantId = int.Parse(tenant.TenantId.Value);
-        var p  = Math.Max(page, 1);
-        var ps = pageSize is <= 0 or > 200 ? 50 : pageSize;
+        var p  = Math.Max(page ?? 1, 1);
+        var psRaw = pageSize ?? 50;
+        var ps = psRaw is <= 0 or > 200 ? 50 : psRaw;
 
         var q = db.Users.AsNoTracking().Where(u => u.TenantId == tenant.TenantId);
         if (!string.IsNullOrWhiteSpace(search))

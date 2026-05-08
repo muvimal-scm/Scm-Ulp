@@ -17,14 +17,14 @@ public static class ReferenceEndpoints
     {
         var g = app.MapGroup("/api/v1/master-data/reference").WithTags("M1 · Reference");
 
-        g.MapGet("/countries", async ([FromServices] IReferenceQueries q, [FromQuery] bool supportedOnly, CancellationToken ct)
-            => Results.Ok(await q.ListCountriesAsync(supportedOnly, ct)));
+        g.MapGet("/countries", async ([FromServices] IReferenceQueries q, [FromQuery] bool? supportedOnly, CancellationToken ct)
+            => Results.Ok(await q.ListCountriesAsync(supportedOnly ?? false, ct)));
 
         g.MapGet("/countries/{code}/states", async ([FromServices] IReferenceQueries q, string code, CancellationToken ct)
             => Results.Ok(await q.ListStatesAsync(code, ct)));
 
-        g.MapGet("/currencies", async ([FromServices] IReferenceQueries q, [FromQuery] bool activeOnly, CancellationToken ct)
-            => Results.Ok(await q.ListCurrenciesAsync(activeOnly, ct)));
+        g.MapGet("/currencies", async ([FromServices] IReferenceQueries q, [FromQuery] bool? activeOnly, CancellationToken ct)
+            => Results.Ok(await q.ListCurrenciesAsync(activeOnly ?? false, ct)));
 
         g.MapGet("/uoms", async ([FromServices] IReferenceQueries q, [FromQuery] string? category, CancellationToken ct)
             => Results.Ok(await q.ListUomsAsync(category, ct)));

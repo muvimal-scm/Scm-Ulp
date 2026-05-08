@@ -201,6 +201,16 @@ export class LeadFormComponent implements OnInit {
       } finally {
         this.loading.set(false);
       }
+    } else {
+      // Create mode — auto-suggest a lead number so the user has something to
+      // submit with. Format: LD-YYYYMMDD-hhmmss-ms (millisecond resolution
+      // avoids collisions when two leads are entered in the same minute,
+      // which crashes the unique constraint on m2_lead.lead_number).
+      const now = new Date();
+      const ymd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+      const hms = `${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
+      const ms  = String(now.getMilliseconds()).padStart(3, '0');
+      this.form.patchValue({ leadNumber: `LD-${ymd}-${hms}${ms}` });
     }
   }
 

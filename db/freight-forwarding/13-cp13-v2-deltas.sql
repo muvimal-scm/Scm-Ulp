@@ -53,7 +53,7 @@ PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 4. Seed the v2 OrgAdmin role so per-tenant admin tier exists.
 --    CP12 carries the role-form UI; this seed gives it a starting point.
-INSERT IGNORE INTO m26_role (id, tenant_id, code, name, description, is_system, is_active, created_at, modified_at)
+INSERT IGNORE INTO m26_role (id, tenant_id, code, name, description, is_system, is_active, created_at_utc, modified_at_utc)
 VALUES (
   900, NULL, 'OrgAdmin',
   'Organization Administrator',

@@ -56,7 +56,11 @@ export class TenantContextService {
       return;
     }
     try {
-      const token = await this.keycloak.loadUserProfile();
+      // The JWT itself carries email + preferred_username + tenant_id + country_code
+      // + region + permissions claims (mapped by the realm's ulp-claims scope).
+      // We don't need to call loadUserProfile() — that hits Keycloak's /account
+      // endpoint, which has its own CORS rules separate from token issuance and
+      // blocks the SPA in beta. Reading from tokenParsed avoids that round trip.
       const claims = this.keycloak.getKeycloakInstance().tokenParsed as Record<string, unknown> | undefined;
       if (!claims) {
         this._ctx.set(null);
@@ -66,12 +70,12 @@ export class TenantContextService {
         tenantId: String(claims['tenant_id'] ?? ''),
         countryCode: String(claims['country_code'] ?? ''),
         region: String(claims['region'] ?? ''),
-        username: String(claims['preferred_username'] ?? token.username ?? ''),
-        email: String(claims['email'] ?? token.email ?? ''),
+        username: String(claims['preferred_username'] ?? ''),
+        email: String(claims['email'] ?? ''),
         permissions: Array.isArray(claims['permissions']) ? (claims['permissions'] as string[]) : [],
       });
     } catch (err) {
-      console.warn('[ulp] tenant.load() failed — Keycloak may be unreachable:', err);
+      console.warn('[ulp] tenant.load() failed:', err);
       this._ctx.set(null);
     }
   }

@@ -65,12 +65,13 @@ public static class AdminEndpoints
 
             // Wipe demo rows (9000+) across every demo-touching table. Order
             // matters: child rows first, parent last, to satisfy FKs.
+            // m5_shipment_memo intentionally omitted — table isn't in the Phase-1
+            // baseline schema; the seed file's memo INSERT is also commented out.
             var wipeSql = @"
                 DELETE FROM m17_invoice         WHERE id BETWEEN 9000 AND 9099 AND tenant_id = 1001;
                 DELETE FROM m5_charge_line      WHERE id BETWEEN 9000 AND 9099 AND tenant_id = 1001;
                 DELETE FROM m5_milestone        WHERE id BETWEEN 9000 AND 9099 AND tenant_id = 1001;
                 DELETE FROM m5_container        WHERE id BETWEEN 9000 AND 9099 AND tenant_id = 1001;
-                DELETE FROM m5_shipment_memo    WHERE id BETWEEN 9000 AND 9099 AND tenant_id = 1001;
                 DELETE FROM m5_shipment         WHERE id BETWEEN 9000 AND 9099 AND tenant_id = 1001;
                 DELETE FROM m5_booking          WHERE id BETWEEN 9000 AND 9099 AND tenant_id = 1001;
                 DELETE FROM m1_product          WHERE id BETWEEN 9000 AND 9099 AND tenant_id = 1001;
@@ -117,9 +118,9 @@ public static class AdminEndpoints
             await conn.OpenAsync(ct);
             foreach (var table in new[]
             {
-                "m_tenant", "m1_party", "m1_product", "m2_lead", "m2_opportunity",
+                "m_tenant", "m_user", "m1_party", "m1_product", "m2_lead", "m2_opportunity",
                 "m5_booking", "m5_shipment", "m5_charge_line", "m17_invoice",
-                "m17_bill", "m21_document", "m26_user", "m26_role"
+                "m17_bill", "m21_document", "m26_role"
             })
             {
                 await using var cmd = new MySqlCommand($"SELECT COUNT(*) FROM {table}", conn);

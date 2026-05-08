@@ -37,13 +37,13 @@ public static class DocumentEndpoints
             [FromQuery] string? moduleEntityType,
             [FromQuery] long? moduleEntityId,
             [FromQuery] string? classCode,
-            [FromQuery] bool includeDeleted,
-            [FromQuery] int page,
-            [FromQuery] int pageSize,
+            [FromQuery] bool? includeDeleted,
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize,
             CancellationToken ct) =>
         {
             var q = new DocumentListQuery(moduleCode, moduleEntityType, moduleEntityId, classCode,
-                includeDeleted, page, pageSize);
+                includeDeleted ?? false, page ?? 1, pageSize ?? 50);
             var items = await svc.ListAsync(q, ct);
             var total = await svc.CountAsync(q, ct);
             return Results.Ok(new { items, total });

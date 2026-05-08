@@ -60,7 +60,7 @@ INSERT IGNORE INTO m5_booking
    1, 2,  -- Origin SGSIN, destination INNSA (Nhava Sheva)
    '2026-04-15', '2026-05-08',
    45000.00, 'USD',
-   103, 'CONFIRMED', 'Demo seed — agent-driven import scenario.', '2026-04-12',
+   103, 'Confirmed', 'Demo seed — agent-driven import scenario.', '2026-04-12',
    CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3));
 
 -- ---------------------------------------------------------------------
@@ -78,7 +78,7 @@ INSERT IGNORE INTO m5_shipment
    9001, 'MV Maersk Stadelhorn', '0428E',
    '2026-04-22 18:00:00.000', '2026-05-05 06:00:00.000',
    '2026-04-22 19:30:00.000', NULL,  -- departed, not yet arrived
-   1, 2, 'IN_TRANSIT', 'In transit — vessel passed Colombo 2026-04-29.',
+   1, 2, 'InTransit', 'In transit — vessel passed Colombo 2026-04-29.',
    CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3));
 
 -- ---------------------------------------------------------------------
@@ -86,21 +86,20 @@ INSERT IGNORE INTO m5_shipment
 -- ---------------------------------------------------------------------
 INSERT IGNORE INTO m5_container
   (id, tenant_id, shipment_id, container_number, container_type,
-   seal_number, tare_weight_kg, cargo_weight_kg, free_days, status,
-   created_at_utc, modified_at_utc) VALUES
-  (9001, 1001, 9001, 'MAEU 7654321', '40HC', 'SEAL-001A', 3900.000, 22500.000, 7, 'IN_TRANSIT', CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)),
-  (9002, 1001, 9001, 'MAEU 7654322', '40HC', 'SEAL-001B', 3900.000, 22500.000, 7, 'IN_TRANSIT', CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3));
+   seal_number, tare_weight_kg, cargo_weight_kg, free_days, status) VALUES
+  (9001, 1001, 9001, 'MAEU 7654321', '40HC', 'SEAL-001A', 3900.000, 22500.000, 7, 'OnVessel'),
+  (9002, 1001, 9001, 'MAEU 7654322', '40HC', 'SEAL-001B', 3900.000, 22500.000, 7, 'OnVessel');
 
 -- ---------------------------------------------------------------------
 -- M5 — Milestones (4 events showing the in-transit progression)
 -- ---------------------------------------------------------------------
 INSERT IGNORE INTO m5_milestone
   (id, tenant_id, shipment_id, milestone_code, occurred_at_utc, location_port_id,
-   source, remarks, created_at_utc) VALUES
-  (9001, 1001, 9001, 'BOOKING_CONFIRMED', '2026-04-12 09:00:00.000',    1, 'MANUAL', 'Booking confirmed by Maersk', CURRENT_TIMESTAMP(3)),
-  (9002, 1001, 9001, 'GATE_IN',           '2026-04-21 14:00:00.000',    1, 'CARRIER_API', 'Containers gated in at SGSIN', CURRENT_TIMESTAMP(3)),
-  (9003, 1001, 9001, 'VESSEL_DEPARTED',   '2026-04-22 19:30:00.000',    1, 'CARRIER_API', 'MV Maersk Stadelhorn departed Singapore',  CURRENT_TIMESTAMP(3)),
-  (9004, 1001, 9001, 'IN_TRANSIT',        '2026-04-29 02:15:00.000', NULL, 'GPS', 'Vessel position update — passed Colombo',          CURRENT_TIMESTAMP(3));
+   source, remarks) VALUES
+  (9001, 1001, 9001, 'BOOKING_CONFIRMED', '2026-04-12 09:00:00.000',    1, 'MANUAL',      'Booking confirmed by Maersk'),
+  (9002, 1001, 9001, 'GATE_IN',           '2026-04-21 14:00:00.000',    1, 'CARRIER_API', 'Containers gated in at SGSIN'),
+  (9003, 1001, 9001, 'VESSEL_DEPARTED',   '2026-04-22 19:30:00.000',    1, 'CARRIER_API', 'MV Maersk Stadelhorn departed Singapore'),
+  (9004, 1001, 9001, 'IN_TRANSIT',        '2026-04-29 02:15:00.000', NULL, 'GPS',         'Vessel position update — passed Colombo');
 
 -- ---------------------------------------------------------------------
 -- M5 — Charges (drives CP13 landed-cost calc)
@@ -108,14 +107,13 @@ INSERT IGNORE INTO m5_milestone
 INSERT IGNORE INTO m5_charge_line
   (id, tenant_id, shipment_id, charge_code, rate_card_id,
    quantity, uom_code, unit_price_amount, unit_price_currency,
-   amount_amount, amount_currency, is_billable,
-   created_at_utc, modified_at_utc) VALUES
-  (9001, 1001, 9001, 'OCEAN_FREIGHT',     NULL, 2, 'CONT_40HC',  3500.00, 'USD',  7000.00, 'USD', 1, CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)),
-  (9002, 1001, 9001, 'FUEL',              NULL, 2, 'CONT_40HC',   450.00, 'USD',   900.00, 'USD', 1, CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)),
-  (9003, 1001, 9001, 'BROKERAGE',         NULL, 1, 'EACH',        250.00, 'USD',   250.00, 'USD', 1, CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)),
-  (9004, 1001, 9001, 'CUSTOMS_CLEARANCE', NULL, 1, 'EACH',        150.00, 'USD',   150.00, 'USD', 1, CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)),
-  (9005, 1001, 9001, 'DUTY',              NULL, 1, 'EACH',       4500.00, 'USD',  4500.00, 'USD', 1, CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)),
-  (9006, 1001, 9001, 'HANDLING',          NULL, 2, 'CONT_40HC',   180.00, 'USD',   360.00, 'USD', 1, CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3));
+   amount_amount, amount_currency, is_billable) VALUES
+  (9001, 1001, 9001, 'OCEAN_FREIGHT',     NULL, 2, 'CONT_40HC',  3500.00, 'USD',  7000.00, 'USD', 1),
+  (9002, 1001, 9001, 'FUEL',              NULL, 2, 'CONT_40HC',   450.00, 'USD',   900.00, 'USD', 1),
+  (9003, 1001, 9001, 'BROKERAGE',         NULL, 1, 'EACH',        250.00, 'USD',   250.00, 'USD', 1),
+  (9004, 1001, 9001, 'CUSTOMS_CLEARANCE', NULL, 1, 'EACH',        150.00, 'USD',   150.00, 'USD', 1),
+  (9005, 1001, 9001, 'DUTY',              NULL, 1, 'EACH',       4500.00, 'USD',  4500.00, 'USD', 1),
+  (9006, 1001, 9001, 'HANDLING',          NULL, 2, 'CONT_40HC',   180.00, 'USD',   360.00, 'USD', 1);
 
 -- Expected landed-cost rollup (CP13 GET /shipments/9001/landed-cost):
 --   freight     = 7000 + 900    = 7900   (OCEAN_FREIGHT + FUEL)
@@ -126,12 +124,10 @@ INSERT IGNORE INTO m5_charge_line
 --   total       = 13160 USD
 
 -- ---------------------------------------------------------------------
--- M5 — Memo (becomes the first row of the v2 task-history timeline)
+-- M5 — Memo: skipped. m5_shipment_memo isn't in the Phase-1 baseline schema
+-- (created later by the SCM Milestone-1 closure work that hasn't shipped a
+-- migration into db/). Restore this INSERT once that migration lands.
 -- ---------------------------------------------------------------------
-INSERT IGNORE INTO m5_shipment_memo
-  (id, tenant_id, shipment_id, body, is_pinned, author_user_id,
-   created_at_utc) VALUES
-  (9001, 1001, 9001, 'Demo seed: customer confirmed 8 May ETA acceptable. Track demurrage closely — last shipment incurred 5 days.', 1, NULL, CURRENT_TIMESTAMP(3));
 
 -- ---------------------------------------------------------------------
 -- Milestone 3 mirror — Invoice referencing the shipment (CP13 FK)
@@ -148,7 +144,7 @@ INSERT IGNORE INTO m17_invoice
    'USD', 'INR', 83.50,
    13160.00, 2369.00, 15529.00, 0.00,
    'NET 30', 'Demo seed — invoice for the in-flight import scenario. Posted, not yet paid (so it appears in the In-Transit Tab 5).',
-   'POSTED',
+   'Posted',
    CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3));
 
 -- ---------------------------------------------------------------------
@@ -162,7 +158,7 @@ INSERT IGNORE INTO m2_lead
   (9001, 1001, 'IN', 'LEAD-DEMO-001', 'WEB',
    'Priya Sharma', 'Coastal Bulk Traders', 'priya@coastalbulk.example', '+91 22 5555 0001',
    'Steel & Metals', '40 TEUs / month',
-   'QUALIFIED', NULL, NULL,
+   'Qualified', NULL, NULL,
    CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3));
 
 INSERT IGNORE INTO m2_opportunity
@@ -172,7 +168,7 @@ INSERT IGNORE INTO m2_opportunity
    created_at_utc, modified_at_utc) VALUES
   (9001, 1001, 'IN', 'OPP-DEMO-001', 101, 'Annual freight contract — Tata Steel imports',
    2400000.00, 'USD', '2026-06-30', 65.0,
-   'PROPOSAL', NULL,
+   'Proposal', NULL,
    CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3));
 
 -- =====================================================================

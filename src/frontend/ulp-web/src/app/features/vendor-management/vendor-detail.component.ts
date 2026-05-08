@@ -230,7 +230,17 @@ export class VendorDetailComponent implements OnInit {
   private id = 0;
 
   async ngOnInit() {
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    const raw = this.route.snapshot.paramMap.get('id');
+    const parsed = Number(raw);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      // Hit the route with a non-numeric segment — e.g. /vendor-management/vendors
+      // matched :id='vendors' before the list path. Bounce to the list rather
+      // than firing 4 × NaN-suffixed API calls.
+      this.error.set(`Invalid vendor id: ${raw}`);
+      this.loading.set(false);
+      return;
+    }
+    this.id = parsed;
     await this.reloadAll();
   }
 
