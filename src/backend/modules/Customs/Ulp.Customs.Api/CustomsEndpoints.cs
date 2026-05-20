@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -21,10 +21,32 @@ public static class CustomsEndpoints
             var d = await svc.GetEntryAsync(id, ct);
             return d is null ? Results.NotFound() : Results.Ok(d);
         });
+        entries.MapPost("/", async ([FromBody] CreateEntryRequest req, [FromServices] ICustomsService svc, CancellationToken ct) =>
+        {
+            try { return Results.Created("", await svc.CreateEntryAsync(req, ct)); }
+            catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+        });
+        entries.MapPut("/{id:long}", async (long id, [FromBody] UpdateEntryRequest req, [FromServices] ICustomsService svc, CancellationToken ct) =>
+        {
+            try { return Results.Ok(await svc.UpdateEntryAsync(id, req, ct)); }
+            catch (InvalidOperationException ex) { return Results.NotFound(new { error = ex.Message }); }
+        });
+        entries.MapDelete("/{id:long}", async (long id, [FromServices] ICustomsService svc, CancellationToken ct) =>
+        {
+            try { await svc.DeleteEntryAsync(id, ct); return Results.NoContent(); }
+            catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+        });
+        entries.MapPost("/{id:long}/submit", async (long id, [FromServices] ICustomsService svc, CancellationToken ct) =>
+        {
+            try { return Results.Ok(await svc.SubmitEntryAsync(id, ct)); }
+            catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+        });
 
         var bonds = app.MapGroup("/api/v1/customs/bonds").WithTags("M4 · Bonds").RequireAuthorization();
         bonds.MapGet("/", async ([FromServices] ICustomsService svc, CancellationToken ct) =>
             Results.Ok(await svc.ListBondsAsync(ct)));
+        bonds.MapPost("/", async ([FromBody] CreateBondRequest req, [FromServices] ICustomsService svc, CancellationToken ct) =>
+            Results.Created("", await svc.CreateBondAsync(req, ct)));
 
         var atms = app.MapGroup("/api/v1/customs/atm").WithTags("M4 · Authority to Make Entry").RequireAuthorization();
         atms.MapGet("/", async ([FromServices] ICustomsService svc, CancellationToken ct) =>
@@ -37,6 +59,13 @@ public static class CustomsEndpoints
         var isfs = app.MapGroup("/api/v1/customs/isf").WithTags("M4 · ISF").RequireAuthorization();
         isfs.MapGet("/", async ([FromServices] ICustomsService svc, CancellationToken ct) =>
             Results.Ok(await svc.ListIsfAsync(ct)));
+        isfs.MapPost("/", async ([FromBody] CreateIsfRequest req, [FromServices] ICustomsService svc, CancellationToken ct) =>
+            Results.Created("", await svc.CreateIsfAsync(req, ct)));
+        isfs.MapPost("/{id:long}/status", async (long id, [FromBody] UpdateIsfStatusBody body, [FromServices] ICustomsService svc, CancellationToken ct) =>
+        {
+            try { return Results.Ok(await svc.UpdateIsfStatusAsync(id, body.Status, ct)); }
+            catch (InvalidOperationException ex) { return Results.NotFound(new { error = ex.Message }); }
+        });
 
         var pga = app.MapGroup("/api/v1/customs/pga-holds").WithTags("M4 · PGA Holds").RequireAuthorization();
         pga.MapGet("/", async ([FromServices] ICustomsService svc, [FromQuery] bool? activeOnly, CancellationToken ct) =>
@@ -45,6 +74,11 @@ public static class CustomsEndpoints
         var holdExams = app.MapGroup("/api/v1/customs/hold-exams").WithTags("M4 · Customs Hold/Exam").RequireAuthorization();
         holdExams.MapGet("/", async ([FromServices] ICustomsService svc, [FromQuery] bool? openOnly, CancellationToken ct) =>
             Results.Ok(await svc.ListHoldExamsAsync(openOnly ?? true, ct)));
+        holdExams.MapPost("/{id:long}/override", async (long id, [FromBody] OverrideHoldRequest req, [FromServices] ICustomsService svc, CancellationToken ct) =>
+        {
+            try { return Results.Ok(await svc.OverrideHoldAsync(id, req, ct)); }
+            catch (InvalidOperationException ex) { return Results.NotFound(new { error = ex.Message }); }
+        });
 
         var inBond = app.MapGroup("/api/v1/customs/in-bond").WithTags("M4 · In-Bond Moves").RequireAuthorization();
         inBond.MapGet("/", async ([FromServices] ICustomsService svc, CancellationToken ct) =>
@@ -56,4 +90,6 @@ public static class CustomsEndpoints
 
         return app;
     }
+
+    public sealed record UpdateIsfStatusBody(string Status);
 }

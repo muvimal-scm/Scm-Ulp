@@ -127,3 +127,48 @@ export interface CreateCodRequest {
   collectedAt: string;            // ISO 8601 with offset
   referenceNo?: string | null;
 }
+
+// ===== Ocean Drayage =====
+export interface OceanDrayageJobDto {
+  id: number; tenantId: number; jobNumber: string; containerNumber: string;
+  additionalRefs?: string; truckerPartyId?: number; availableForPickup: boolean;
+  terminal?: string; pickupAppointment?: string; dropOffLocation?: string;
+  dropOffAppointment?: string; tripType: string; status: string;
+  specialInstructions?: string; shipmentId?: number; createdAt: string; modifiedAt: string;
+}
+
+export interface CreateOdJobRequest {
+  jobNumber: string; containerNumber: string; additionalRefs?: string;
+  truckerPartyId?: number; availableForPickup: boolean; terminal?: string;
+  pickupAppointment?: string; dropOffLocation?: string; dropOffAppointment?: string;
+  tripType: string; specialInstructions?: string; shipmentId?: number;
+}
+
+export interface UpdateOdJobRequest {
+  containerNumber?: string; additionalRefs?: string; truckerPartyId?: number;
+  availableForPickup?: boolean; terminal?: string; pickupAppointment?: string;
+  dropOffLocation?: string; dropOffAppointment?: string; tripType?: string;
+  status?: string; specialInstructions?: string;
+}
+
+// ===== Over-The-Road =====
+export interface OtrJobDto {
+  id: number; tenantId: number; jobNumber: string; trackingNumber?: string;
+  additionalRefs?: string; pickUpLocation?: string; pickUpAppointment?: string;
+  dropOffLocation?: string; dropOffAppointment?: string; tripType: string;
+  status: string; specialInstructions?: string; truckerPartyId?: number;
+  createdAt: string; modifiedAt: string;
+}
+
+export interface CreateOtrJobRequest {
+  jobNumber: string; trackingNumber?: string; additionalRefs?: string;
+  pickUpLocation?: string; pickUpAppointment?: string; dropOffLocation?: string;
+  dropOffAppointment?: string; tripType: string; specialInstructions?: string;
+  truckerPartyId?: number;
+}
+
+export interface UpdateOtrJobRequest {
+  trackingNumber?: string; additionalRefs?: string; pickUpLocation?: string;
+  pickUpAppointment?: string; dropOffLocation?: string; dropOffAppointment?: string;
+  tripType?: string; status?: string; specialInstructions?: string;
+}

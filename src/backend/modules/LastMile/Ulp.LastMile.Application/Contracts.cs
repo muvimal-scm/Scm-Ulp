@@ -33,6 +33,20 @@ public interface ILastMileService
 
     /* Zone rates / pincodes (read-only) */
     Task<IReadOnlyList<ZoneRateDto>>        ListZoneRatesAsync(string? countryCode, CourierType? type, CancellationToken ct);
+
+    /* Ocean Drayage */
+    Task<OceanDrayageJobDto>                CreateOdJobAsync(CreateOdJobRequest req, CancellationToken ct);
+    Task<OceanDrayageJobDto>                UpdateOdJobAsync(long id, UpdateOdJobRequest req, CancellationToken ct);
+    Task<OceanDrayageJobDto?>               GetOdJobAsync(long id, CancellationToken ct);
+    Task<IReadOnlyList<OceanDrayageJobDto>> ListOdJobsAsync(OdStatus? status, CancellationToken ct);
+    Task                                    DeleteOdJobAsync(long id, CancellationToken ct);
+
+    /* Over-The-Road */
+    Task<OtrJobDto>                CreateOtrJobAsync(CreateOtrJobRequest req, CancellationToken ct);
+    Task<OtrJobDto>                UpdateOtrJobAsync(long id, UpdateOtrJobRequest req, CancellationToken ct);
+    Task<OtrJobDto?>               GetOtrJobAsync(long id, CancellationToken ct);
+    Task<IReadOnlyList<OtrJobDto>> ListOtrJobsAsync(OtrStatus? status, CancellationToken ct);
+    Task                           DeleteOtrJobAsync(long id, CancellationToken ct);
 }
 
 /* ===== Request DTOs ===== */
@@ -117,6 +131,49 @@ public sealed record CodDto(
 public sealed record DeliveryAttemptDto(
     long Id, long BookingId, int AttemptNo, Instant AttemptedAt,
     AttemptStatus Status, string? FailureReason, LocalDate? NextAttemptDate);
+
+/* ===== Ocean Drayage ===== */
+
+public sealed record CreateOdJobRequest(
+    string JobNumber, string ContainerNumber, string? AdditionalRefs,
+    long? TruckerPartyId, bool AvailableForPickup, string? Terminal,
+    string? PickupAppointment, string? DropOffLocation, string? DropOffAppointment,
+    string TripType, string? SpecialInstructions, long? ShipmentId);
+
+public sealed record UpdateOdJobRequest(
+    string? ContainerNumber, string? AdditionalRefs, long? TruckerPartyId,
+    bool? AvailableForPickup, string? Terminal,
+    string? PickupAppointment, string? DropOffLocation, string? DropOffAppointment,
+    string? TripType, string? Status, string? SpecialInstructions);
+
+public sealed record OceanDrayageJobDto(
+    long Id, int TenantId, string JobNumber, string ContainerNumber,
+    string? AdditionalRefs, long? TruckerPartyId, bool AvailableForPickup,
+    string? Terminal, Instant? PickupAppointment,
+    string? DropOffLocation, Instant? DropOffAppointment,
+    string TripType, string Status, string? SpecialInstructions,
+    long? ShipmentId, Instant CreatedAt, Instant ModifiedAt);
+
+/* ===== OTR ===== */
+
+public sealed record CreateOtrJobRequest(
+    string JobNumber, string? TrackingNumber, string? AdditionalRefs,
+    string? PickUpLocation, string? PickUpAppointment,
+    string? DropOffLocation, string? DropOffAppointment,
+    string TripType, string? SpecialInstructions, long? TruckerPartyId);
+
+public sealed record UpdateOtrJobRequest(
+    string? TrackingNumber, string? AdditionalRefs,
+    string? PickUpLocation, string? PickUpAppointment,
+    string? DropOffLocation, string? DropOffAppointment,
+    string? TripType, string? Status, string? SpecialInstructions);
+
+public sealed record OtrJobDto(
+    long Id, int TenantId, string JobNumber, string? TrackingNumber,
+    string? AdditionalRefs, string? PickUpLocation, Instant? PickUpAppointment,
+    string? DropOffLocation, Instant? DropOffAppointment,
+    string TripType, string Status, string? SpecialInstructions,
+    long? TruckerPartyId, Instant CreatedAt, Instant ModifiedAt);
 
 public sealed record ZoneRateDto(
     long Id, string CountryCode, string ZoneCode, CourierType CourierType,

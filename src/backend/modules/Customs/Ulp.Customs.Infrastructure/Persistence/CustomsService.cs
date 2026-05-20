@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NodaTime;
+using NodaTime.Extensions;
 using Ulp.Core.Domain.Tenancy;
 using Ulp.Customs.Application;
 using Ulp.Customs.Domain.Entities;
@@ -8,6 +10,7 @@ namespace Ulp.Customs.Infrastructure.Persistence;
 public sealed class CustomsService(CustomsDbContext db, ITenantContext tenant) : ICustomsService
 {
     private int Tid => int.Parse(tenant.TenantId.Value);
+    private static Instant Now() => SystemClock.Instance.GetCurrentInstant();
 
     public async Task<IReadOnlyList<EntryDto>> ListEntriesAsync(EntryListQuery q, CancellationToken ct)
     {
@@ -170,6 +173,138 @@ public sealed class CustomsService(CustomsDbContext db, ITenantContext tenant) :
         if (entryId.HasValue) query = query.Where(m => m.EntryId == entryId.Value);
         var rows = await query.OrderByDescending(m => m.CreatedAt).Take(max).ToListAsync(ct);
         return rows.Select(ToAbiMessageDto).ToList();
+    }
+
+    /* ----- CRUD ----- */
+
+    public async Task<EntryDto> CreateEntryAsync(CreateEntryRequest req, CancellationToken ct)
+    {
+        var now = Now();
+        var entry = new CustomsEntry
+        {
+            TenantId = Tid, ShipmentId = req.ShipmentId, FilerCode = req.FilerCode,
+            EntryType = req.EntryType, ImporterOfRecordId = req.ImporterOfRecordId,
+            ImporterEin = req.ImporterEin, BondId = req.BondId, CarrierScac = req.CarrierScac,
+            VesselName = req.VesselName, VoyageNumber = req.VoyageNumber,
+            PortOfUnladingCode = req.PortOfUnladingCode, PortOfEntryCode = req.PortOfEntryCode,
+            FirmsCode = req.FirmsCode,
+            EntryDate = LocalDate.FromDateTime(DateTime.Parse(req.EntryDate)),
+            ImportDate = LocalDate.FromDateTime(DateTime.Parse(req.ImportDate)),
+            BillOfLading = req.BillOfLading, TotalValueUsd = req.TotalValueUsd,
+            DutyAmountUsd = req.DutyAmountUsd, MpfUsd = req.MpfUsd, HmfUsd = req.HmfUsd,
+            AbiStatus = AbiStatus.Draft, CreatedAt = now, ModifiedAt = now, CreatedBy = 1,
+        };
+        db.Entries.Add(entry);
+        await db.SaveChangesAsync(ct);
+        return ToEntryDto(entry, null, 0, 0, 0);
+    }
+
+    public async Task<EntryDto> UpdateEntryAsync(long id, UpdateEntryRequest req, CancellationToken ct)
+    {
+        var e = await db.Entries.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == Tid, ct)
+            ?? throw new InvalidOperationException($"Entry {id} not found");
+        if (req.VesselName is not null)       e.VesselName = req.VesselName;
+        if (req.VoyageNumber is not null)     e.VoyageNumber = req.VoyageNumber;
+        if (req.PortOfEntryCode is not null)  e.PortOfEntryCode = req.PortOfEntryCode;
+        if (req.FirmsCode is not null)        e.FirmsCode = req.FirmsCode;
+        if (req.BillOfLading is not null)     e.BillOfLading = req.BillOfLading;
+        if (req.CbpStatusMessage is not null) e.CbpStatusMessage = req.CbpStatusMessage;
+        if (req.TotalValueUsd.HasValue)       e.TotalValueUsd = req.TotalValueUsd;
+        if (req.DutyAmountUsd.HasValue)       e.DutyAmountUsd = req.DutyAmountUsd;
+        if (req.MpfUsd.HasValue)              e.MpfUsd = req.MpfUsd;
+        if (req.HmfUsd.HasValue)              e.HmfUsd = req.HmfUsd;
+        e.ModifiedAt = Now();
+        await db.SaveChangesAsync(ct);
+        return ToEntryDto(e, null, 0, 0, 0);
+    }
+
+    public async Task DeleteEntryAsync(long id, CancellationToken ct)
+    {
+        var e = await db.Entries.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == Tid, ct)
+            ?? throw new InvalidOperationException($"Entry {id} not found");
+        if (e.AbiStatus != AbiStatus.Draft)
+            throw new InvalidOperationException("Only Draft entries can be deleted");
+        db.Entries.Remove(e);
+        await db.SaveChangesAsync(ct);
+    }
+
+    public async Task<EntryDto> SubmitEntryAsync(long id, CancellationToken ct)
+    {
+        var e = await db.Entries.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == Tid, ct)
+            ?? throw new InvalidOperationException($"Entry {id} not found");
+        e.AbiStatus = AbiStatus.Submitted;
+        var now = Now();
+        e.SubmittedAt = now;
+        e.ModifiedAt = now;
+        await db.SaveChangesAsync(ct);
+        return ToEntryDto(e, null, 0, 0, 0);
+    }
+
+    public async Task<IsfDto> CreateIsfAsync(CreateIsfRequest req, CancellationToken ct)
+    {
+        var isf = new IsfFiling
+        {
+            TenantId = Tid, ShipmentId = req.ShipmentId,
+            ImporterOfRecordId = req.ImporterOfRecordId, ImporterNumber = req.ImporterNumber,
+            SellerName = req.SellerName, BuyerName = req.BuyerName, ShipToName = req.ShipToName,
+            ManufacturerName = req.ManufacturerName, CountryOfOrigin = req.CountryOfOrigin,
+            Hts6 = req.Hts6, ContainerStuffingLocation = req.ContainerStuffingLocation,
+            ConsolidatorName = req.ConsolidatorName, BondId = req.BondId,
+            FilingStatus = IsfStatus.Draft,
+        };
+        db.Isfs.Add(isf);
+        await db.SaveChangesAsync(ct);
+        return new IsfDto(isf.Id, isf.ShipmentId, isf.ImporterOfRecordId, null,
+            isf.ImporterNumber, isf.SellerName, isf.BuyerName, isf.ShipToName,
+            isf.ManufacturerName, isf.CountryOfOrigin, isf.Hts6,
+            isf.ContainerStuffingLocation, isf.ConsolidatorName,
+            isf.FilingStatus, isf.FiledAt, isf.VesselLoadCutoff, isf.BondId);
+    }
+
+    public async Task<IsfDto> UpdateIsfStatusAsync(long id, string status, CancellationToken ct)
+    {
+        var isf = await db.Isfs.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == Tid, ct)
+            ?? throw new InvalidOperationException($"ISF {id} not found");
+        if (Enum.TryParse<IsfStatus>(status, true, out var s))
+        {
+            isf.FilingStatus = s;
+            if (s == IsfStatus.Filed) isf.FiledAt = Now();
+        }
+        await db.SaveChangesAsync(ct);
+        return new IsfDto(isf.Id, isf.ShipmentId, isf.ImporterOfRecordId, null,
+            isf.ImporterNumber, isf.SellerName, isf.BuyerName, isf.ShipToName,
+            isf.ManufacturerName, isf.CountryOfOrigin, isf.Hts6,
+            isf.ContainerStuffingLocation, isf.ConsolidatorName,
+            isf.FilingStatus, isf.FiledAt, isf.VesselLoadCutoff, isf.BondId);
+    }
+
+    public async Task<HoldExamDto> OverrideHoldAsync(long holdId, OverrideHoldRequest req, CancellationToken ct)
+    {
+        var h = await db.HoldExams.FirstOrDefaultAsync(x => x.Id == holdId, ct)
+            ?? throw new InvalidOperationException($"Hold {holdId} not found");
+        h.Status = HoldExamStatus.Resolved;
+        h.ResolutionNote = req.ResolutionNote;
+        h.ResolvedAt = Now();
+        await db.SaveChangesAsync(ct);
+        var e = await db.Entries.AsNoTracking().FirstOrDefaultAsync(x => x.Id == h.EntryId, ct);
+        return ToHoldExamDto(h, e?.EntryNumber);
+    }
+
+    public async Task<BondDto> CreateBondAsync(CreateBondRequest req, CancellationToken ct)
+    {
+        var bond = new CustomsBond
+        {
+            TenantId = Tid, BondNumber = req.BondNumber,
+            BondType = Enum.Parse<BondType>(req.BondType, true),
+            SuretyCode = req.SuretyCode, SuretyName = req.SuretyName,
+            ImporterPartyId = req.ImporterPartyId, AmountUsd = req.AmountUsd,
+            EffectiveFrom = LocalDate.FromDateTime(DateTime.Parse(req.EffectiveFrom)),
+            EffectiveTo = req.EffectiveTo != null ? LocalDate.FromDateTime(DateTime.Parse(req.EffectiveTo)) : null,
+            Status = BondStatus.Active, UtilizationPct = 0,
+        };
+        db.Bonds.Add(bond);
+        await db.SaveChangesAsync(ct);
+        return ToBondDto(bond, null);
     }
 
     /* ----- mappers ----- */

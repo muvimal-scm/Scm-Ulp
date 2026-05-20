@@ -3,8 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
-  AbiMessageDto, AbiStatus, AtmDto, BondDto, EntryDetailDto, EntryDto,
-  HoldExamDto, InBondDto, IsfDto, PgaHoldDto, ReleaseOrderDto,
+  AbiMessageDto, AbiStatus, AtmDto, BondDto, CreateBondRequest, CreateEntryRequest,
+  CreateIsfRequest, EntryDetailDto, EntryDto,
+  HoldExamDto, InBondDto, IsfDto, PgaHoldDto, ReleaseOrderDto, UpdateEntryRequest,
 } from './customs-types';
 
 @Injectable({ providedIn: 'root' })
@@ -41,5 +42,30 @@ export class CustomsApiService {
   listAbiMessages(entryId?: number): Promise<AbiMessageDto[]> {
     let p = new HttpParams(); if (entryId) p = p.set('entryId', String(entryId));
     return firstValueFrom(this.http.get<AbiMessageDto[]>(`${this.base}/abi-messages`, { params: p }));
+  }
+
+  createEntry(req: CreateEntryRequest): Promise<EntryDto> {
+    return firstValueFrom(this.http.post<EntryDto>(`${this.base}/entries`, req));
+  }
+  updateEntry(id: number, req: UpdateEntryRequest): Promise<EntryDto> {
+    return firstValueFrom(this.http.put<EntryDto>(`${this.base}/entries/${id}`, req));
+  }
+  deleteEntry(id: number): Promise<void> {
+    return firstValueFrom(this.http.delete<void>(`${this.base}/entries/${id}`));
+  }
+  submitEntry(id: number): Promise<EntryDto> {
+    return firstValueFrom(this.http.post<EntryDto>(`${this.base}/entries/${id}/submit`, {}));
+  }
+  createIsf(req: CreateIsfRequest): Promise<IsfDto> {
+    return firstValueFrom(this.http.post<IsfDto>(`${this.base}/isf`, req));
+  }
+  updateIsfStatus(id: number, status: string): Promise<IsfDto> {
+    return firstValueFrom(this.http.post<IsfDto>(`${this.base}/isf/${id}/status`, { status }));
+  }
+  overrideHold(holdId: number, resolutionNote: string): Promise<HoldExamDto> {
+    return firstValueFrom(this.http.post<HoldExamDto>(`${this.base}/hold-exams/${holdId}/override`, { resolutionNote }));
+  }
+  createBond(req: CreateBondRequest): Promise<BondDto> {
+    return firstValueFrom(this.http.post<BondDto>(`${this.base}/bonds`, req));
   }
 }

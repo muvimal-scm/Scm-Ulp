@@ -20,6 +20,8 @@ public sealed class LastMileDbContext(DbContextOptions<LastMileDbContext> option
     public DbSet<PincodeZone>      PincodeZones => Set<PincodeZone>();
     public DbSet<DeliveryAttempt>  Attempts   => Set<DeliveryAttempt>();
     public DbSet<M9Audit>          Audits     => Set<M9Audit>();
+    public DbSet<OceanDrayageJob>  OdJobs     => Set<OceanDrayageJob>();
+    public DbSet<OtrJob>           OtrJobs    => Set<OtrJob>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -232,6 +234,50 @@ public sealed class LastMileDbContext(DbContextOptions<LastMileDbContext> option
             e.Property(x => x.PerformedBy).HasColumnName("performed_by");
             e.Property(x => x.PerformedAt).HasColumnName("performed_at_utc").HasConversion(InstantConv);
             e.Property(x => x.DetailsJson).HasColumnName("details").HasColumnType("json");
+        });
+
+        b.Entity<OceanDrayageJob>(e =>
+        {
+            e.ToTable("m9_ocean_drayage_job");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("id");
+            e.Property(x => x.TenantId).HasColumnName("tenant_id");
+            e.Property(x => x.JobNumber).HasColumnName("job_number").HasMaxLength(30);
+            e.Property(x => x.ContainerNumber).HasColumnName("container_number").HasMaxLength(20);
+            e.Property(x => x.AdditionalRefs).HasColumnName("additional_refs").HasMaxLength(500);
+            e.Property(x => x.TruckerPartyId).HasColumnName("trucker_party_id");
+            e.Property(x => x.AvailableForPickup).HasColumnName("available_for_pickup");
+            e.Property(x => x.Terminal).HasColumnName("terminal").HasMaxLength(100);
+            e.Property(x => x.PickupAppointment).HasColumnName("pickup_appointment_utc").HasConversion(NullableInstant);
+            e.Property(x => x.DropOffLocation).HasColumnName("drop_off_location").HasMaxLength(255);
+            e.Property(x => x.DropOffAppointment).HasColumnName("drop_off_appointment_utc").HasConversion(NullableInstant);
+            e.Property(x => x.TripType).HasColumnName("trip_type").HasConversion<string>().HasMaxLength(15);
+            e.Property(x => x.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(25);
+            e.Property(x => x.SpecialInstructions).HasColumnName("special_instructions").HasMaxLength(500);
+            e.Property(x => x.ShipmentId).HasColumnName("shipment_id");
+            e.Property(x => x.CreatedAt).HasColumnName("created_at_utc").HasConversion(InstantConv);
+            e.Property(x => x.ModifiedAt).HasColumnName("modified_at_utc").HasConversion(InstantConv);
+        });
+
+        b.Entity<OtrJob>(e =>
+        {
+            e.ToTable("m9_otr_job");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("id");
+            e.Property(x => x.TenantId).HasColumnName("tenant_id");
+            e.Property(x => x.JobNumber).HasColumnName("job_number").HasMaxLength(30);
+            e.Property(x => x.TrackingNumber).HasColumnName("tracking_number").HasMaxLength(100);
+            e.Property(x => x.AdditionalRefs).HasColumnName("additional_refs").HasMaxLength(500);
+            e.Property(x => x.PickUpLocation).HasColumnName("pickup_location").HasMaxLength(255);
+            e.Property(x => x.PickUpAppointment).HasColumnName("pickup_appointment_utc").HasConversion(NullableInstant);
+            e.Property(x => x.DropOffLocation).HasColumnName("drop_off_location").HasMaxLength(255);
+            e.Property(x => x.DropOffAppointment).HasColumnName("drop_off_appointment_utc").HasConversion(NullableInstant);
+            e.Property(x => x.TripType).HasColumnName("trip_type").HasConversion<string>().HasMaxLength(15);
+            e.Property(x => x.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(20);
+            e.Property(x => x.SpecialInstructions).HasColumnName("special_instructions").HasMaxLength(500);
+            e.Property(x => x.TruckerPartyId).HasColumnName("trucker_party_id");
+            e.Property(x => x.CreatedAt).HasColumnName("created_at_utc").HasConversion(InstantConv);
+            e.Property(x => x.ModifiedAt).HasColumnName("modified_at_utc").HasConversion(InstantConv);
         });
     }
 

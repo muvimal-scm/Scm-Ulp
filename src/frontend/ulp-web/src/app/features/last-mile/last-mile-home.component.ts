@@ -44,6 +44,16 @@ import { MatIconModule } from '@angular/material/icon';
         <div class="tile__title">Zone rates</div>
         <div class="tile__sub">Per-zone weight-slab rate cards</div>
       </a>
+      <a routerLink="ocean-drayage" class="tile">
+        <mat-icon>anchor</mat-icon>
+        <div class="tile__title">Ocean Drayage</div>
+        <div class="tile__sub">FCL port pickup → warehouse/customer jobs</div>
+      </a>
+      <a routerLink="otr" class="tile">
+        <mat-icon>local_shipping</mat-icon>
+        <div class="tile__title">Over-The-Road</div>
+        <div class="tile__sub">Long-haul domestic trucking jobs</div>
+      </a>
     </div>
   `,
   styles: [`

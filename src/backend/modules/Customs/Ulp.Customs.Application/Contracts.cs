@@ -9,14 +9,45 @@ namespace Ulp.Customs.Application;
 // added when M4-Core LLD is sealed.
 // =====================================================================
 
+public sealed record CreateEntryRequest(
+    long? ShipmentId, string FilerCode, string EntryType,
+    long ImporterOfRecordId, string ImporterEin, long? BondId,
+    string CarrierScac, string? VesselName, string? VoyageNumber,
+    string PortOfUnladingCode, string PortOfEntryCode, string? FirmsCode,
+    string EntryDate, string ImportDate, string? BillOfLading,
+    decimal? TotalValueUsd, decimal? DutyAmountUsd, decimal? MpfUsd, decimal? HmfUsd);
+
+public sealed record UpdateEntryRequest(
+    string? VesselName, string? VoyageNumber,
+    string? PortOfEntryCode, string? FirmsCode,
+    string? BillOfLading, string? CbpStatusMessage,
+    decimal? TotalValueUsd, decimal? DutyAmountUsd, decimal? MpfUsd, decimal? HmfUsd);
+
+public sealed record CreateIsfRequest(
+    long ShipmentId, long ImporterOfRecordId, string ImporterNumber,
+    string? SellerName, string? BuyerName, string? ShipToName,
+    string? ManufacturerName, string? CountryOfOrigin, string? Hts6,
+    string? ContainerStuffingLocation, string? ConsolidatorName, long? BondId);
+
+public sealed record OverrideHoldRequest(string ResolutionNote);
+
+public sealed record CreateBondRequest(
+    string BondNumber, string BondType, string SuretyCode, string SuretyName,
+    long ImporterPartyId, decimal AmountUsd, string EffectiveFrom, string? EffectiveTo);
+
 public interface ICustomsService
 {
-    // Entries (read-only for Phase-1 demo; create/submit deferred to ABI integration)
+    // Entries
     Task<IReadOnlyList<EntryDto>>     ListEntriesAsync(EntryListQuery q, CancellationToken ct);
     Task<EntryDetailDto?>             GetEntryAsync(long id, CancellationToken ct);
+    Task<EntryDto>                    CreateEntryAsync(CreateEntryRequest req, CancellationToken ct);
+    Task<EntryDto>                    UpdateEntryAsync(long id, UpdateEntryRequest req, CancellationToken ct);
+    Task                              DeleteEntryAsync(long id, CancellationToken ct);
+    Task<EntryDto>                    SubmitEntryAsync(long id, CancellationToken ct);
 
     // Bonds
     Task<IReadOnlyList<BondDto>>      ListBondsAsync(CancellationToken ct);
+    Task<BondDto>                     CreateBondAsync(CreateBondRequest req, CancellationToken ct);
 
     // ATM (Authority to Make Entry)
     Task<IReadOnlyList<AtmDto>>       ListAtmAsync(CancellationToken ct);
@@ -26,12 +57,15 @@ public interface ICustomsService
 
     // ISF
     Task<IReadOnlyList<IsfDto>>       ListIsfAsync(CancellationToken ct);
+    Task<IsfDto>                      CreateIsfAsync(CreateIsfRequest req, CancellationToken ct);
+    Task<IsfDto>                      UpdateIsfStatusAsync(long id, string status, CancellationToken ct);
 
     // PGA holds
     Task<IReadOnlyList<PgaHoldDto>>   ListPgaHoldsAsync(bool activeOnly, CancellationToken ct);
 
     // Customs Hold/Exam notices
     Task<IReadOnlyList<HoldExamDto>>  ListHoldExamsAsync(bool openOnly, CancellationToken ct);
+    Task<HoldExamDto>                 OverrideHoldAsync(long holdId, OverrideHoldRequest req, CancellationToken ct);
 
     // In-bond moves
     Task<IReadOnlyList<InBondDto>>    ListInBondMovesAsync(CancellationToken ct);

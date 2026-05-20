@@ -241,4 +241,145 @@ public sealed class LastMileService(LastMileDbContext db, ITenantContext tenant,
     private static DeliveryAttemptDto ToAttemptDto(DeliveryAttempt a) => new(
         a.Id, a.BookingId, a.AttemptNo, a.AttemptedAt,
         a.Status, a.FailureReason, a.NextAttemptDate);
+
+    /* ===== Ocean Drayage ===== */
+
+    private static OceanDrayageJobDto ToOdDto(OceanDrayageJob j) => new(
+        j.Id, j.TenantId, j.JobNumber, j.ContainerNumber, j.AdditionalRefs,
+        j.TruckerPartyId, j.AvailableForPickup, j.Terminal, j.PickupAppointment,
+        j.DropOffLocation, j.DropOffAppointment,
+        j.TripType.ToString(), j.Status.ToString(), j.SpecialInstructions,
+        j.ShipmentId, j.CreatedAt, j.ModifiedAt);
+
+    private static Instant? ParseInstant(string? s) =>
+        s is null ? null : Instant.FromDateTimeUtc(DateTime.Parse(s).ToUniversalTime());
+
+    public async Task<OceanDrayageJobDto> CreateOdJobAsync(CreateOdJobRequest req, CancellationToken ct)
+    {
+        var now = clock.GetCurrentInstant();
+        var job = new OceanDrayageJob
+        {
+            TenantId = Tid, JobNumber = req.JobNumber, ContainerNumber = req.ContainerNumber,
+            AdditionalRefs = req.AdditionalRefs, TruckerPartyId = req.TruckerPartyId,
+            AvailableForPickup = req.AvailableForPickup, Terminal = req.Terminal,
+            PickupAppointment = ParseInstant(req.PickupAppointment),
+            DropOffLocation = req.DropOffLocation,
+            DropOffAppointment = ParseInstant(req.DropOffAppointment),
+            TripType = Enum.Parse<OdTripType>(req.TripType, true),
+            Status = OdStatus.OutGate,
+            SpecialInstructions = req.SpecialInstructions, ShipmentId = req.ShipmentId,
+            CreatedAt = now, ModifiedAt = now,
+        };
+        db.OdJobs.Add(job);
+        await db.SaveChangesAsync(ct);
+        return ToOdDto(job);
+    }
+
+    public async Task<OceanDrayageJobDto> UpdateOdJobAsync(long id, UpdateOdJobRequest req, CancellationToken ct)
+    {
+        var j = await db.OdJobs.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == Tid, ct)
+            ?? throw new InvalidOperationException($"OD job {id} not found");
+        if (req.ContainerNumber is not null) j.ContainerNumber = req.ContainerNumber;
+        if (req.AdditionalRefs is not null) j.AdditionalRefs = req.AdditionalRefs;
+        if (req.TruckerPartyId.HasValue) j.TruckerPartyId = req.TruckerPartyId;
+        if (req.AvailableForPickup.HasValue) j.AvailableForPickup = req.AvailableForPickup.Value;
+        if (req.Terminal is not null) j.Terminal = req.Terminal;
+        if (req.PickupAppointment is not null) j.PickupAppointment = ParseInstant(req.PickupAppointment);
+        if (req.DropOffLocation is not null) j.DropOffLocation = req.DropOffLocation;
+        if (req.DropOffAppointment is not null) j.DropOffAppointment = ParseInstant(req.DropOffAppointment);
+        if (req.TripType is not null) j.TripType = Enum.Parse<OdTripType>(req.TripType, true);
+        if (req.Status is not null) j.Status = Enum.Parse<OdStatus>(req.Status, true);
+        if (req.SpecialInstructions is not null) j.SpecialInstructions = req.SpecialInstructions;
+        j.ModifiedAt = clock.GetCurrentInstant();
+        await db.SaveChangesAsync(ct);
+        return ToOdDto(j);
+    }
+
+    public async Task<OceanDrayageJobDto?> GetOdJobAsync(long id, CancellationToken ct)
+    {
+        var j = await db.OdJobs.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id && x.TenantId == Tid, ct);
+        return j is null ? null : ToOdDto(j);
+    }
+
+    public async Task<IReadOnlyList<OceanDrayageJobDto>> ListOdJobsAsync(OdStatus? status, CancellationToken ct)
+    {
+        var q = db.OdJobs.AsNoTracking().Where(x => x.TenantId == Tid);
+        if (status.HasValue) q = q.Where(x => x.Status == status.Value);
+        return (await q.OrderByDescending(x => x.CreatedAt).ToListAsync(ct)).Select(ToOdDto).ToList();
+    }
+
+    public async Task DeleteOdJobAsync(long id, CancellationToken ct)
+    {
+        var j = await db.OdJobs.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == Tid, ct)
+            ?? throw new InvalidOperationException($"OD job {id} not found");
+        db.OdJobs.Remove(j);
+        await db.SaveChangesAsync(ct);
+    }
+
+    /* ===== Over-The-Road ===== */
+
+    private static OtrJobDto ToOtrDto(OtrJob j) => new(
+        j.Id, j.TenantId, j.JobNumber, j.TrackingNumber, j.AdditionalRefs,
+        j.PickUpLocation, j.PickUpAppointment, j.DropOffLocation, j.DropOffAppointment,
+        j.TripType.ToString(), j.Status.ToString(), j.SpecialInstructions,
+        j.TruckerPartyId, j.CreatedAt, j.ModifiedAt);
+
+    public async Task<OtrJobDto> CreateOtrJobAsync(CreateOtrJobRequest req, CancellationToken ct)
+    {
+        var now = clock.GetCurrentInstant();
+        var job = new OtrJob
+        {
+            TenantId = Tid, JobNumber = req.JobNumber, TrackingNumber = req.TrackingNumber,
+            AdditionalRefs = req.AdditionalRefs, PickUpLocation = req.PickUpLocation,
+            PickUpAppointment = ParseInstant(req.PickUpAppointment),
+            DropOffLocation = req.DropOffLocation,
+            DropOffAppointment = ParseInstant(req.DropOffAppointment),
+            TripType = Enum.Parse<OdTripType>(req.TripType, true),
+            Status = OtrStatus.PickedUp,
+            SpecialInstructions = req.SpecialInstructions, TruckerPartyId = req.TruckerPartyId,
+            CreatedAt = now, ModifiedAt = now,
+        };
+        db.OtrJobs.Add(job);
+        await db.SaveChangesAsync(ct);
+        return ToOtrDto(job);
+    }
+
+    public async Task<OtrJobDto> UpdateOtrJobAsync(long id, UpdateOtrJobRequest req, CancellationToken ct)
+    {
+        var j = await db.OtrJobs.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == Tid, ct)
+            ?? throw new InvalidOperationException($"OTR job {id} not found");
+        if (req.TrackingNumber is not null) j.TrackingNumber = req.TrackingNumber;
+        if (req.AdditionalRefs is not null) j.AdditionalRefs = req.AdditionalRefs;
+        if (req.PickUpLocation is not null) j.PickUpLocation = req.PickUpLocation;
+        if (req.PickUpAppointment is not null) j.PickUpAppointment = ParseInstant(req.PickUpAppointment);
+        if (req.DropOffLocation is not null) j.DropOffLocation = req.DropOffLocation;
+        if (req.DropOffAppointment is not null) j.DropOffAppointment = ParseInstant(req.DropOffAppointment);
+        if (req.TripType is not null) j.TripType = Enum.Parse<OdTripType>(req.TripType, true);
+        if (req.Status is not null) j.Status = Enum.Parse<OtrStatus>(req.Status, true);
+        if (req.SpecialInstructions is not null) j.SpecialInstructions = req.SpecialInstructions;
+        j.ModifiedAt = clock.GetCurrentInstant();
+        await db.SaveChangesAsync(ct);
+        return ToOtrDto(j);
+    }
+
+    public async Task<OtrJobDto?> GetOtrJobAsync(long id, CancellationToken ct)
+    {
+        var j = await db.OtrJobs.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id && x.TenantId == Tid, ct);
+        return j is null ? null : ToOtrDto(j);
+    }
+
+    public async Task<IReadOnlyList<OtrJobDto>> ListOtrJobsAsync(OtrStatus? status, CancellationToken ct)
+    {
+        var q = db.OtrJobs.AsNoTracking().Where(x => x.TenantId == Tid);
+        if (status.HasValue) q = q.Where(x => x.Status == status.Value);
+        return (await q.OrderByDescending(x => x.CreatedAt).ToListAsync(ct)).Select(ToOtrDto).ToList();
+    }
+
+    public async Task DeleteOtrJobAsync(long id, CancellationToken ct)
+    {
+        var j = await db.OtrJobs.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == Tid, ct)
+            ?? throw new InvalidOperationException($"OTR job {id} not found");
+        db.OtrJobs.Remove(j);
+        await db.SaveChangesAsync(ct);
+    }
 }

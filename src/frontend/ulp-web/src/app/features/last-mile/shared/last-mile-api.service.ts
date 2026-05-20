@@ -5,8 +5,9 @@ import { environment } from '../../../../environments/environment';
 import {
   CodDto, CodSettledStatus, CourierBookingDetailDto, CourierBookingDto,
   CourierBookingStatus, CourierType, CreateCodRequest, CreateCourierBookingRequest,
-  CreatePodRequest, CreateRouteRequest, DeliveryAttemptDto, ManifestDto,
-  PodDto, RouteDetailDto, RouteDto, ZoneRateDto,
+  CreateOdJobRequest, CreateOtrJobRequest, CreatePodRequest, CreateRouteRequest,
+  DeliveryAttemptDto, ManifestDto, OceanDrayageJobDto, OtrJobDto,
+  PodDto, RouteDetailDto, RouteDto, UpdateOdJobRequest, UpdateOtrJobRequest, ZoneRateDto,
 } from './last-mile-types';
 
 @Injectable({ providedIn: 'root' })
@@ -81,5 +82,41 @@ export class LastMileApiService {
     if (opts.countryCode) p = p.set('countryCode', opts.countryCode);
     if (opts.courierType) p = p.set('courierType', opts.courierType);
     return firstValueFrom(this.http.get<ZoneRateDto[]>(`${this.base}/zone-rates`, { params: p }));
+  }
+
+  listOdJobs(status?: string): Promise<OceanDrayageJobDto[]> {
+    let p = new HttpParams();
+    if (status) p = p.set('status', status);
+    return firstValueFrom(this.http.get<OceanDrayageJobDto[]>(`${this.base}/ocean-drayage`, { params: p }));
+  }
+  getOdJob(id: number): Promise<OceanDrayageJobDto> {
+    return firstValueFrom(this.http.get<OceanDrayageJobDto>(`${this.base}/ocean-drayage/${id}`));
+  }
+  createOdJob(req: CreateOdJobRequest): Promise<OceanDrayageJobDto> {
+    return firstValueFrom(this.http.post<OceanDrayageJobDto>(`${this.base}/ocean-drayage`, req));
+  }
+  updateOdJob(id: number, req: UpdateOdJobRequest): Promise<OceanDrayageJobDto> {
+    return firstValueFrom(this.http.put<OceanDrayageJobDto>(`${this.base}/ocean-drayage/${id}`, req));
+  }
+  deleteOdJob(id: number): Promise<void> {
+    return firstValueFrom(this.http.delete<void>(`${this.base}/ocean-drayage/${id}`));
+  }
+
+  listOtrJobs(status?: string): Promise<OtrJobDto[]> {
+    let p = new HttpParams();
+    if (status) p = p.set('status', status);
+    return firstValueFrom(this.http.get<OtrJobDto[]>(`${this.base}/otr`, { params: p }));
+  }
+  getOtrJob(id: number): Promise<OtrJobDto> {
+    return firstValueFrom(this.http.get<OtrJobDto>(`${this.base}/otr/${id}`));
+  }
+  createOtrJob(req: CreateOtrJobRequest): Promise<OtrJobDto> {
+    return firstValueFrom(this.http.post<OtrJobDto>(`${this.base}/otr`, req));
+  }
+  updateOtrJob(id: number, req: UpdateOtrJobRequest): Promise<OtrJobDto> {
+    return firstValueFrom(this.http.put<OtrJobDto>(`${this.base}/otr/${id}`, req));
+  }
+  deleteOtrJob(id: number): Promise<void> {
+    return firstValueFrom(this.http.delete<void>(`${this.base}/otr/${id}`));
   }
 }

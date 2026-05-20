@@ -102,6 +102,35 @@ export interface AbiMessageDto {
   createdAt: string; sentAt: string | null; acknowledgedAt: string | null; failureReason: string | null;
 }
 
+// ===== CRUD request types =====
+
+export interface CreateEntryRequest {
+  shipmentId?: number; filerCode: string; entryType: string;
+  importerOfRecordId: number; importerEin: string; bondId?: number;
+  carrierScac: string; vesselName?: string; voyageNumber?: string;
+  portOfUnladingCode: string; portOfEntryCode: string; firmsCode?: string;
+  entryDate: string; importDate: string; billOfLading?: string;
+  totalValueUsd?: number; dutyAmountUsd?: number; mpfUsd?: number; hmfUsd?: number;
+}
+
+export interface UpdateEntryRequest {
+  vesselName?: string; voyageNumber?: string; portOfEntryCode?: string;
+  firmsCode?: string; billOfLading?: string; cbpStatusMessage?: string;
+  totalValueUsd?: number; dutyAmountUsd?: number; mpfUsd?: number; hmfUsd?: number;
+}
+
+export interface CreateIsfRequest {
+  shipmentId: number; importerOfRecordId: number; importerNumber: string;
+  sellerName?: string; buyerName?: string; shipToName?: string;
+  manufacturerName?: string; countryOfOrigin?: string; hts6?: string;
+  containerStuffingLocation?: string; consolidatorName?: string; bondId?: number;
+}
+
+export interface CreateBondRequest {
+  bondNumber: string; bondType: string; suretyCode: string; suretyName: string;
+  importerPartyId: number; amountUsd: number; effectiveFrom: string; effectiveTo?: string;
+}
+
 export interface EntryDetailDto {
   entry: EntryDto;
   lines: EntryLineDto[];

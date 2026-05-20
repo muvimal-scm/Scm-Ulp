@@ -204,3 +204,52 @@ public sealed class M9Audit
 }
 
 public enum M9EntityType { Booking, Route, Manifest, Pod, Cod, Awb }
+
+// ===== Ocean Drayage =====
+
+public sealed class OceanDrayageJob
+{
+    public long       Id { get; set; }
+    public int        TenantId { get; set; }
+    public string     JobNumber { get; set; } = "";
+    public string     ContainerNumber { get; set; } = "";
+    public string?    AdditionalRefs { get; set; }
+    public long?      TruckerPartyId { get; set; }
+    public bool       AvailableForPickup { get; set; }
+    public string?    Terminal { get; set; }
+    public Instant?   PickupAppointment { get; set; }
+    public string?    DropOffLocation { get; set; }
+    public Instant?   DropOffAppointment { get; set; }
+    public OdTripType TripType { get; set; } = OdTripType.LiveUnload;
+    public OdStatus   Status { get; set; } = OdStatus.OutGate;
+    public string?    SpecialInstructions { get; set; }
+    public long?      ShipmentId { get; set; }
+    public Instant    CreatedAt { get; set; }
+    public Instant    ModifiedAt { get; set; }
+}
+
+public enum OdTripType { LiveUnload, Drop }
+public enum OdStatus   { OutGate, EnRoute, ContainerMarkedEmpty, EmptyReturned }
+
+// ===== Over-The-Road =====
+
+public sealed class OtrJob
+{
+    public long       Id { get; set; }
+    public int        TenantId { get; set; }
+    public string     JobNumber { get; set; } = "";
+    public string?    TrackingNumber { get; set; }
+    public string?    AdditionalRefs { get; set; }
+    public string?    PickUpLocation { get; set; }
+    public Instant?   PickUpAppointment { get; set; }
+    public string?    DropOffLocation { get; set; }
+    public Instant?   DropOffAppointment { get; set; }
+    public OdTripType TripType { get; set; } = OdTripType.LiveUnload;
+    public OtrStatus  Status { get; set; } = OtrStatus.PickedUp;
+    public string?    SpecialInstructions { get; set; }
+    public long?      TruckerPartyId { get; set; }
+    public Instant    CreatedAt { get; set; }
+    public Instant    ModifiedAt { get; set; }
+}
+
+public enum OtrStatus { PickedUp, EnRoute, DroppedOff }
