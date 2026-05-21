@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, SlicePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TruckingApiService } from '../shared/trucking-api.service';
@@ -8,7 +8,7 @@ import { EquipmentMaintDto } from '../shared/trucking-types';
 @Component({
   selector: 'ulp-maintenance-list',
   standalone: true,
-  imports: [DecimalPipe, MatIconModule, MatProgressSpinnerModule],
+  imports: [DecimalPipe, SlicePipe, MatIconModule, MatProgressSpinnerModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="page-head">

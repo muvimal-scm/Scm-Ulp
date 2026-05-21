@@ -282,7 +282,7 @@ export class PosListComponent implements OnInit {
 
   readonly currentTab = computed(() => this.tabs.find(t => t.key === this.activeTab()));
 
-  readonly counts = computed(() => {
+  readonly counts = computed((): Record<string, number> => {
     const all = this.allPos();
     return {
       all:       all.length,
