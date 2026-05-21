@@ -482,6 +482,8 @@ export class AppShellComponent implements OnInit {
             { label: 'Proofs of delivery',  icon: '', route: '/app/last-mile/pods',        status: 'live' },
             { label: 'COD collections',     icon: '', route: '/app/last-mile/cod',         status: 'live' },
             { label: 'Zone rates',          icon: '', route: '/app/last-mile/zone-rates',  status: 'live' },
+            { label: 'Ocean Drayage',       icon: '', route: '/app/last-mile/ocean-drayage', status: 'live' },
+            { label: 'Over-The-Road (OTR)', icon: '', route: '/app/last-mile/otr',           status: 'live' },
           ],
         },
         {
