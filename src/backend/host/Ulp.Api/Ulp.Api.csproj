@@ -79,6 +79,22 @@
     <ProjectReference Include="..\..\modules\Customs\Ulp.Customs.Infrastructure\Ulp.Customs.Infrastructure.csproj" />
     <ProjectReference Include="..\..\modules\Customs\Ulp.Customs.Api\Ulp.Customs.Api.csproj" />
 
+    <!-- M22 Reports & Analytics — read-only aggregations across modules -->
+    <ProjectReference Include="..\..\modules\Reports\Ulp.Reports.Application\Ulp.Reports.Application.csproj" />
+    <ProjectReference Include="..\..\modules\Reports\Ulp.Reports.Infrastructure\Ulp.Reports.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\Reports\Ulp.Reports.Api\Ulp.Reports.Api.csproj" />
+
+    <!-- M8 WMS -->
+    <ProjectReference Include="..\..\modules\Wms\Ulp.Wms.Application\Ulp.Wms.Application.csproj" />
+    <ProjectReference Include="..\..\modules\Wms\Ulp.Wms.Infrastructure\Ulp.Wms.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\Wms\Ulp.Wms.Api\Ulp.Wms.Api.csproj" />
+
+    <!-- M10 Trucking ERP -->
+    <ProjectReference Include="..\..\modules\Trucking\Ulp.Trucking.Domain\Ulp.Trucking.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\Trucking\Ulp.Trucking.Application\Ulp.Trucking.Application.csproj" />
+    <ProjectReference Include="..\..\modules\Trucking\Ulp.Trucking.Infrastructure\Ulp.Trucking.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\Trucking\Ulp.Trucking.Api\Ulp.Trucking.Api.csproj" />
+
     <!-- Compliance plugins (loaded eagerly; resolved per-tenant by Core.PluginHost) -->
     <ProjectReference Include="..\..\plugins\india\Ulp.Plugin.India.Tax\Ulp.Plugin.India.Tax.csproj" />
   </ItemGroup>
@@ -90,6 +106,9 @@
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="NodaTime.Serialization.SystemTextJson" />
     <PackageReference Include="Sentry.AspNetCore" />
+    <!-- M27 background scheduler — Hangfire fires the 5 auto-rules on cron -->
+    <PackageReference Include="Hangfire.AspNetCore" />
+    <PackageReference Include="Hangfire.MySqlStorage" />
   </ItemGroup>
 
 </Project>

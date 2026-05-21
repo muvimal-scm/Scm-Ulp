@@ -90,6 +90,21 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/control-tower/control-tower.component').then((m) => m.ControlTowerComponent),
       },
+      {
+        path: 'reports',
+        loadChildren: () =>
+          import('./features/reports/reports.routes').then((r) => r.REPORTS_ROUTES),
+      },
+      {
+        path: 'trucking',
+        loadChildren: () =>
+          import('./features/trucking/trucking.routes').then((r) => r.TRUCKING_ROUTES),
+      },
+      {
+        path: 'wms',
+        loadChildren: () =>
+          import('./features/wms/wms.routes').then((r) => r.WMS_ROUTES),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

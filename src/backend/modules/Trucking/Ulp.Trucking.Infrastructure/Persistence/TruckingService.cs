@@ -93,7 +93,7 @@ public sealed class TruckingService(TruckingDbContext db, ITenantContext tenant,
     {
         var q = db.Jobs.AsNoTracking().Where(j => j.TenantId == Tid);
         if (status.HasValue) q = q.Where(j => j.AvailabilityStatus == status.Value);
-        var rows = await q.OrderByDescending(j => j.PuDate ?? j.CreatedAt.InUtc().Date).Take(200).ToListAsync(ct);
+        var rows = await q.OrderByDescending(j => j.CreatedAt).Take(200).ToListAsync(ct);
         return await EnrichJobListAsync(rows, ct);
     }
 

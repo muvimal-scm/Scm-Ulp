@@ -29,6 +29,12 @@ using Ulp.Accounting.Api;
 using Ulp.Accounting.Infrastructure;
 using Ulp.Customs.Api;
 using Ulp.Customs.Infrastructure;
+using Ulp.Reports.Api;
+using Ulp.Reports.Infrastructure;
+using Ulp.Wms.Api;
+using Ulp.Wms.Infrastructure;
+using Ulp.Trucking.Api;
+using Ulp.Trucking.Infrastructure;
 using Ulp.Core.Abstractions.Plugins;
 using Ulp.Core.PluginHost;
 using Ulp.Plugin.India.Tax;
@@ -228,6 +234,20 @@ try
     // ---- Customs module — US CBP/ABI per sealed LLD ULP_LLD_M4_US_CBP_ABI_v1.0.docx ----
     builder.Services.AddCustomsModule(builder.Configuration);
 
+    // ---- M22 Reports & Analytics — read-only cross-module aggregations ----
+    builder.Services.AddReportsModule(builder.Configuration);
+
+    // ---- M10 Trucking ERP — drivers, trucks, chassis, jobs, dispatch, accessorials ----
+    builder.Services.AddTruckingModule(builder.Configuration);
+
+    // ---- M8 WMS — warehouse management (warehouses, zones, bins, GRN, pick lists) ----
+    builder.Services.AddWmsModule(builder.Configuration);
+
+    // ---- Hangfire background jobs (CP-Sprint-1.4) — fires the M27 rules-
+    //      sweep every 15 minutes so notifications don't depend on the
+    //      "Run now" button being clicked manually.
+    builder.Services.AddBackgroundJobs(builder.Configuration);
+
     // ---- Compliance plugins (India tax provider) — keyed by country code via Core.PluginHost ----
     var indiaTaxPlugin = new IndiaTaxPlugin();
     indiaTaxPlugin.ConfigureServices(builder.Services);
@@ -321,6 +341,15 @@ try
 
     // ---- Customs endpoints (entries, bonds, ATM, release orders, ISF, PGA holds, hold/exam, in-bond, ABI messages) ----
     app.MapCustomsEndpoints();
+
+    // ---- M22 Reports endpoints (ar-ageing, ap-ageing, revenue-by-mode, demurrage-exposure) ----
+    app.MapReportsEndpoints();
+
+    // ---- M10 Trucking ERP endpoints (drivers, trucks, chassis, jobs, dispatch board, accessorials) ----
+    app.MapTruckingEndpoints();
+
+    // ---- M8 WMS endpoints (warehouses, zones, bins, GRNs, pick-lists, stock) ----
+    app.MapWmsEndpoints();
 
     // ---- CP17 admin endpoints (factory-reset demo data, db-stats) — gated to PlatformAdmin / OrgAdmin ----
     app.MapAdminEndpoints();
