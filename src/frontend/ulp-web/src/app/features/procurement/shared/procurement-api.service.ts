@@ -74,6 +74,14 @@ export class ProcurementApiService {
     return firstValueFrom(this.http.post<PoLineDto>(`${this.base}/purchase-orders/${poId}/lines`, req));
   }
 
+  changePoStatus(id: number, newStatus: PoStatus): Promise<PoDto> {
+    return firstValueFrom(this.http.post<PoDto>(`${this.base}/purchase-orders/${id}/status`, { newStatus }));
+  }
+
+  recordMatch(req: { poId: number; vendorInvoiceNo?: string; status: string; varianceAmount?: number; varianceCurrency?: string; notes?: string }): Promise<InvoiceMatchDto> {
+    return firstValueFrom(this.http.post<InvoiceMatchDto>(`${this.base}/invoice-matches`, req));
+  }
+
   /* GRNs */
   listGrns(poId?: number): Promise<GrnDto[]> {
     let p = new HttpParams();

@@ -1,15 +1,17 @@
 ﻿import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { DecimalPipe, SlicePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ProcurementApiService } from '../shared/procurement-api.service';
-import { PoDetailDto } from '../shared/procurement-types';
+import { PoDetailDto, PoStatus } from '../shared/procurement-types';
 
 @Component({
   selector: 'ulp-procurement-po-detail',
   standalone: true,
-  imports: [DecimalPipe, SlicePipe, RouterLink, MatIconModule, MatProgressSpinnerModule],
+  imports: [DecimalPipe, SlicePipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (loading()) {
@@ -27,6 +29,45 @@ import { PoDetailDto } from '../shared/procurement-types';
           · <span class="status status--{{ d.po.status.toLowerCase() }}">{{ d.po.status }}</span>
         </p>
       </header>
+
+      <!-- Status actions bar -->
+      <section class="actions-bar">
+        @if (d.po.status === 'Draft') {
+          <button mat-flat-button color="primary" (click)="advance('Approved')" [disabled]="acting()">
+            @if (acting()) { <mat-spinner diameter="16"></mat-spinner> } @else { ✅ Approve PO }
+          </button>
+        }
+        @if (d.po.status === 'Approved') {
+          <button mat-flat-button color="accent" (click)="advance('Sent')" [disabled]="acting()">
+            @if (acting()) { <mat-spinner diameter="16"></mat-spinner> } @else { ✉️ Mark Sent to Vendor }
+          </button>
+          <button mat-stroked-button (click)="showBooking.set(!showBooking())">
+            <mat-icon>flight_takeoff</mat-icon> Booking Request
+          </button>
+        }
+        @if (d.po.status === 'Sent') {
+          <button mat-stroked-button (click)="advance('Closed')" [disabled]="acting()">Close PO</button>
+        }
+        @if (actError()) { <span class="act-error">{{ actError() }}</span> }
+      </section>
+
+      <!-- Booking request inline panel -->
+      @if (showBooking()) {
+        <section class="card booking-card">
+          <h2>Booking Request Details</h2>
+          <p style="color:#6B5BA0;font-size:13px;margin:0 0 16px">Required before moving to Confirmed. Will notify the incoterm agent.</p>
+          <div class="booking-grid">
+            <div class="bfield"><label>POL (Port of Loading)</label><input [(ngModel)]="bkPol" placeholder="CNSHG" /></div>
+            <div class="bfield"><label>POD (Port of Discharge)</label><input [(ngModel)]="bkPod" placeholder="USLAX" /></div>
+            <div class="bfield"><label>Container Volume</label><input [(ngModel)]="bkCntrVol" placeholder="1 x 40HC" /></div>
+            <div class="bfield"><label>Estimated CRD</label><input [(ngModel)]="bkCrd" type="date" /></div>
+          </div>
+          <div class="bk-actions">
+            <button mat-stroked-button (click)="showBooking.set(false)">Cancel</button>
+            <button mat-flat-button color="primary" (click)="submitBooking(d.po.poNumber)">Submit Booking Request</button>
+          </div>
+        </section>
+      }
 
       <section class="card">
         <h2>Summary</h2>
@@ -91,24 +132,33 @@ import { PoDetailDto } from '../shared/procurement-types';
       </section>
 
       <section class="card">
-        <h2>Invoice matches ({{ d.matches.length }})</h2>
-        @if (d.matches.length === 0) { <p class="muted">No invoice match records.</p> } @else {
-          <table>
-            <thead><tr>
-              <th>Vendor invoice</th><th>Match</th><th class="num">Variance</th><th>Matched</th><th>Notes</th>
-            </tr></thead>
-            <tbody>
-              @for (m of d.matches; track m.id) {
-                <tr>
-                  <td>{{ m.vendorInvoiceNo ?? '—' }}</td>
-                  <td><span class="match match--{{ m.matchStatus.toLowerCase() }}">{{ m.matchStatus }}</span></td>
-                  <td class="num">{{ m.varianceAmount !== null ? (m.varianceAmount | number:'1.2-2') : '—' }} {{ m.varianceCurrency ?? '' }}</td>
-                  <td>{{ m.matchedAt | slice:0:16 }}</td>
-                  <td>{{ m.notes ?? '—' }}</td>
-                </tr>
+        <h2>OCR Invoice Match — PI vs PO Comparison</h2>
+        @if (d.matches.length === 0) {
+          <div class="ocr-empty">
+            <mat-icon>receipt_long</mat-icon>
+            <p>No PI/invoice match records. Upload a Proforma Invoice to trigger OCR comparison.</p>
+          </div>
+        } @else {
+          @for (m of d.matches; track m.id) {
+            <div class="ocr-card" [class.ocr-card--match]="m.matchStatus === 'ThreeWayMatched'" [class.ocr-card--mismatch]="m.matchStatus !== 'ThreeWayMatched'">
+              <div class="ocr-card-head">
+                <div>
+                  <strong>{{ m.vendorInvoiceNo ?? 'Invoice #' + m.id }}</strong>
+                  <span class="match match--{{ m.matchStatus.toLowerCase() }}">{{ matchLabel(m.matchStatus) }}</span>
+                </div>
+                <span class="ocr-time">{{ m.matchedAt | slice:0:16 }}</span>
+              </div>
+              @if (m.matchStatus !== 'ThreeWayMatched') {
+                <div class="ocr-variance">
+                  <mat-icon>warning</mat-icon>
+                  Variance: {{ m.varianceAmount !== null ? (m.varianceAmount | number:'1.2-2') + ' ' + (m.varianceCurrency ?? '') : 'see notes' }}
+                  @if (m.notes) { · {{ m.notes }} }
+                </div>
+              } @else {
+                <div class="ocr-match-ok"><mat-icon>check_circle</mat-icon> All values match — PO lines confirmed against PI.</div>
               }
-            </tbody>
-          </table>
+            </div>
+          }
         }
       </section>
     }
@@ -155,14 +205,35 @@ import { PoDetailDto } from '../shared/procurement-types';
     .match--qtyvariance     { background: #FFE6CC; color: #8A4F00; }
     .match--nopo            { background: #FBE4E5; color: #B23F45; }
     .match--disputed        { background: #FBE4E5; color: #B23F45; }
+    .actions-bar { display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap; }
+    .act-error { color:#B23F45;font-size:12px; }
+    .booking-card { border-color:#C9BEEC;background:#FAFAFE; }
+    .booking-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px; }
+    .bfield { display:flex;flex-direction:column;gap:6px; }
+    .bfield label { font-size:11px;font-weight:700;color:#3F2D7C;text-transform:uppercase; }
+    .bfield input { border:1px solid #E8E2F4;border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit; }
+    .bk-actions { display:flex;gap:8px;justify-content:flex-end; }
+    .ocr-empty { display:flex;align-items:center;gap:10px;color:#9A9AA3;font-size:13px; }
+    .ocr-empty mat-icon { color:#C9BEEC; }
+    .ocr-card { border:2px solid #DCEAF8;border-radius:10px;padding:14px;margin-bottom:10px; }
+    .ocr-card--mismatch { border-color:#FBE4E5;background:#FFF8F8; }
+    .ocr-card--match { border-color:#DCF5E4;background:#F8FFF9; }
+    .ocr-card-head { display:flex;justify-content:space-between;align-items:center;margin-bottom:8px; }
+    .ocr-time { font-size:11px;color:#9A9AA3; }
+    .ocr-variance { display:flex;align-items:center;gap:6px;color:#946100;font-size:12px;font-weight:600; }
+    .ocr-match-ok { display:flex;align-items:center;gap:6px;color:#1F7A3D;font-size:12px;font-weight:600; }
   `],
 })
 export class PoDetailComponent implements OnInit {
-  private readonly api = inject(ProcurementApiService);
+  private readonly api   = inject(ProcurementApiService);
   private readonly route = inject(ActivatedRoute);
-  readonly data = signal<PoDetailDto | null>(null);
-  readonly loading = signal(true);
-  readonly error = signal<string | null>(null);
+  readonly data       = signal<PoDetailDto | null>(null);
+  readonly loading    = signal(true);
+  readonly error      = signal<string | null>(null);
+  readonly acting     = signal(false);
+  readonly actError   = signal<string | null>(null);
+  readonly showBooking = signal(false);
+  bkPol = ''; bkPod = ''; bkCntrVol = ''; bkCrd = '';
 
   async ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -170,5 +241,30 @@ export class PoDetailComponent implements OnInit {
     try { this.data.set(await this.api.getPo(id)); }
     catch (e: any) { this.error.set(e?.message ?? 'Failed to load PO'); }
     finally { this.loading.set(false); }
+  }
+
+  async advance(next: PoStatus) {
+    if (!this.data()) return;
+    this.acting.set(true); this.actError.set(null);
+    try {
+      const updated = await this.api.changePoStatus(this.data()!.po.id, next);
+      this.data.update(d => d ? { ...d, po: updated } : d);
+      this.showBooking.set(false);
+    } catch (e: any) {
+      this.actError.set(e?.error?.error ?? e?.message ?? 'Failed');
+    } finally { this.acting.set(false); }
+  }
+
+  submitBooking(poNumber: string) {
+    alert(`Booking Request submitted for ${poNumber}\nPOL: ${this.bkPol} → POD: ${this.bkPod}\nVolume: ${this.bkCntrVol}, CRD: ${this.bkCrd}`);
+    this.showBooking.set(false);
+  }
+
+  matchLabel(s: string): string {
+    return s === 'ThreeWayMatched' ? '✅ 3-Way Match'
+         : s === 'PriceVariance'   ? '⚠️ Price Variance'
+         : s === 'QtyVariance'     ? '⚠️ Qty Variance'
+         : s === 'Disputed'        ? '❌ Disputed'
+         : s;
   }
 }
