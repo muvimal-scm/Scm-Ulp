@@ -230,9 +230,16 @@ interface NavGroup {
       overflow-y: auto;
       overflow-x: hidden;
       display: flex; flex-direction: column;
-      min-height: calc(100vh - 60px);
+      height: calc(100vh - 60px);
       gap: 2px;
+      /* Styled scrollbar — thin purple tint */
+      scrollbar-width: thin;
+      scrollbar-color: #C9BEEC transparent;
     }
+    .sidebar::-webkit-scrollbar { width: 5px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: #C9BEEC; border-radius: 999px; }
+    .sidebar::-webkit-scrollbar-thumb:hover { background: #9B8FC4; }
     /* Every label stays on a single line — never wraps, never causes overflow */
     .sidebar .nav-item__label {
       white-space: nowrap;
