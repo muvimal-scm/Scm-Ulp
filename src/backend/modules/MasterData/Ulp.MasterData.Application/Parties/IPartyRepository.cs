@@ -17,4 +17,5 @@ public interface IPartyRepository
     Task UpdateAsync(Party party, CancellationToken ct);
     Task SoftDeleteAsync(long id, CancellationToken ct);
     Task<long> CountAsync(PartyListQuery query, CancellationToken ct);
+    Task<PartyIdentifier> AddIdentifierAsync(long partyId, CreatePartyIdentifierRequest req, CancellationToken ct);
 }

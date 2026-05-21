@@ -48,6 +48,22 @@ export class MasterDataApiService {
     return firstValueFrom(this.http.delete<void>(`${this.base}/parties/${id}`));
   }
 
+  addIdentifier(partyId: number, req: { identifierType: string; identifierValue: string; isPrimary: boolean }): Promise<import('./master-data-types').PartyIdentifier> {
+    return firstValueFrom(this.http.post<import('./master-data-types').PartyIdentifier>(`${this.base}/parties/${partyId}/identifiers`, req));
+  }
+
+  getProfileExtensions(partyId: number): Promise<any> {
+    return firstValueFrom(this.http.get<any>(`${this.base}/parties/${partyId}/profile-extensions`));
+  }
+
+  addPoa(partyId: number, req: any): Promise<any> {
+    return firstValueFrom(this.http.post<any>(`${this.base}/parties/${partyId}/poas`, req));
+  }
+
+  addMiscDoc(partyId: number, req: any): Promise<any> {
+    return firstValueFrom(this.http.post<any>(`${this.base}/parties/${partyId}/misc-docs`, req));
+  }
+
   /* -------- Products -------- */
 
   listProducts(opts: {

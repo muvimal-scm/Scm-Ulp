@@ -23,6 +23,7 @@ public static class PartyEndpoints
         g.MapPost("/", CreateAsync);
         g.MapPut("/{id:long}", UpdateAsync);
         g.MapDelete("/{id:long}", DeactivateAsync);
+        g.MapPost("/{id:long}/identifiers", AddIdentifierAsync);
 
         return app;
     }
@@ -127,6 +128,23 @@ public static class PartyEndpoints
     {
         await repo.SoftDeleteAsync(id, ct);
         return Results.NoContent();
+    }
+
+    private static async Task<IResult> AddIdentifierAsync(
+        long id,
+        [FromBody] CreatePartyIdentifierRequest req,
+        [FromServices] IPartyRepository repo,
+        CancellationToken ct)
+    {
+        try
+        {
+            var ident = await repo.AddIdentifierAsync(id, req, ct);
+            return Results.Created($"/api/v1/master-data/parties/{id}/identifiers/{ident.Id}",
+                new PartyIdentifierDto(ident.Id, ident.IdentifierType, ident.IdentifierValue,
+                    ident.IsPrimary, ident.ValidationStatus.ToString(),
+                    ident.ValidationSource, ident.ValidatedAt?.ToString(), ident.ExpiresAt?.ToString()));
+        }
+        catch (InvalidOperationException ex) { return Results.NotFound(new { error = ex.Message }); }
     }
 
     // -------- mapping --------

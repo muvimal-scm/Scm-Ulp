@@ -59,4 +59,23 @@ internal sealed class PartyRepository(MasterDataDbContext db) : IPartyRepository
         }
         return query.LongCountAsync(ct);
     }
+
+    public async Task<PartyIdentifier> AddIdentifierAsync(long partyId, CreatePartyIdentifierRequest req, CancellationToken ct)
+    {
+        var ident = new PartyIdentifier
+        {
+            PartyId          = partyId,
+            IdentifierType   = req.IdentifierType,
+            IdentifierValue  = req.IdentifierValue,
+            IsPrimary        = req.IsPrimary,
+            ValidationStatus = IdentifierValidationStatus.Pending,
+        };
+        // resolve tenant from the party
+        var party = await db.Parties.AsNoTracking().FirstOrDefaultAsync(p => p.Id == partyId, ct);
+        if (party is null) throw new InvalidOperationException($"Party {partyId} not found");
+        ident.TenantId = int.Parse(party.TenantId.Value);
+        db.Set<PartyIdentifier>().Add(ident);
+        await db.SaveChangesAsync(ct);
+        return ident;
+    }
 }
