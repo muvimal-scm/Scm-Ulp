@@ -446,6 +446,7 @@ export class AppShellComponent implements OnInit {
           ],
         },
         { label: 'Vendor management', icon: 'store', route: '/app/vendor-management', status: 'live' },
+        { label: 'Marketplace', icon: 'storefront', route: '/app/marketplace/catalog', status: 'live' },
         {
           label: 'Procurement', icon: 'shopping_cart',
           children: [

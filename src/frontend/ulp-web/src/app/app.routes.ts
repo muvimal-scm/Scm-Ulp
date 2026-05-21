@@ -105,6 +105,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/wms/wms.routes').then((r) => r.WMS_ROUTES),
       },
+      {
+        path: 'marketplace',
+        loadChildren: () =>
+          import('./features/marketplace/marketplace.routes').then((r) => r.MARKETPLACE_ROUTES),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
